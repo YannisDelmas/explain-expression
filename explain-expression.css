@@ -1,0 +1,135 @@
+@charset 'utf-8';
+
+/* Explique une expression */
+
+/* 1) Typographie */
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	background-image: url(full-bloom.png);
+}
+
+input, button, .explication {
+	font-size: 141%;
+}
+
+.explication {
+	line-height: 160%;
+}
+
+/* 2) Mise en page générale */
+
+html {
+	height: 100%;
+}
+body {
+	margin: 0 auto;
+	max-width: 960px;
+	min-height: 100vh;
+	display: grid;
+	grid-template-rows: auto 1fr auto;
+	grid-template-columns: 1fr;
+}
+.erreur { color: #900; background-color: #FCC; }
+.todo   { color: #990; background-color: #FF9; }
+
+/* 3) Formulaire */
+
+form * { text-align: center; }
+form > * { margin: 1ex auto; }
+input {
+	width: 30em;
+}
+.input-group {
+	display: table;
+}
+.input-group > * {
+	display: table-cell;
+	box-sizing: border-box;
+	height: 1.7em;
+	border: 2px solid #333;
+}
+.input-group > :first-child {
+	border-top-left-radius: 6px;
+	border-bottom-left-radius: 6px;
+}
+.input-group > :nth-child(n+2) {
+	border-left: none;
+}
+.input-group > :last-child {
+	border-top-right-radius: 6px;
+	border-bottom-right-radius: 6px;
+}
+
+/* 4) Zone d'explication */
+
+.explication output {
+	display: block;
+	border: 3px solid #333;
+	border-radius: 0.8em;
+	padding: 1ex;
+	background-color: #FFF;
+}
+.explication output.erreur {
+	background-color: #FCC;
+}
+
+.explication p, .explication ol {
+	margin: 0.25ex 0;
+}
+.explication blockquote {
+	margin: 1ex 0 1ex 2em;
+	padding: 0 0 0 0.5ex;
+	border-left: 2px solid #999;
+}
+
+a.ref {
+	vertical-align: super;
+	font-size: 70%;
+	padding: 0.25ex 0.5ex;
+	border-radius: 0.8em;
+	background-color: #DDF;
+}
+
+code {
+	font-size: 1.25em;
+}
+code, .value {
+	background: #CCE;
+	color: #006;
+}
+
+/* 4bis) Zone d'explication — détail n'apparaissent pas, normalement, pour l'utilisateur */
+
+.explication .token-type, .explication .token-value, .explication .token-error {
+	margin-right: 1em;
+	padding: 1px 0.5ex;
+	border-width: 1px; border-style: dashed;
+}
+.explication .token  { 
+	display: inline-block;
+	margin: 2px;
+	border: 1px solid #990;
+	background-color: rgba(255,255,153,0.2);
+}
+.explication .token-type  { border-color: #990; background-color: #FF9; }
+.explication .token-attr {
+	display: inline-block;
+	margin: 2px;
+	border: 1px solid #069;
+	background-color: rgba(0,153,255,0.2);
+}
+.explication .token-value { border-color: #069; background-color: #9CF; }
+.explication .token-list > li {
+	margin: 2px;
+	border: 1px solid #090; 
+	background-color: rgba(0,255,0, 0.2);
+}
+.explication .token-error { border-color: #900; background-color: #FCC; }
+
+/* 5) Exemples */
+
+.exemple {
+	padding: 0 0.5ex;
+	cursor: pointer;
+}
