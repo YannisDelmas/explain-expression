@@ -8,9 +8,9 @@
 %options case-insensitive
 
 %%
+
 'n'                      return 'n';
 [_a-zA-Z][_a-zA-Z0-9-]*  return 'IDENT';
-<<EOF>>                  return 'EOF';
 \~\=                     return 'INCLUDES';
 \*\=                     return 'SUBSTRINGMATCH';
 "|="                     return 'DASHMATCH';
@@ -19,10 +19,12 @@
 "$="                     return 'SUFFIXMATCH';
 \"[^\n\r\f\\"]*\"        return 'SINGLE_QUOTED_STRING';
 \'[^\n\r\f\\']*\'        return 'DOUBLE_QUOTED_STRING';
+/*
 \+\d+                    return 'POSITIVE_INTEGER';
 \-\d+                    return 'NEGATIVE_INTEGER';
+*/
 \d+                      return 'INTEGER';
-"(odd)"                  return 'ODD_ARGUMENT';
+'(odd)'                  return 'ODD_ARGUMENT';
 "(even)"                 return 'EVEN_ARGUMENT';
 '#'                      return '#';
 ","                      return ',';
@@ -30,6 +32,7 @@
 "["                      return '[';
 "]"                      return ']';
 "="                      return '=';
+":not("                  return 'NOT';
 "::"                     return 'DOUBLE_COLON';
 ":"                      return ':';
 "("                      return '(';
@@ -41,8 +44,7 @@
 "+"                      return '+';
 "-"                      return '-';
 \s+                      return 'S';
-
-
+<<EOF>>                  return 'EOF';
 
 
 /lex
@@ -210,13 +212,18 @@ string
     ;
 
 pseudo
-    : ':' ident ODD_ARGUMENT
+    : NOT selectors_group ')'
+        { $$ = { type: 'negation', args: $2 } }
+        /*  Règle pour le :not() façon CSS4 (en CSS3, seulement sélecteur simple).
+            Ne devrait pas être autorisé pour les autres functional_pseudo.
+         */
+    | ':' ident ODD_ARGUMENT
         { $$ = { type: 'pseudo_func', name: $2, args: { type: 'odd' } } }
     | ':' ident EVEN_ARGUMENT
         { $$ = { type: 'pseudo_func', name: $2, args: { type: 'even' } } }
-    | ':' ident '(' func_arguments ')'
+    | ':' ident '(' an_plus_b ')'
         { $$ = { type: 'pseudo_func', name: $2, args: $4 } }
-    | ':' ident '(' INTEGER ')'
+    | ':' ident '(' integer ')'
         { $$ = { type: 'pseudo_func', name: $2, args: $4 } }
     | ':' ident '(' ')'
         { $$ = { type: 'pseudo_func', name: $2 } }
@@ -224,46 +231,30 @@ pseudo
         { $$ = yy.create({ type: ['first-line','first-letter','before','after'].includes($2)?'pseudo_element_old':'pseudo_class', name: $2 }) }
     ;
 
-func_arguments
-    : selectors_group
-        /*  Règle pour le :not() façon CSS4 (en CSS3, seulement sélecteur simple).
-            Ne devrait pas être autorisé pour les autres functional_pseudo.
-         */
-    | an_plus_b
-    ;
-
-an_plus_b
-    : 'odd'
-        { $$ = { type: 'odd' } }
-    | 'even'
-        { $$ = { type: 'even' } }
-    | negative_integer 'n' positive_integer
-        { $$ = { type: 'an_plus_b', a: $1, b: $3 } }
-    | positive_integer 'n' positive_integer
-        { $$ = { type: 'an_plus_b', a: $1, b: $3 } }
-    | unsigned_integer 'n' positive_integer
-        { $$ = { type: 'an_plus_b', a: $1, b: $3 } }
-    | '-' 'n' positive_integer
-        { $$ = { type: 'an_plus_b', a: -1, b: $3 } }
-    | 'n' positive_integer
-        { $$ = { type: 'n_plus_b', b: $2 } }
-    | negative_integer 'n'
-        { $$ = { type: 'an', a: $1 } }
-    | unsigned_integer 'n'
-        { $$ = { type: 'an', a: $1 } }
-    ;
-
-negative_integer
-    : NEGATIVE_INTEGER
-      { $$ = Number($1) }
-    ;
-
-positive_integer
-    : POSITIVE_INTEGER
-      { $$ = Number($1) }
-    ;
-
-unsigned_integer
+integer
     : INTEGER
-      { $$ = Number($1) }
+        { $$ = Number($1); }
+    | '+' INTEGER
+        { $$ = Number($2); }
+    | '-' INTEGER
+        { $$ = - Number($2); }
+    ;
+integer_n
+    : 'n'
+        { $$ = 1; }
+    | '+' 'n'
+        { $$ = 1; }
+    | '-' 'n'
+        { $$ = -1; }
+    | integer 'n'
+        { $$ = $1; }
+    ;
+an_plus_b
+    /* https://www.w3.org/TR/selectors-3/#nth-child-pseudo */
+    : integer_n '+' INTEGER
+        { $$ = { type: 'an_plus_b', a: $1, b: Number($3) } }
+    | integer_n '-' INTEGER
+        { $$ = { type: 'an_plus_b', a: $1, b: -Number($3) } }
+    | integer_n
+        { $$ = { type: 'an_plus_b', a: $1, b: 0 } }
     ;

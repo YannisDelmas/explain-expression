@@ -1,9 +1,12 @@
 <?php
-/* Explique une expression
+/**
+ * Explique une expression.
  *
  * Application pédagogique pour expliquer les expressions de différents langages informatiques.
  * Pour l'instant, l'application ne traite que les sélecteurs CSS3, en français. Le projet
  * s'appuie sur une grammaire (jison) des expressions.
+ * 
+ * @author	Yannis Delmas
  */
 
 /* Initialisations */
@@ -23,68 +26,77 @@ header('Content-Type: text/html; charset=utf-8');
 </head>
 <body>
 	<header>
-		<h1>Explique un sélecteur CSS CSS 3</h1>
+		<h1>Explique un sélecteur CSS 3</h1>
+		<div class="chapeau">
+			<p>
+				Cette application pédagogique explique un sélecteur CSS&nbsp;3 indiqué dans la
+				case de texte ci-dessous en détaillant les sujets qu'il désigne.
+			</p>
+			<p>
+				Rappel&nbsp;: En CSS une <em>règle</em> est une écriture du type
+				<code class="language-css">S { D }</code>, où «S» est un <em>sélecteur</em> et
+				«D» une succession de <em>déclarations</em>.
+				Le sélecteur définit la liste des <em>sujets</em> à qui s'applique la règle.
+				Ces sujets sont des éléments et pseudo-éléments.
+				Les déclarations définissent la valeur de propiétés de cet élément.
+			</p>
+		</div>
 	</header>
-	<aside>
-		<p>
-			Rappel&nbsp;: En CSS une <em>règle</em> est une écriture du type
-			<code class="language-css">S { D }</code>, où «S» est un <em>sélecteur</em> et
-			«D» une succession de <em>déclarations</em>.
-			Le sélecteur définit la liste des <em>sujets</em> à qui s'applique la règle.
-			Ces sujets sont des éléments et pseudo-éléments.
-			Les déclarations définissent la valeur de propiétés de cet élément.
-			Cet outil pédagogique vise à expliquer de façon détaillée un sélecteur CSS en détaillant
-			les sujets qu'il désigne.
-		</p>	
-	</aside>
 	<main>
 		<form action="javascript:analyse()">
-			<p>
-				<input type="text" name="selecteur" id="selecteur" placeholder="sélecteur à expliquer"><button type="submit" id="expliquer"><span class="fa fa-cog"></span> expliquer</button>
-			</p>
+			<div class="input-group">
+				<input type="text" name="selecteur" id="selecteur" placeholder="sélecteur à expliquer">
+				<button type="submit" id="expliquer"><span class="fa fa-cog"></span> expliquer</button>
+			</div>
 		</form>
 		<div class="explication">
 			<output><p>&nbsp;</p></output>	
 		</div>
 		<p>Certains types de sélecteurs (en jaune ou rouge ci-dessous) ne sont pas encore implémentés.</p>
 		<p>
-			Exemples (CSS 1)&nbsp;:
-				<code class="exemple">E</code>,
-				<code class="exemple">E F</code>,
-				<code class="exemple">E.classe</code>,
-				<code class="exemple">E#ident</code>,
-				<code class="exemple">E:link</code>,
-				<code class="exemple">E:visited</code>,
-				<code class="exemple">E:active</code>,
-				<code class="exemple">E::first-letter</code>,
-				<code class="exemple">ul li</code>.
-				<code class="exemple">ul.diapo ol li</code>
-				<code class="exemple">.item ul, ul ul, .sous-menu</code>
-				<code class="exemple">form.principal .expliquer</code>
-				<code class="exemple">#chap42</code>
+			Exemples élémentaires (CSS 1 et 2)&nbsp;:
+			<code class="exemple">E</code>,
+			<code class="exemple">E F</code>,
+			<code class="exemple">E.classe</code>,
+			<code class="exemple">E:link</code>,
+			<code class="exemple">E:visited</code>,
+			<code class="exemple">ul li</code>,
+			<code class="exemple">form.principal .expliquer</code>,
+			<code class="exemple">h1, h2, h3</code>,
+			<code class="exemple">ul.diapo ol li</code>,
+			<code class="exemple">.item ul, ul ul, .sous-menu</code>.
 		</p>
 		<p>
-			Exemples (CSS 2)&nbsp;:
-				<code class="exemple">*</code>,
-				<code class="exemple">E[abc]</code>,
-				<code class="exemple">E[abc="def"]</code>,
-				<code class="exemple">E:first-child</code>,
-				<code class="exemple">E:hover</code>,
-				<code class="exemple">E:focus</code>,
-				<code class="exemple">h1, h2, h3</code>
-				<code class="exemple">E > F</code>,
-				<code class="exemple">E + F</code>,
-				<code class="exemple">section > header</code>
-				<code class="exemple">p.info.retrait-1re-ligne</code>
-				<code class="exemple">h1 + [rel=up]</code>,
-				<code class="exemple">h1#chapter1, *#z98y, button.expliquer</code>
+			Exemples simples (CSS 2)&nbsp;:
+			<code class="exemple">*</code>,
+			<code class="exemple">E:hover</code>,
+			<code class="exemple">p.info.retrait-1re-ligne</code>,
+			<code class="exemple">E > F</code>,
+			<code class="exemple">section > header</code>.
 		</p>
 		<p>
-			Exemples (CSS 3)&nbsp;:
+			Exemples avancés (CSS 1)&nbsp;:
+			<code class="exemple">E#ident</code>,
+			<code class="exemple">#chap42</code>.
+			<code class="exemple">h1#chapter1, *#z98y, button.expliquer</code>,
+			<code class="exemple">E:active</code>,
+			<code class="exemple">E::first-letter</code>.
+		</p>
+		<p>
+			Exemples avancés (CSS 2)&nbsp;:
+			<code class="exemple">E[abc]</code>,
+			<code class="exemple">E[abc="def"]</code>,
+			<code class="exemple">E + F</code>,
+			<code class="exemple">h1 + [rel=up]</code>,
+			<code class="exemple">E:first-child</code>,
+			<code class="exemple">E:focus</code>.
+		</p>
+		<p>
+			Exemples avancés (CSS 3)&nbsp;:
 				<code class="exemple">E[abc^="def"]</code>,
 				<code class="exemple">E[abc*="def"]</code>,
 				<code class="exemple">E:nth-child(odd)</code>,
-				<code class="exemple erreur">E:nth-child(3n+1)</code>,
+				<code class="exemple">E:nth-child(3n+1)</code>,
 				<code class="exemple">E:nth-of-type(2)</code>,
 				<code class="exemple">E:empty</code>,
 				<code class="exemple">E:active</code>,
@@ -92,16 +104,11 @@ header('Content-Type: text/html; charset=utf-8');
 				<code class="exemple">E::before</code>,
 				<code class="exemple">E ~ F</code>,
 				<code class="exemple">E:not(.abc)</code>.
-				<code class="exemple">[name="bascule"]:checked + label</code>
-				<code class="exemple">#s71:not(aside)</code>
-				<code class="exemple todo">#abc svg|circle</code>
-				<code class="exemple">a:link, p.citation:hover::before</code>
-				<code class="exemple">.a[b = c], c[d]:e:f(3n+2), g > h[i~="j"]</code>
-				<!--
-					TODO voir si on peut supprimer ODD_ARGUMENT en faveur de an_plus_b/odd 
-					TODO voir si 'n' doit être réécrit comme dans vraie grammaire CSS3
-					TODO voir si an_plus_b/odd peut être adapté pour anciens pseudo_él
-				-->
+				<code class="exemple">[name="bascule"]:checked + label</code>,
+				<code class="exemple">#s71:not(aside)</code>,
+				<code class="exemple todo">#abc svg|circle</code>,
+				<code class="exemple">a:link, p.citation:hover::before</code>,
+				<code class="exemple">.a[b = c], c[d]:e:f(3n+2), g > h[i~="j"]</code>.
 		</p>
 	</main>
 	<footer>
@@ -116,109 +123,51 @@ header('Content-Type: text/html; charset=utf-8');
 		</p>
 	</footer>
 	<script src="css-parser.jison.js"></script>
+	<script src="css-parser-explain.<?= $lang ?>.js"></script>
 	<script>
-		var affiche = {
-			selectors_group: '<p>les cas suivants {{#ref}} liste{{/ref}}&nbsp;:</p><ol>{{#selectors}}<li>{{}}</li>{{/selectors}}</ol>',
-			simple_selector_sequence: '{{#selectors}}{{}}{{/selectors}}',
-			combinator_selector: '{{right}}<blockquote>qui est{{#ref}}{{/ref}} {{combinator}} {{left}}</blockquote>',
-			descendant: 'dans {{#ref}} descendant{{/ref}} ',
-			child: 'immédiatement dans {{#ref}} enfant{{/ref}}',
-			subsequent_sibling: '{{right}}<blockquote>qui suit{{#ref}}suiveur{{/ref}}, dans le même parent, {{left}}</blockquote>',
-			next_sibling: '{{right}}<blockquote>qui est immédiatement après{{#ref}}successeur{{/ref}} {{left}}</blockquote>',
-			id: 'd\'identifiant <code>{{&name}}</code> {{#ref}} #id{{/ref}} ',
-			class: 'de classe <code>{{&name}}</code> {{#ref}} .classe{{/ref}} ',
-			universal: 'n\'importe quel élément {{#ref}}{{/ref}}<blockquote>{{#constraints}}<p>{{}}</p>{{/constraints}}</blockquote>',
-			element: 'un élément <code>&lt;{{&name}}></code> {{#ref}}{{/ref}}<blockquote>{{#constraints}}<p>{{}}</p>{{/constraints}}</blockquote>',
-			constraint_list: 'un élément {{#ref}}{{/ref}}<blockquote>{{#constraints}}<p>{{}}</p>{{/constraints}}</blockquote>',
-			pseudo_class: {
-				'=': 'name',
-				'?': 'de pseudo-classe <code>{{&name}}</code> {{#ref}}:pseudo-classe{{/ref}}',
-				'hover': 'en train d\'être survolé {{#ref}}:hover{{/ref}}',
-				'active': 'en train d\'être activé {{#ref}}:active{{/ref}}',
-				'focus': 'qui a actuellement le focus {{#ref}}:focus{{/ref}}',
-				'empty': 'vide (sans enfant ni contenu) {{#ref}}:empty{{/ref}}',
-				'checked': 'coché {{#ref}}:checked{{/ref}}',
-			},
-			pseudo_func: {
-				'=': 'name',
-				'?': 'de pseudo-classe <code>{{&name}}({{&args}})</code> {{#ref}}:pseudo-classe{{/ref}}',
-				'not': 'qui n\'est pas{{#ref}}:not(){{/ref}} &hellip; <blockquote>{{args}}</blockquote>',
-			},
-			has_attribute: 'qui possède l\'attribut <code>{{&name}}</code> {{#ref}}[attrib]{{/ref}}',
-			attribute_equals: 'qui possède l\'attribut <code>{{&name}}</code> avec la valeur <code>{{&value}}</code> {{#ref}}[attrib]{{/ref}}',
-			attribute_starts_with: 'qui possède l\'attribut <code>{{&name}}</code> dont la valeur commence par «&nbsp;<span class="value">{{&value}}</span>&nbsp;» {{#ref}}[attrib]{{/ref}}',
-			attribute_ends_with: 'qui possède l\'attribut <code>{{&name}}</code> dont la valeur se termine par «&nbsp;<span class="value">{{&value}}</span>&nbsp;» {{#ref}}[attrib]{{/ref}}',
-			attribute_contains: 'qui possède l\'attribut <code>{{&name}}</code> dont la valeur contient «&nbsp;<span class="value">{{&value}}</span>&nbsp;» {{#ref}}[attrib]{{/ref}}',
-			attribute_contains_word: 'qui possède l\'attribut <code>{{&name}}</code> dont la valeur est constitué d\'une suite de mots séparés par des espaces dont l\'un est «&nbsp;<span class="value">{{&value}}</span>&nbsp;» {{#ref}}[attrib]{{/ref}}',
-			attribute_contains_prefix: 'qui possède l\'attribut <code>{{&name}}</code> dont la valeur est <code>{{&value}}</code> ou commence par <code>{{&value}}-</code> {{#ref}}[attrib]{{/ref}}',
-			pseudo_element: {
-				'=': 'name',
-				'?': 'un pseudo-élément <code>{{&name}}</code> {{#ref}}::pseudo-élément{{/ref}} attaché à {{subject}}',
-				'first-letter': 'la première lettre {{#ref}}::first-letter{{/ref}} d\'{{subject}}',
-				'first-line': 'la première ligne {{#ref}}::first-line{{/ref}} d\'{{subject}}',
-				'before': 'un pseudo-élément ajouté au début {{#ref}}::before{{/ref}} d\'{{subject}}',
-				'after': 'un pseudo-élément ajouté à la fin {{#ref}}::after{{/ref}} d\'{{subject}}',
-			},
-			pseudo_element_old: '&hellip; auquel est attaché un pseudo-élément <code>{{&name}}</code> <span class="erreur">&rarr; ancienne notation à corriger</span>{{#ref}}::pseudo-élément{{/ref}}',
-		};
-		var ref = {
-			/* https://www.w3.org/TR/selectors-3/ https://www.w3.org/TR/CSS2/ */
-			selectors_group: 'https://www.w3.org/TR/selectors-3/#grouping',
-			descendant: 'https://www.w3.org/TR/selectors-3/#descendant-combinators',
-			child: 'https://www.w3.org/TR/selectors-3/#child-combinators',
-			subsequent_sibling: 'https://www.w3.org/TR/selectors-3/#general-sibling-combinators',
-			next_sibling: 'https://www.w3.org/TR/selectors-3/#adjacent-sibling-combinators',
-			id: 'https://www.w3.org/TR/selectors-3/#id-selectors',
-			class: 'https://www.w3.org/TR/selectors-3/#class-html',
-			universal: 'https://www.w3.org/TR/selectors-3/#universal-selector',
-			element: 'https://www.w3.org/TR/selectors-3/#type-selectors',
-			pseudo_class: 'https://www.w3.org/TR/selectors-3/#pseudo-classes',
-			pseudo_class__hover: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act',
-			pseudo_class__active: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act',
-			pseudo_class__focus: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act',
-			pseudo_class__empty: 'https://www.w3.org/TR/selectors-3/#empty-pseudo',
-			pseudo_class__checked: 'https://www.w3.org/TR/selectors-3/#checked',
-			pseudo_func: 'https://www.w3.org/TR/selectors-3/#pseudo-classes',
-			pseudo_func__not: 'https://www.w3.org/TR/selectors-3/#pseudo-classes',
-			has_attribute: 'https://www.w3.org/TR/selectors-3/#attribute-selectors',
-			attribute_equals: 'https://www.w3.org/TR/selectors-3/#attribute-selectors',
-			attribute_starts_with: 'https://www.w3.org/TR/selectors-3/#attribute-substrings',
-			attribute_ends_with: 'https://www.w3.org/TR/selectors-3/#attribute-substrings',
-			attribute_contains: 'https://www.w3.org/TR/selectors-3/#attribute-substrings',
-			attribute_contains_word: 'https://www.w3.org/TR/selectors-3/#attribute-representation',
-			attribute_contains_prefix: 'https://www.w3.org/TR/selectors-3/#attribute-representation',
-			pseudo_element: 'https://www.w3.org/TR/selectors-3/#pseudo-elements',
-			'pseudo_element__first-letter': 'https://www.w3.org/TR/selectors-3/#first-letter',
-			'pseudo_element__first-line': 'https://www.w3.org/TR/selectors-3/#first-line',
-			pseudo_element__before: 'https://www.w3.org/TR/selectors-3/#gen-content',
-			pseudo_element__after: 'https://www.w3.org/TR/selectors-3/#gen-content',
-			pseudo_element_old: 'https://www.w3.org/TR/selectors-3/#pseudo-elements',
-		};
-		
-	</script>
-	<script>
-		parser.yy.create = function(data) { return data; };
-		var explication = document.querySelector('.explication output');
-		var selecteur = document.getElementById('selecteur');
-		var debug = true;
-		var grammar;
-
+		/**
+		 * Fabrique l'explication d'une expression tokenisée.
+		 * 
+		 * Fonction récursive déterminant l'explication d'une expression tokenisée
+		 * en exploitant les indications données dans l'objet 'affiche'.
+		 * Cet objet est utilisé comme tableau associatif: les propriétés correspondent
+		 * à la propriété 'type' des tokens. Chaque 'affiche[_type_]' est une chaîne de
+		 * caractères ou un objet. Quand c'est une chaîne, les séquences '{{_propriété_}}'
+		 * sont remplacées par la traduction par cette fonction des propriétés mentionnées.
+		 * La séquence '{{#_propriété_}}_préfixe_{{}}_suffixe_{{/_propriété_}}' de boucler
+		 * sur les différentes valeurs quand la propriété en question est une liste.
+		 * La séquence '{{#ref}}_texte_{{/ref}}' est remplacée par un lien vers la référence
+		 * indiquée dans le tableau 'ref', en utilisant le texte indiquée pour ce lien.
+		 * Quand 'affiche[_type_]' est un objet 'B', celui-ci est utilisé comme un tableau
+		 * associatif. La fonction utilise "B['=']" comme nom de propriété du token à
+		 * utiliser comme clé au sein de 'B' pour trouver la chaîne descriptive. Si aucune
+		 * chaîne n'est trouvée, on utilise "B['?']" comme valeur par défaut.
+		 * 
+		 * @param  {Object} token - Le token à expliquer.
+		 * @return {String}
+		 */
 		function fabriqueExplication(token) {
-			// console.debug('fabriqueExplication', token);
+			// Cas 1 : les tableaux -> on fait une liste non numérotée
 			if ( Array.isArray(token) ) {
 				return token.length? ('<ul class="token-list"><li>'+ token.map(fabriqueExplication).join('</li><li>')+ '</li></ul>'): '';
 			}
+			// Cas 2 : les nombres -> on les renvoie tels quels
+			if ( typeof token == 'number' ) {
+				return token;
+			}
+			// Cas 3 : les chaînes -> on les traites comme des objets contenant seulement un type
 			if ( typeof token == 'string' ) {
 				if ( token == '' ) return '';
 				token = { type: token };
 			}
+			// Cas 4 : valeur inconnue -> erreur
 			if ( typeof token != 'object' ) {
-				console.debug('erreur: ', token);
 				return '<code class="token-error">'+ token.toString()+ '</code>';
 			}
+			// Cas 5 : les tokens à proprement parler
 			let type = token.type;
 			if ( affiche[type] ) {
-				// console.debug('type: ', type, affiche[type], ref[type]);
+				// Cas 5.a : ce type est connu dans le tableau d'affichage
 				let modele = affiche[type];
 				if ( typeof modele == 'object' ) {
 					let attribut = modele['=']; // nom de l'attribut
@@ -239,19 +188,21 @@ header('Content-Type: text/html; charset=utf-8');
 					modele = modele.replace(/{{#ref}}.*{{\/ref}}/, '');
 				}
 				let match;
-				let propriétésRegex = /{{(\&?[-_a-zA-Z0-9\xA0-\uFFFF]+)}}/g;
+				let propriétésRegex = /{{([&+]?[-_a-zA-Z0-9\xA0-\uFFFF]+)}}/g;
 				let propriétés = [];
 				while ((( match = propriétésRegex.exec(modele) )) != null ) propriétés.push(match[1]);
 				propriétés.forEach( (clé) => {
 					let brut = (clé[0] == '&');
-					let propriété = brut? clé.substring(1): clé;
-					// console.debug('type ', type, ', clé ', clé, ', propriété ', propriété);
-					// console.debug('token : ', token);
+					let signé = (clé[0] == '+');
+					let propriété = (brut || signé)? clé.substring(1): clé;
 					let contenu = (token[propriété] == undefined)
 						? ''
 						: (brut
 							? ((typeof token[propriété] == 'object')? token[propriété].type: token[propriété])
-							: fabriqueExplication(token[propriété])
+							: (signé
+								? (((token[propriété]<0)?'':'+')+token[propriété])
+								: fabriqueExplication(token[propriété])
+								)
 							)
 						;
 					modele = modele.replace('{{'+clé+'}}', contenu);
@@ -263,6 +214,7 @@ header('Content-Type: text/html; charset=utf-8');
 				}
 				return modele;
 			} else {
+				// Cas 5.b : ce type n'est pas connu dans le tableau d'affichage
 				if ( ref[type] ) {
 					type += ' <a href="'+ ref[type]+ '"><span class="fa fa-info-circle"></span></a>';
 				}
@@ -280,22 +232,65 @@ header('Content-Type: text/html; charset=utf-8');
 			}
 		}
 
+		/**
+		 * Calcule la spécificité d'un sélecteur CSS.
+		 * 
+		 * Calcule la spécificité d'un token à l'aide de l'objet 'spécificité',
+		 * utilisé comme tableau associatif, récursivement. Les types qui ne sont pas
+		 * mentionnés dans ce tableau sont passés, les autres incrémentent l'index
+		 * indiqué comme valeur de 'spécificité[_type_]'. La spécificité en cours de calcul
+		 * est représentée par un tableau '[identifieurs, classes, éléments]'.
+		 * 
+		 * @param  {Object} token - Le token à expliquer.
+		 * @return {String}
+		 */
+		function calculeSpécificité(token) {
+			function itère(token, v) {
+				if ( Array.isArray(token) ) {
+					v = token
+						.map(t => itère(t,[0,0,0]))
+						.reduce((a, v) => [v[0]+a[0], v[1]+a[1], v[2]+a[2]], v);
+				} else if ( typeof token == 'object' ) {
+					if ( specificité[token.type] != undefined ) {
+						v[specificité[token.type]] ++;
+					}
+					for(const param in token) {
+						if ( typeof token[param] == 'string' ) continue;
+						v = itère(token[param], v);
+					}
+				}
+				return v;
+			}
+			if ( typeof token != 'object' ) return '';
+			return token.selectors.map(t => itère(t,[0,0,0]).join(' ')).join(', ');
+		}
+
+		/**
+		 * Fonction organisant la tokenisation puis les affichages.
+		 */
 		function analyse(){
-			let texteBrut = selecteur.value;
+			let explication = document.querySelector('.explication output');
+			let texteBrut = document.getElementById('selecteur').value;
+			cssParser.yy.create = (data => data);
 			try {
-				let texteTokenisé = parser.parse(texteBrut);
-				// console.debug(texteTokenisé);
-				explication.innerHTML = fabriqueExplication(texteTokenisé);
-				explication.classList.remove('erreur');
+				let texteTokenisé = cssParser.parse(texteBrut);
+				console.info('tokens : ', texteTokenisé);
+				explication.innerHTML =
+					'Sujet(s)&nbsp;: '+ fabriqueExplication(texteTokenisé)+
+					'<p>Spécificité&nbsp;: '+ calculeSpécificité(texteTokenisé)+ '</p>';
+				explication.classList.remove('erreur');				
 			} catch(error) {
 				explication.innerHTML = '<pre>'+ error.toString()+ '</pre>';
 				explication.classList.add('erreur');
 			}
-			
 		}
 
 		document.addEventListener('DOMContentLoaded', function(){
+			// selecteur est la case de texte contenant le sélecteur à analyser
+			let selecteur = document.getElementById('selecteur');
+			// il a d'emblée le focus
 			selecteur.focus();
+			// les exemples remplissent automatiquement 'selecteur' et lancent l'analyse
 			document.querySelectorAll('.exemple').forEach(function(item) {
 				item.addEventListener('click', function(){
 					selecteur.value = this.innerText;
