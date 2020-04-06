@@ -1,124 +1,29 @@
+<?php
+/* Explique une expression
+ *
+ * Application pédagogique pour expliquer les expressions de différents langages informatiques.
+ * Pour l'instant, l'application ne traite que les sélecteurs CSS3, en français. Le projet
+ * s'appuie sur une grammaire (jison) des expressions.
+ */
+
+/* Initialisations */
+$lang = 'fr';
+
+/* Encodage */
+header('Content-Type: text/html; charset=utf-8');
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= $lang ?>">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Explique les sélecteurs CSS</title>
+	<title>Explique un sélecteur CSS</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
-	<style>
-		html {
-			height: 100%;
-		}
-		body {
-			min-height: 100vh; /* 100% de la hauteur du viewport */
-			max-width: 960px;
-			margin: 0 auto;
-			display: grid;
-			grid-template-rows: auto auto 1fr auto;
-			grid-template-columns: 1fr;
-			font-family: Arial, Helvetica, sans-serif;
-			font-size: 80%;
-			background-image: url(full-bloom.png);
-		}
-		form {
-			text-align: center;
-		}
-		input, button {
-			box-sizing: border-box;
-			height: 1.7em;
-			font-size: 1.6em;
-			border: 2px solid #000;
-			text-align: center;
-		}
-		input {
-			width: 30em;
-			border-radius: 6px 0 0 6px;
-		}
-		button {
-			border-left: none;
-			border-radius: 0 6px 6px 0;
-		}
-		.explication output {
-			display: block;
-			font-size: 141%;
-			line-height: 1.6;
-			border: 3px solid #333;
-			border-radius: 0.8em;
-			padding: 1ex;
-			background-color: #FFF;
-		}
-		.explication output.erreur {
-			background-color: #FCC;
-		}
-
-		output .token-type, output .token-value, output .token-error {
-			margin-right: 1em;
-			padding: 1px 0.5ex;
-			border-width: 1px; border-style: dashed;
-		}
-		output .token  { 
-			display: inline-block;
-			margin: 2px;
-			border: 1px solid #990;
-			background-color: rgba(255,255,153,0.2);
-		}
-		output .token-type  { border-color: #990; background-color: #FF9; }
-		output .token-attr {
-			display: inline-block;
-			margin: 2px;
-			border: 1px solid #069;
-			background-color: rgba(0,153,255,0.2);
-		}
-		output .token-value { border-color: #069; background-color: #9CF; }
-		output .token-list > li {
-			margin: 2px;
-			border: 1px solid #090; 
-			background-color: rgba(0,255,0, 0.2);
-		}
-		output .token-error { border-color: #900; background-color: #FCC; }
-		
-		output p, output ol {
-			margin: 0.25ex 0;
-		}
-		output blockquote {
-			margin: 1ex 0 1ex 2em;
-			padding: 0 0 0 0.5ex;
-			border-left: 2px solid #999;
-		}
-		output .token-negation .sss-intro {
-			display: none;
-		}
-		output .token-negation .sss-intro+blockquote {
-			margin: 0 0 0 -0.5ex;
-		}
-
-		a.ref {
-			vertical-align: super;
-			font-family: Arial, Helvetica, sans-serif;
-			font-size: 0.7em;
-			padding: 0.25ex 0.5ex;
-			border-radius: 0.8em;
-			background-color: #DDF;
-		}
-		
-		code {
-			font-size: 1.25em;
-		}
-		code, .value {
-			background: #CCE;
-			color: #006;
-		}
-		.exemple {
-			padding: 0 0.5ex;
-			cursor: pointer;
-		}
-		.erreur { color: #900; background-color: #FCC; }
-		.todo  { color: #990; background-color: #FF9; }
-	</style>
+	<link rel="stylesheet" href="explain-expression.css">
 </head>
 <body>
 	<header>
-		<h1>Explication de sélecteur CSS 3</h1>
+		<h1>Explique un sélecteur CSS CSS 3</h1>
 	</header>
 	<aside>
 		<p>
