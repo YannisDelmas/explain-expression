@@ -9,8 +9,9 @@
  * @author	Yannis Delmas
  */
 
-/* Initialisations */
+/* Langue */
 $lang = 'fr';
+include("css-parser-page.{$lang}.php");
 
 /* Encodage */
 header('Content-Type: text/html; charset=utf-8');
@@ -20,43 +21,29 @@ header('Content-Type: text/html; charset=utf-8');
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Explique un sélecteur CSS</title>
+	<title><?= $cssParser['title'] ?></title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
 	<link rel="stylesheet" href="explain-expression.css">
 </head>
 <body>
 	<header>
-		<h1>Explique un sélecteur CSS 3</h1>
-		<div class="chapeau">
-			<p>
-				Cette application pédagogique explique un sélecteur CSS&nbsp;3 indiqué dans la
-				case de texte ci-dessous en détaillant les sujets qu'il désigne.
-			</p>
-			<p>
-				Rappel&nbsp;: En CSS une <em>règle</em> est une écriture du type
-				<code class="language-css">S { D }</code>, où «S» est un <em>sélecteur</em> et
-				«D» une succession de <em>déclarations</em>.
-				Le sélecteur définit la liste des <em>sujets</em> à qui s'applique la règle.
-				Ces sujets sont des éléments et pseudo-éléments.
-				Les déclarations définissent la valeur de propiétés de cet élément.
-			</p>
-		</div>
+		<h1><?= $cssParser['docTitle'] ?></h1>
+		<div class="chapeau"><?= $cssParser['info'] ?></div>
 	</header>
 	<main>
 		<form action="javascript:analyse()">
 			<div class="input-group">
 				<input type="text" name="selecteur" id="selecteur" placeholder="sélecteur à expliquer">
-				<button type="submit" id="expliquer"><span class="fa fa-cog"></span> expliquer</button>
+				<button type="submit" id="expliquer"><span class="fa fa-cog"></span> <?= $cssParser['explain'] ?></button>
 			</div>
 		</form>
 		<div class="explication">
 			<output><p>&nbsp;</p></output>	
 		</div>
-		<p>Certains types de sélecteurs (en jaune) ne sont pas encore implémentés.</p>
 	</main>
 	<section class="exemples">
 		<p>
-			Exemples élémentaires (CSS 1)&nbsp;:
+			<?= $cssParser['exampleA'] ?>
 			<code class="exemple">E</code>,
 			<code class="exemple">E F</code>,
 			<code class="exemple">E.classe</code>,
@@ -69,21 +56,21 @@ header('Content-Type: text/html; charset=utf-8');
 			<code class="exemple">.item ul, ul ul, .sous-menu</code>.
 		</p>
 		<p>
-			Exemples simples (CSS 2)&nbsp;:
+			<?= $cssParser['exampleB'] ?>
 			<code class="exemple">*</code>,
 			<code class="exemple">E:hover</code>,
 			<code class="exemple">p.info.retrait-1re-ligne</code>,
 			<code class="exemple">E > F</code>,
 			<code class="exemple">section > header</code>.
+			<code class="exemple">E#ident</code>,
+			<code class="exemple">#chap42</code>.
 		</p>
 		<p>
-			Exemples avancés&nbsp;:
+			<?= $cssParser['exampleC'] ?>
 		</p>
 		<ul>
 			<li>
 				CSS 1&nbsp;:
-				<code class="exemple">E#ident</code>,
-				<code class="exemple">#chap42</code>.
 				<code class="exemple">h1#chapter1, *#z98y, button.expliquer</code>,
 				<code class="exemple">E:active</code>,
 				<code class="exemple">E::first-letter</code>.
@@ -120,17 +107,14 @@ header('Content-Type: text/html; charset=utf-8');
 		</ul>
 	</section>
 	<footer>
-		<p>
-			Page réalisé avec
-			<span class="fa fa-heart" aria-valuetext="coeur" style="color: darkred;"></span>
-			par <a href="https://delmas-rigoutsos.nom.fr/">Yannis Delmas</a>.
-			<a href="https://github.com/YannisDelmas/explain-expression/"><span class="fa fa-github"></span> Code source</a> de cette application.
-			Image de fond par H.&nbsp;Galeano, <a href="https://www.toptal.com/designers/subtlepatterns/full-bloom-pattern/">subtle patterns</a>.
-			Tokenisation <a href="http://zaa.ch/jison/">Jison</a> à l'aide d'une
-			<a href="css-parser.jison">grammaire</a> complète des sélecteurs CSS&nbsp;3&nbsp;;
-			certaines parties sont reprises de
-			<a href="https://github.com/featurist/bo-selector"><span class="fa fa-github"></span> bo-selector</a>.
+		<p class="message">
+			Les contributeurs sont les bienvenus pour ajouter d'autres types d'expressions
+			(par exemple les expressions régulières)
+			ou pour traduire les explications dans d'autres langues.
+			<br><span class="fa-language fa"></span><i lang="en">Contributors are welcome to add
+			other types of expressions or to translate the explanations into other languages.</i>
 		</p>
+		<?= $cssParser['footer'] ?>
 	</footer>
 	<script src="css-parser.jison.js"></script>
 	<script src="css-parser-explain.<?= $lang ?>.js"></script>
@@ -298,10 +282,10 @@ header('Content-Type: text/html; charset=utf-8');
 			cssParser.yy.create = (data => data);
 			try {
 				let texteTokenisé = cssParser.parse(texteBrut);
-				console.info('tokens : ', texteTokenisé);
+				console.info('tokens: ', texteTokenisé);
 				explication.innerHTML =
-					'Sujet(s)&nbsp;: '+ fabriqueExplication(texteTokenisé)+
-					'<p>Spécificité&nbsp;: '+ calculeSpécificité(texteTokenisé)+ '</p>';
+					'<?= $cssParser['subjects'] ?> '+ fabriqueExplication(texteTokenisé)+
+					'<p><?= $cssParser['specificity'] ?> '+ calculeSpécificité(texteTokenisé)+ '</p>';
 				explication.classList.remove('erreur');				
 			} catch(error) {
 				explication.innerHTML = '<pre>'+ error.toString()+ '</pre>';

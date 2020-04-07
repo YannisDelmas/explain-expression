@@ -9,6 +9,10 @@ body {
 	background-image: url(full-bloom.png);
 }
 
+footer .message {
+	font-size: 120%;
+}
+
 input, button, .explication {
 	font-size: 141%;
 }
@@ -31,7 +35,16 @@ body {
 	grid-template-columns: 1fr;
 }
 .erreur { color: #900; background-color: #FCC; }
-.todo   { color: #990; background-color: #FF9; }
+.todo { color: #990; background-color: #FF9; }
+
+footer .message {
+	border: 2px solid #990;
+	color: #660;
+	background-color: #FF9;
+	border-radius: 0.8em;
+	padding: 1ex;
+	margin: 1ex 2em;
+}
 
 /* 3) Formulaire */
 
