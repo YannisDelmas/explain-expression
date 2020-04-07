@@ -2,8 +2,8 @@ cssSelectorExplain({
 	module: 'css-selector',
 	lang: 'fr',
 	explanations: {
-		selectors_group: 'un ou plusieurs des cas suivants {{#ref}} liste{{/ref}}&nbsp;:<ol>{{#selectors}}<li>{{}}</li>{{/selectors}}</ol>',
-		simple_selector_sequence: '{{#selectors}}{{}}{{/selectors}}',
+		selectors_group: 'un ou plusieurs des cas suivants {{#ref}} liste{{/ref}}&nbsp;:<ol>{{#selectors}}<li>{{.}}</li>{{/selectors}}</ol>',
+		simple_selector_sequence: '{{#selectors}}{{.}}{{/selectors}}',
 		combinator_selector: '{{right}}<blockquote>qui est{{#ref}}{{/ref}} {{combinator}} {{left}}</blockquote>',
 		descendant: 'dans {{#ref}} descendant{{/ref}} ',
 		child: 'immédiatement dans {{#ref}} enfant{{/ref}}',
@@ -11,9 +11,9 @@ cssSelectorExplain({
 		next_sibling: '{{right}}<blockquote>qui est immédiatement après{{#ref}}successeur{{/ref}} {{left}}</blockquote>',
 		id: 'd’identifiant <code>{{&name}}</code> {{#ref}} #id{{/ref}} ',
 		class: 'de classe <code>{{&name}}</code> {{#ref}} .classe{{/ref}} ',
-		universal: 'n’importe quel élément {{#ref}}{{/ref}} {{#namespace}}&ensp;dans l’espace de nom <code>{{&}}</code>{{/namespace}} <blockquote>{{#constraints}}<p>{{}}</p>{{/constraints}}</blockquote>',
-		element: 'un élément <code>&lt;{{&name}}></code> {{#ref}}{{/ref}}<blockquote>{{#constraints}}<p>{{}}</p>{{/constraints}}</blockquote>',
-		constraint_list: 'un élément {{#ref}}{{/ref}}<blockquote>{{#constraints}}<p>{{}}</p>{{/constraints}}</blockquote>',
+		universal: 'n’importe quel élément {{#ref}}{{/ref}} {{#namespace}}&ensp;dans l’espace de nom <code>{{&.}}</code>{{/namespace}} <blockquote>{{#constraints}}<p>{{.}}</p>{{/constraints}}</blockquote>',
+		element: 'un élément <code>&lt;{{&name}}></code> {{#ref}}{{/ref}}<blockquote>{{#constraints}}<p>{{.}}</p>{{/constraints}}</blockquote>',
+		constraint_list: 'un élément {{#ref}}{{/ref}}<blockquote>{{#constraints}}<p>{{.}}</p>{{/constraints}}</blockquote>',
 		negation: 'qui n’est pas{{#ref}}:not(){{/ref}} &hellip; <blockquote>{{args}}</blockquote>',
 		pseudo_class: {
 			'=': 'name',

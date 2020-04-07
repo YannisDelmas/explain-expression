@@ -197,7 +197,7 @@ header('Content-Type: text/html; charset=utf-8');
 						;
 					modele = modele.replace(match[0], contenu);
 				}
-				propriétésRegex = /{{#([-_a-zA-Z0-9\xA0-\uFFFF]+)}}(.*){{(&?)}}(.*){{\/\1}}/;
+				propriétésRegex = /{{#([-_a-zA-Z0-9\xA0-\uFFFF]+)}}(.*){{(&?)\.}}(.*){{\/\1}}/;
 				while ((( match = propriétésRegex.exec(modele) )) != null) {
 					let contenu = '';
 					let liste = token[match[1]];
