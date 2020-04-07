@@ -254,9 +254,9 @@ header('Content-Type: text/html; charset=utf-8');
 			}
 			function metEnForme(v) {
 				return '<span class="specificite">'+
-					'<span class="specificite--item">'+v[0]+'<sub>#</sub></span>'+
-					'<span class="specificite--item">'+v[1]+'<sub>&#x2022;</sub></span>'+
-					'<span class="specificite--item">'+v[2]+'<sub>&lt;/></sub></span>'+
+					'<span class="specificite--item">'+v[0]+'</span><sub>#</sub>'+
+					'<span class="specificite--item">'+v[1]+'</span><sub><strong>.</strong></sub>'+
+					'<span class="specificite--item">'+v[2]+'</span><sub>&lt;/></sub>'+
 					'</span>';
 			}
 			if ( typeof token != 'object' ) return '';

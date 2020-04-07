@@ -105,11 +105,12 @@ a.ref {
 }
 
 .explication .specificite--item {
-	margin: 0 0.5ex;
+	margin: 0 0 0 1ex;
+	font-weight: bold;
+	color: #006;
 }
 .explication .specificite--item sub {
 	font-size: 80%;
-	color: #006;
 }
 
 code {
