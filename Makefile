@@ -1,2 +1,2 @@
-css-parser.jison.js: css-parser.jison
+css-selector.jison.js: css-selector.jison
 	jison $< -o $@

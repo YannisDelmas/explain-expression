@@ -1,6 +1,6 @@
 <?php
 
-$cssParser = [
+$cssSelector = [
 	'title' => 'Explique un sélecteur CSS',
 	'docTitle' => 'Explique un sélecteur CSS 3',
 	'info' => '
@@ -31,7 +31,7 @@ $cssParser = [
 			<a href="https://www.toptal.com/designers/subtlepatterns/full-bloom-pattern/">subtle
 			patterns</a>.
 			Tokenisation <a href="http://zaa.ch/jison/">Jison</a> à l’aide d’une
-			<a href="css-parser.jison">grammaire</a> complète des sélecteurs CSS&nbsp;3&nbsp;;
+			<a href="css-selector.jison">grammaire</a> complète des sélecteurs CSS&nbsp;3&nbsp;;
 			certaines parties sont reprises de
 			<a href="https://github.com/featurist/bo-selector"><span class="fa fa-github"></span>
 			bo-selector</a>.

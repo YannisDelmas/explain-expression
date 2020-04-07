@@ -11,7 +11,7 @@
 
 /* Langue */
 $lang = 'fr';
-include("css-parser-page.{$lang}.php");
+include("css-selector-page.{$lang}.php");
 
 /* Encodage */
 header('Content-Type: text/html; charset=utf-8');
@@ -21,20 +21,20 @@ header('Content-Type: text/html; charset=utf-8');
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><?= $cssParser['title'] ?></title>
+	<title><?= $cssSelector['title'] ?></title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
 	<link rel="stylesheet" href="explain-expression.css">
 </head>
 <body>
 	<header>
-		<h1><?= $cssParser['docTitle'] ?></h1>
-		<div class="chapeau"><?= $cssParser['info'] ?></div>
+		<h1><?= $cssSelector['docTitle'] ?></h1>
+		<div class="chapeau"><?= $cssSelector['info'] ?></div>
 	</header>
 	<main>
 		<form action="javascript:analyse()">
 			<div class="input-group">
 				<input type="text" name="selecteur" id="selecteur" placeholder="sélecteur à expliquer">
-				<button type="submit" id="expliquer"><span class="fa fa-cog"></span> <?= $cssParser['explain'] ?></button>
+				<button type="submit" id="expliquer"><span class="fa fa-cog"></span> <?= $cssSelector['explain'] ?></button>
 			</div>
 		</form>
 		<div class="explication">
@@ -43,7 +43,7 @@ header('Content-Type: text/html; charset=utf-8');
 	</main>
 	<section class="exemples">
 		<p>
-			<?= $cssParser['exampleA'] ?>
+			<?= $cssSelector['exampleA'] ?>
 			<code class="exemple">E</code>,
 			<code class="exemple">E F</code>,
 			<code class="exemple">E.classe</code>,
@@ -56,7 +56,7 @@ header('Content-Type: text/html; charset=utf-8');
 			<code class="exemple">.item ul, ul ul, .sous-menu</code>.
 		</p>
 		<p>
-			<?= $cssParser['exampleB'] ?>
+			<?= $cssSelector['exampleB'] ?>
 			<code class="exemple">*</code>,
 			<code class="exemple">E:hover</code>,
 			<code class="exemple">p.info.retrait-1re-ligne</code>,
@@ -66,7 +66,7 @@ header('Content-Type: text/html; charset=utf-8');
 			<code class="exemple">#chap42</code>.
 		</p>
 		<p>
-			<?= $cssParser['exampleC'] ?>
+			<?= $cssSelector['exampleC'] ?>
 		</p>
 		<ul>
 			<li>
@@ -114,10 +114,9 @@ header('Content-Type: text/html; charset=utf-8');
 			<br><span class="fa-language fa"></span><i lang="en">Contributors are welcome to add
 			other types of expressions or to translate the explanations into other languages.</i>
 		</p>
-		<?= $cssParser['footer'] ?>
+		<?= $cssSelector['footer'] ?>
 	</footer>
-	<script src="css-parser.jison.js"></script>
-	<script src="css-parser-explain.<?= $lang ?>.js"></script>
+	<script src="css-selector.jison.js"></script>
 	<script>
 		/**
 		 * Fabrique l'explication d'une expression tokenisée.
@@ -252,8 +251,8 @@ header('Content-Type: text/html; charset=utf-8');
 						.map(t => itère(t,[0,0,0]))
 						.reduce((a, v) => [v[0]+a[0], v[1]+a[1], v[2]+a[2]], v);
 				} else if ( typeof token == 'object' ) {
-					if ( specificité[token.type] != undefined ) {
-						v[specificité[token.type]] ++;
+					if ( spécificité[token.type] != undefined ) {
+						v[spécificité[token.type]] ++;
 					}
 					for(const param in token) {
 						if ( typeof token[param] == 'string' ) continue;
@@ -279,13 +278,13 @@ header('Content-Type: text/html; charset=utf-8');
 		function analyse(){
 			let explication = document.querySelector('.explication output');
 			let texteBrut = document.getElementById('selecteur').value;
-			cssParser.yy.create = (data => data);
+			cssSelector.yy.create = (data => data);
 			try {
-				let texteTokenisé = cssParser.parse(texteBrut);
+				let texteTokenisé = cssSelector.parse(texteBrut);
 				console.info('tokens: ', texteTokenisé);
 				explication.innerHTML =
-					'<?= $cssParser['subjects'] ?> '+ fabriqueExplication(texteTokenisé)+
-					'<p><?= $cssParser['specificity'] ?> '+ calculeSpécificité(texteTokenisé)+ '</p>';
+					'<?= $cssSelector['subjects'] ?> '+ fabriqueExplication(texteTokenisé)+
+					'<p><?= $cssSelector['specificity'] ?> '+ calculeSpécificité(texteTokenisé)+ '</p>';
 				explication.classList.remove('erreur');				
 			} catch(error) {
 				explication.innerHTML = '<pre>'+ error.toString()+ '</pre>';
@@ -293,7 +292,22 @@ header('Content-Type: text/html; charset=utf-8');
 			}
 		}
 
+		// chargement des données d'explication
+		console.debug('css-selector-explain: req.');
+		var explicationsJSON, affiche, ref, spécificité;
+		function cssSelectorExplain(donnéesJSON) {
+			affiche = donnéesJSON.explanations;
+			ref = donnéesJSON.references;
+			spécificité = donnéesJSON.specificity;
+			explicationsJSON.parentNode.removeChild(explicationsJSON);
+		}
+		explicationsJSON = document.createElement('script');
+		explicationsJSON.src = 'css-selector-explain.<?= $lang ?>.js';
+		document.querySelector('head').appendChild(explicationsJSON);
+		
+		// quand tout est prêt…
 		document.addEventListener('DOMContentLoaded', function(){
+			console.debug('page OK');
 			// selecteur est la case de texte contenant le sélecteur à analyser
 			let selecteur = document.getElementById('selecteur');
 			// il a d'emblée le focus
