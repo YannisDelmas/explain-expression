@@ -122,19 +122,10 @@ header('Content-Type: text/html; charset=utf-8');
 		 * Fabrique l'explication d'une expression tokenisée.
 		 * 
 		 * Fonction récursive déterminant l'explication d'une expression tokenisée
-		 * en exploitant les indications données dans l'objet 'affiche'.
-		 * Cet objet est utilisé comme tableau associatif: les propriétés correspondent
-		 * à la propriété 'type' des tokens. Chaque 'affiche[_type_]' est une chaîne de
-		 * caractères ou un objet. Quand c'est une chaîne, les séquences '{{_propriété_}}'
-		 * sont remplacées par la traduction par cette fonction des propriétés mentionnées.
-		 * La séquence '{{#_propriété_}}_préfixe_{{}}_suffixe_{{/_propriété_}}' de boucler
-		 * sur les différentes valeurs quand la propriété en question est une liste.
-		 * La séquence '{{#ref}}_texte_{{/ref}}' est remplacée par un lien vers la référence
-		 * indiquée dans le tableau 'ref', en utilisant le texte indiquée pour ce lien.
-		 * Quand 'affiche[_type_]' est un objet 'B', celui-ci est utilisé comme un tableau
-		 * associatif. La fonction utilise "B['=']" comme nom de propriété du token à
-		 * utiliser comme clé au sein de 'B' pour trouver la chaîne descriptive. Si aucune
-		 * chaîne n'est trouvée, on utilise "B['?']" comme valeur par défaut.
+		 * en exploitant les indications données dans l'objet `affiche`. Voir
+		 * le fichier `README.md` pour le détail du modèle d'explication.
+		 * 
+		 * @see README.md
 		 * 
 		 * @param  {Object} token - Le token à expliquer.
 		 * @return {String}
@@ -235,11 +226,11 @@ header('Content-Type: text/html; charset=utf-8');
 		/**
 		 * Calcule la spécificité d'un sélecteur CSS.
 		 * 
-		 * Calcule la spécificité d'un token à l'aide de l'objet 'spécificité',
+		 * Calcule la spécificité d'un token à l'aide de l'objet `spécificité`,
 		 * utilisé comme tableau associatif, récursivement. Les types qui ne sont pas
 		 * mentionnés dans ce tableau sont passés, les autres incrémentent l'index
-		 * indiqué comme valeur de 'spécificité[_type_]'. La spécificité en cours de calcul
-		 * est représentée par un tableau '[identifieurs, classes, éléments]'.
+		 * indiqué comme valeur de `spécificité[type]`. La spécificité en cours de calcul
+		 * est représentée par un tableau `[identifieurs, classes, éléments]`.
 		 * 
 		 * @param  {Object} token - Le token à expliquer.
 		 * @return {String}
