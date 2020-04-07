@@ -27,7 +27,7 @@ body {
 	max-width: 960px;
 	min-height: 100vh;
 	display: grid;
-	grid-template-rows: auto 1fr auto;
+	grid-template-rows: auto 1fr auto auto;
 	grid-template-columns: 1fr;
 }
 .erreur { color: #900; background-color: #FCC; }
@@ -89,6 +89,14 @@ a.ref {
 	padding: 0.25ex 0.5ex;
 	border-radius: 0.8em;
 	background-color: #DDF;
+}
+
+.explication .specificite--item {
+	margin: 0 0.5ex;
+}
+.explication .specificite--item sub {
+	font-size: 80%;
+	color: #006;
 }
 
 code {

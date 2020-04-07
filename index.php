@@ -52,9 +52,11 @@ header('Content-Type: text/html; charset=utf-8');
 		<div class="explication">
 			<output><p>&nbsp;</p></output>	
 		</div>
-		<p>Certains types de sélecteurs (en jaune ou rouge ci-dessous) ne sont pas encore implémentés.</p>
+		<p>Certains types de sélecteurs (en jaune) ne sont pas encore implémentés.</p>
+	</main>
+	<section class="exemples">
 		<p>
-			Exemples élémentaires (CSS 1 et 2)&nbsp;:
+			Exemples élémentaires (CSS 1)&nbsp;:
 			<code class="exemple">E</code>,
 			<code class="exemple">E F</code>,
 			<code class="exemple">E.classe</code>,
@@ -75,24 +77,28 @@ header('Content-Type: text/html; charset=utf-8');
 			<code class="exemple">section > header</code>.
 		</p>
 		<p>
-			Exemples avancés (CSS 1)&nbsp;:
-			<code class="exemple">E#ident</code>,
-			<code class="exemple">#chap42</code>.
-			<code class="exemple">h1#chapter1, *#z98y, button.expliquer</code>,
-			<code class="exemple">E:active</code>,
-			<code class="exemple">E::first-letter</code>.
+			Exemples avancés&nbsp;:
 		</p>
-		<p>
-			Exemples avancés (CSS 2)&nbsp;:
-			<code class="exemple">E[abc]</code>,
-			<code class="exemple">E[abc="def"]</code>,
-			<code class="exemple">E + F</code>,
-			<code class="exemple">h1 + [rel=up]</code>,
-			<code class="exemple">E:first-child</code>,
-			<code class="exemple">E:focus</code>.
-		</p>
-		<p>
-			Exemples avancés (CSS 3)&nbsp;:
+		<ul>
+			<li>
+				CSS 1&nbsp;:
+				<code class="exemple">E#ident</code>,
+				<code class="exemple">#chap42</code>.
+				<code class="exemple">h1#chapter1, *#z98y, button.expliquer</code>,
+				<code class="exemple">E:active</code>,
+				<code class="exemple">E::first-letter</code>.
+			</li>
+			<li>
+				CSS 2&nbsp;:
+				<code class="exemple">E[abc]</code>,
+				<code class="exemple">E[abc="def"]</code>,
+				<code class="exemple">E + F</code>,
+				<code class="exemple">h1 + [rel=up]</code>,
+				<code class="exemple">E:first-child</code>,
+				<code class="exemple">E:focus</code>.
+			</li>
+			<li>
+				CSS 3&nbsp;:
 				<code class="exemple">E[abc^="def"]</code>,
 				<code class="exemple">E[abc*="def"]</code>,
 				<code class="exemple">E:nth-child(odd)</code>,
@@ -106,20 +112,24 @@ header('Content-Type: text/html; charset=utf-8');
 				<code class="exemple">E:not(.abc)</code>.
 				<code class="exemple">[name="bascule"]:checked + label</code>,
 				<code class="exemple">#s71:not(aside)</code>,
-				<code class="exemple todo">#abc svg|circle</code>,
 				<code class="exemple">a:link, p.citation:hover::before</code>,
-				<code class="exemple">.a[b = c], c[d]:e:f(3n+2), g > h[i~="j"]</code>.
-		</p>
-	</main>
+				<code class="exemple">.a[b = c], c[d]:e:f(3n+2), g > h[i~="j"]</code>,
+				<code class="exemple">#abc svg|circle</code>,
+				<code class="exemple">[xml|lang]</code>.
+			</li>
+		</ul>
+	</section>
 	<footer>
 		<p>
-			Page réalisé avec <span class="fa fa-heart" aria-valuetext="coeur" style="color: darkred;"></span>
+			Page réalisé avec
+			<span class="fa fa-heart" aria-valuetext="coeur" style="color: darkred;"></span>
 			par <a href="https://delmas-rigoutsos.nom.fr/">Yannis Delmas</a>.
-			Tokenisation à l'aide de <a href="http://zaa.ch/jison/">Jison</a>, à l'aide d'une
-			<a href="css-parser.jison">grammaire</a> écrite d'après
-			<a href="https://github.com/featurist/bo-selector">bo-selector</a>.
+			<a href="https://github.com/YannisDelmas/explain-expression/"><span class="fa fa-github"></span> Code source</a> de cette application.
 			Image de fond par H.&nbsp;Galeano, <a href="https://www.toptal.com/designers/subtlepatterns/full-bloom-pattern/">subtle patterns</a>.
-			<a href="source.php">Code source</a> de cette application.
+			Tokenisation <a href="http://zaa.ch/jison/">Jison</a> à l'aide d'une
+			<a href="css-parser.jison">grammaire</a> complète des sélecteurs CSS&nbsp;3&nbsp;;
+			certaines parties sont reprises de
+			<a href="https://github.com/featurist/bo-selector"><span class="fa fa-github"></span> bo-selector</a>.
 		</p>
 	</footer>
 	<script src="css-parser.jison.js"></script>
@@ -188,29 +198,36 @@ header('Content-Type: text/html; charset=utf-8');
 					modele = modele.replace(/{{#ref}}.*{{\/ref}}/, '');
 				}
 				let match;
-				let propriétésRegex = /{{([&+]?[-_a-zA-Z0-9\xA0-\uFFFF]+)}}/g;
-				let propriétés = [];
-				while ((( match = propriétésRegex.exec(modele) )) != null ) propriétés.push(match[1]);
-				propriétés.forEach( (clé) => {
-					let brut = (clé[0] == '&');
-					let signé = (clé[0] == '+');
-					let propriété = (brut || signé)? clé.substring(1): clé;
-					let contenu = (token[propriété] == undefined)
+				let propriétésRegex = /{{(&?)(\+?)([-_a-zA-Z0-9\xA0-\uFFFF]+)}}/;
+				while ((( match = propriétésRegex.exec(modele) )) != null ) {
+					let propriété = match[3];
+					let contenu = token[propriété];
+					contenu = (contenu == undefined)
 						? ''
-						: (brut
-							? ((typeof token[propriété] == 'object')? token[propriété].type: token[propriété])
-							: (signé
-								? (((token[propriété]<0)?'':'+')+token[propriété])
-								: fabriqueExplication(token[propriété])
+						: (match[1]
+							? ((typeof contenu == 'object')? contenu.type: contenu)
+							: (match[2]
+								? (((contenu<0)?'':'+')+contenu)
+								: fabriqueExplication(contenu)
 								)
 							)
 						;
-					modele = modele.replace('{{'+clé+'}}', contenu);
-				});
-				if ((( match = /^(.*){{#([-_a-zA-Z0-9\xA0-\uFFFF]+)}}(.*){{}}(.*){{\/\2}}(.*)$/.exec(modele) )) != null) {
-					let boucle = match[2];
-					let liste = Array.isArray(token[boucle])? token[boucle]: [token[boucle]];
-					return match[1]+ match[3]+ liste.map(fabriqueExplication).join(match[4]+match[3])+ match[4]+match[5];
+					modele = modele.replace(match[0], contenu);
+				}
+				propriétésRegex = /{{#([-_a-zA-Z0-9\xA0-\uFFFF]+)}}(.*){{(&?)}}(.*){{\/\1}}/;
+				while ((( match = propriétésRegex.exec(modele) )) != null) {
+					let contenu = '';
+					let liste = token[match[1]];
+					if ( liste != undefined ) {
+						if ( ! Array.isArray(liste) ) liste = [liste];
+						if ( liste.length )
+							contenu =
+								match[2]+
+								(match[3]? liste: liste.map(fabriqueExplication))
+									.join(match[4]+match[2])
+								+match[4];
+					}
+					modele = modele.replace(match[0], contenu);
 				}
 				return modele;
 			} else {
@@ -261,8 +278,15 @@ header('Content-Type: text/html; charset=utf-8');
 				}
 				return v;
 			}
+			function metEnForme(v) {
+				return '<span class="specificite">'+
+					'<span class="specificite--item">'+v[0]+'<sub>#</sub></span>'+
+					'<span class="specificite--item">'+v[1]+'<sub>&#x2022;</sub></span>'+
+					'<span class="specificite--item">'+v[2]+'<sub>&lt;/></sub></span>'+
+					'</span>';
+			}
 			if ( typeof token != 'object' ) return '';
-			return token.selectors.map(t => itère(t,[0,0,0]).join(' ')).join(', ');
+			return token.selectors.map(t => metEnForme(itère(t,[0,0,0]))).join(', ');
 		}
 
 		/**
