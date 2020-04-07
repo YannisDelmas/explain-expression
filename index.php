@@ -9,8 +9,9 @@
  * @author	Yannis Delmas
  */
 
-/* Initialisations */
+/* Langue */
 $lang = 'fr';
+include("css-selector-page.{$lang}.php");
 
 /* Encodage */
 header('Content-Type: text/html; charset=utf-8');
@@ -20,43 +21,29 @@ header('Content-Type: text/html; charset=utf-8');
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Explique un sélecteur CSS</title>
+	<title><?= $cssSelector['title'] ?></title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
 	<link rel="stylesheet" href="explain-expression.css">
 </head>
 <body>
 	<header>
-		<h1>Explique un sélecteur CSS 3</h1>
-		<div class="chapeau">
-			<p>
-				Cette application pédagogique explique un sélecteur CSS&nbsp;3 indiqué dans la
-				case de texte ci-dessous en détaillant les sujets qu'il désigne.
-			</p>
-			<p>
-				Rappel&nbsp;: En CSS une <em>règle</em> est une écriture du type
-				<code class="language-css">S { D }</code>, où «S» est un <em>sélecteur</em> et
-				«D» une succession de <em>déclarations</em>.
-				Le sélecteur définit la liste des <em>sujets</em> à qui s'applique la règle.
-				Ces sujets sont des éléments et pseudo-éléments.
-				Les déclarations définissent la valeur de propiétés de cet élément.
-			</p>
-		</div>
+		<h1><?= $cssSelector['docTitle'] ?></h1>
+		<div class="chapeau"><?= $cssSelector['info'] ?></div>
 	</header>
 	<main>
 		<form action="javascript:analyse()">
 			<div class="input-group">
 				<input type="text" name="selecteur" id="selecteur" placeholder="sélecteur à expliquer">
-				<button type="submit" id="expliquer"><span class="fa fa-cog"></span> expliquer</button>
+				<button type="submit" id="expliquer"><span class="fa fa-cog"></span> <?= $cssSelector['explain'] ?></button>
 			</div>
 		</form>
 		<div class="explication">
 			<output><p>&nbsp;</p></output>	
 		</div>
-		<p>Certains types de sélecteurs (en jaune) ne sont pas encore implémentés.</p>
 	</main>
 	<section class="exemples">
 		<p>
-			Exemples élémentaires (CSS 1)&nbsp;:
+			<?= $cssSelector['exampleA'] ?>
 			<code class="exemple">E</code>,
 			<code class="exemple">E F</code>,
 			<code class="exemple">E.classe</code>,
@@ -69,21 +56,21 @@ header('Content-Type: text/html; charset=utf-8');
 			<code class="exemple">.item ul, ul ul, .sous-menu</code>.
 		</p>
 		<p>
-			Exemples simples (CSS 2)&nbsp;:
+			<?= $cssSelector['exampleB'] ?>
 			<code class="exemple">*</code>,
 			<code class="exemple">E:hover</code>,
 			<code class="exemple">p.info.retrait-1re-ligne</code>,
 			<code class="exemple">E > F</code>,
 			<code class="exemple">section > header</code>.
+			<code class="exemple">E#ident</code>,
+			<code class="exemple">#chap42</code>.
 		</p>
 		<p>
-			Exemples avancés&nbsp;:
+			<?= $cssSelector['exampleC'] ?>
 		</p>
 		<ul>
 			<li>
 				CSS 1&nbsp;:
-				<code class="exemple">E#ident</code>,
-				<code class="exemple">#chap42</code>.
 				<code class="exemple">h1#chapter1, *#z98y, button.expliquer</code>,
 				<code class="exemple">E:active</code>,
 				<code class="exemple">E::first-letter</code>.
@@ -120,38 +107,25 @@ header('Content-Type: text/html; charset=utf-8');
 		</ul>
 	</section>
 	<footer>
-		<p>
-			Page réalisé avec
-			<span class="fa fa-heart" aria-valuetext="coeur" style="color: darkred;"></span>
-			par <a href="https://delmas-rigoutsos.nom.fr/">Yannis Delmas</a>.
-			<a href="https://github.com/YannisDelmas/explain-expression/"><span class="fa fa-github"></span> Code source</a> de cette application.
-			Image de fond par H.&nbsp;Galeano, <a href="https://www.toptal.com/designers/subtlepatterns/full-bloom-pattern/">subtle patterns</a>.
-			Tokenisation <a href="http://zaa.ch/jison/">Jison</a> à l'aide d'une
-			<a href="css-parser.jison">grammaire</a> complète des sélecteurs CSS&nbsp;3&nbsp;;
-			certaines parties sont reprises de
-			<a href="https://github.com/featurist/bo-selector"><span class="fa fa-github"></span> bo-selector</a>.
+		<p class="message">
+			Les contributeurs sont les bienvenus pour ajouter d'autres types d'expressions
+			(par exemple les expressions régulières)
+			ou pour traduire les explications dans d'autres langues.
+			<br><span class="fa-language fa"></span><i lang="en">Contributors are welcome to add
+			other types of expressions or to translate the explanations into other languages.</i>
 		</p>
+		<?= $cssSelector['footer'] ?>
 	</footer>
-	<script src="css-parser.jison.js"></script>
-	<script src="css-parser-explain.<?= $lang ?>.js"></script>
+	<script src="css-selector.jison.js"></script>
 	<script>
 		/**
 		 * Fabrique l'explication d'une expression tokenisée.
 		 * 
 		 * Fonction récursive déterminant l'explication d'une expression tokenisée
-		 * en exploitant les indications données dans l'objet 'affiche'.
-		 * Cet objet est utilisé comme tableau associatif: les propriétés correspondent
-		 * à la propriété 'type' des tokens. Chaque 'affiche[_type_]' est une chaîne de
-		 * caractères ou un objet. Quand c'est une chaîne, les séquences '{{_propriété_}}'
-		 * sont remplacées par la traduction par cette fonction des propriétés mentionnées.
-		 * La séquence '{{#_propriété_}}_préfixe_{{}}_suffixe_{{/_propriété_}}' de boucler
-		 * sur les différentes valeurs quand la propriété en question est une liste.
-		 * La séquence '{{#ref}}_texte_{{/ref}}' est remplacée par un lien vers la référence
-		 * indiquée dans le tableau 'ref', en utilisant le texte indiquée pour ce lien.
-		 * Quand 'affiche[_type_]' est un objet 'B', celui-ci est utilisé comme un tableau
-		 * associatif. La fonction utilise "B['=']" comme nom de propriété du token à
-		 * utiliser comme clé au sein de 'B' pour trouver la chaîne descriptive. Si aucune
-		 * chaîne n'est trouvée, on utilise "B['?']" comme valeur par défaut.
+		 * en exploitant les indications données dans l'objet `affiche`. Voir
+		 * le fichier `README.md` pour le détail du modèle d'explication.
+		 * 
+		 * @see README.md
 		 * 
 		 * @param  {Object} token - Le token à expliquer.
 		 * @return {String}
@@ -214,7 +188,7 @@ header('Content-Type: text/html; charset=utf-8');
 						;
 					modele = modele.replace(match[0], contenu);
 				}
-				propriétésRegex = /{{#([-_a-zA-Z0-9\xA0-\uFFFF]+)}}(.*){{(&?)}}(.*){{\/\1}}/;
+				propriétésRegex = /{{#([-_a-zA-Z0-9\xA0-\uFFFF]+)}}(.*){{(&?)\.}}(.*){{\/\1}}/;
 				while ((( match = propriétésRegex.exec(modele) )) != null) {
 					let contenu = '';
 					let liste = token[match[1]];
@@ -252,11 +226,11 @@ header('Content-Type: text/html; charset=utf-8');
 		/**
 		 * Calcule la spécificité d'un sélecteur CSS.
 		 * 
-		 * Calcule la spécificité d'un token à l'aide de l'objet 'spécificité',
+		 * Calcule la spécificité d'un token à l'aide de l'objet `spécificité`,
 		 * utilisé comme tableau associatif, récursivement. Les types qui ne sont pas
 		 * mentionnés dans ce tableau sont passés, les autres incrémentent l'index
-		 * indiqué comme valeur de 'spécificité[_type_]'. La spécificité en cours de calcul
-		 * est représentée par un tableau '[identifieurs, classes, éléments]'.
+		 * indiqué comme valeur de `spécificité[type]`. La spécificité en cours de calcul
+		 * est représentée par un tableau `[identifieurs, classes, éléments]`.
 		 * 
 		 * @param  {Object} token - Le token à expliquer.
 		 * @return {String}
@@ -268,8 +242,8 @@ header('Content-Type: text/html; charset=utf-8');
 						.map(t => itère(t,[0,0,0]))
 						.reduce((a, v) => [v[0]+a[0], v[1]+a[1], v[2]+a[2]], v);
 				} else if ( typeof token == 'object' ) {
-					if ( specificité[token.type] != undefined ) {
-						v[specificité[token.type]] ++;
+					if ( spécificité[token.type] != undefined ) {
+						v[spécificité[token.type]] ++;
 					}
 					for(const param in token) {
 						if ( typeof token[param] == 'string' ) continue;
@@ -280,9 +254,9 @@ header('Content-Type: text/html; charset=utf-8');
 			}
 			function metEnForme(v) {
 				return '<span class="specificite">'+
-					'<span class="specificite--item">'+v[0]+'<sub>#</sub></span>'+
-					'<span class="specificite--item">'+v[1]+'<sub>&#x2022;</sub></span>'+
-					'<span class="specificite--item">'+v[2]+'<sub>&lt;/></sub></span>'+
+					'<span class="specificite--item">'+v[0]+'</span><sub>#</sub>'+
+					'<span class="specificite--item">'+v[1]+'</span><sub><strong>.</strong></sub>'+
+					'<span class="specificite--item">'+v[2]+'</span><sub>&lt;/></sub>'+
 					'</span>';
 			}
 			if ( typeof token != 'object' ) return '';
@@ -295,13 +269,13 @@ header('Content-Type: text/html; charset=utf-8');
 		function analyse(){
 			let explication = document.querySelector('.explication output');
 			let texteBrut = document.getElementById('selecteur').value;
-			cssParser.yy.create = (data => data);
+			cssSelector.yy.create = (data => data);
 			try {
-				let texteTokenisé = cssParser.parse(texteBrut);
-				console.info('tokens : ', texteTokenisé);
+				let texteTokenisé = cssSelector.parse(texteBrut);
+				console.info('tokens: ', texteTokenisé);
 				explication.innerHTML =
-					'Sujet(s)&nbsp;: '+ fabriqueExplication(texteTokenisé)+
-					'<p>Spécificité&nbsp;: '+ calculeSpécificité(texteTokenisé)+ '</p>';
+					'<?= $cssSelector['subjects'] ?> '+ fabriqueExplication(texteTokenisé)+
+					'<p><?= $cssSelector['specificity'] ?> '+ calculeSpécificité(texteTokenisé)+ '</p>';
 				explication.classList.remove('erreur');				
 			} catch(error) {
 				explication.innerHTML = '<pre>'+ error.toString()+ '</pre>';
@@ -309,7 +283,22 @@ header('Content-Type: text/html; charset=utf-8');
 			}
 		}
 
+		// chargement des données d'explication
+		console.debug('css-selector-explain: req.');
+		var explicationsJSON, affiche, ref, spécificité;
+		function cssSelectorExplain(donnéesJSON) {
+			affiche = donnéesJSON.explanations;
+			ref = donnéesJSON.references;
+			spécificité = donnéesJSON.specificity;
+			explicationsJSON.parentNode.removeChild(explicationsJSON);
+		}
+		explicationsJSON = document.createElement('script');
+		explicationsJSON.src = 'css-selector-explain.<?= $lang ?>.js';
+		document.querySelector('head').appendChild(explicationsJSON);
+		
+		// quand tout est prêt…
 		document.addEventListener('DOMContentLoaded', function(){
+			console.debug('page OK');
 			// selecteur est la case de texte contenant le sélecteur à analyser
 			let selecteur = document.getElementById('selecteur');
 			// il a d'emblée le focus

@@ -71,7 +71,7 @@
     recoverable: (boolean: TRUE when the parser has a error recovery rule available for this particular error)
   }
 */
-var cssParser = (function(){
+var cssSelector = (function(){
 var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,10],$V1=[1,19],$V2=[1,20],$V3=[1,17],$V4=[1,18],$V5=[1,21],$V6=[1,22],$V7=[1,23],$V8=[1,26],$V9=[5,8,50],$Va=[1,28],$Vb=[1,31],$Vc=[1,32],$Vd=[1,33],$Ve=[5,8,9,44,45,46,50],$Vf=[5,8,9,11,44,45,46,50],$Vg=[5,8,9,11,28,29,32,44,45,46,49,50,51],$Vh=[1,40],$Vi=[5,8,9,11,28,29,32,34,35,37,38,39,40,41,42,44,45,46,49,50,51],$Vj=[5,8,9,11,20,28,29,32,34,35,37,38,39,40,41,42,44,45,46,49,50,51,52,53,54],$Vk=[1,48],$Vl=[21,28,29,30,31,32,49,51],$Vm=[21,30,31],$Vn=[34,35,37,38,39,40,41,42],$Vo=[1,83],$Vp=[1,86],$Vq=[1,87],$Vr=[9,34],$Vs=[31,50],$Vt=[46,50,58];
 var parser = {trace: function trace () { },
 yy: {},
@@ -779,9 +779,9 @@ return new Parser;
 
 
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-exports.parser = cssParser;
-exports.Parser = cssParser.Parser;
-exports.parse = function () { return cssParser.parse.apply(cssParser, arguments); };
+exports.parser = cssSelector;
+exports.Parser = cssSelector.Parser;
+exports.parse = function () { return cssSelector.parse.apply(cssSelector, arguments); };
 exports.main = function commonjsMain (args) {
     if (!args[1]) {
         console.log('Usage: '+args[0]+' FILE');
