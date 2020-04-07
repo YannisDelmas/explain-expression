@@ -207,18 +207,26 @@ header('Content-Type: text/html; charset=utf-8');
 			} else {
 				// Cas 5.b : ce type n'est pas connu dans le tableau d'affichage
 				if ( ref[type] ) {
-					type += ' <a href="'+ ref[type]+ '"><span class="fa fa-info-circle"></span></a>';
+					type += ` <a href="${ref[type]}"><span class="fa fa-info-circle"></span></a>`;
 				}
 				let contenu = [];
 				for(clé in token) {
 					if ( clé == 'type' ) continue;
-					contenu.push('<span class="token-attr"><span class="token-value">'+ clé+ '</span>'+
-							fabriqueExplication(token[clé])+ '</span>');
+					contenu.push(`<span class="token-attr">
+													<span class="token-value">${clé}</span>
+													${fabriqueExplication(token[clé])}
+												</span>`);
 				}
 				return contenu.length
-					? ('<span class="token"><span class="token-type">'+
-						type+ '</span><ul class="token-list"><li>'+ contenu.join('</li><li>')+ '</li></ul></span>')
-					: ('<span class="token"><span class="token-type">'+ type+ '</span>')
+					? (`<span class="token">
+								<span class="token-type">${type}</span>
+								<ul class="token-list">
+									<li>${contenu.join('</li><li>')}</li>
+								</ul>
+							</span>`)
+					: (`<span class="token">
+								<span class="token-type">${type}</span>
+							</span>`)
 					;
 			}
 		}
@@ -253,11 +261,12 @@ header('Content-Type: text/html; charset=utf-8');
 				return v;
 			}
 			function metEnForme(v) {
-				return '<span class="specificite">'+
-					'<span class="specificite--item">'+v[0]+'</span><sub>#</sub>'+
-					'<span class="specificite--item">'+v[1]+'</span><sub><strong>.</strong></sub>'+
-					'<span class="specificite--item">'+v[2]+'</span><sub>&lt;/></sub>'+
-					'</span>';
+				return `<span class="specificite">
+									<span class="specificite--item">${v[0]}'</span><sub>#</sub>
+									<span class="specificite--item">${v[1]}'</span><sub><strong>.</strong></sub>
+									<span class="specificite--item">${v[2]}'</span><sub>&lt;/></sub>
+								</span>`;
+
 			}
 			if ( typeof token != 'object' ) return '';
 			return token.selectors.map(t => metEnForme(itère(t,[0,0,0]))).join(', ');
