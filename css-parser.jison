@@ -43,6 +43,7 @@
 "~"                      return '~';
 "+"                      return '+';
 "-"                      return '-';
+"|"                      return '|';
 \s+                      return 'S';
 <<EOF>>                  return 'EOF';
 
@@ -105,9 +106,24 @@ combinator_selector
         { $$ = yy.create({ type: 'next_sibling', left: $1, right: $3 }) }
     ;
 
+namespace_prefix
+    : ident '|'
+        { $$ = $1+ ':'; }
+    | '*' '|'
+        { $$ = $1+ ':'; }
+    ;
+
+namespace_prefix_ident
+    : namespace_prefix ident
+        { $$ = $1+ $2; }
+    | ident
+    ;
+
 element
-    : ident
+    : namespace_prefix_ident
         { $$ = yy.create({ type: 'element', name: $1, constraints: [] }) }
+    | namespace_prefix '*'
+        { $$ = yy.create({ type: 'universal', name: $2, namespace: $1, constraints: [] }) }
     | '*'
         { $$ = yy.create({ type: 'universal', name: $1, constraints: [] }) }
     ;
@@ -142,25 +158,36 @@ ident
     ;
 
 attrib
-    : '[' padded_ident ']'
+    : '[' padded_namespace_prefix_ident ']'
         { $$ = yy.create({ type: 'has_attribute', name: $2 }) }
-    | '[' padded_ident '=' padded_ident_or_string ']'
+    | '[' padded_namespace_prefix_ident '=' padded_ident_or_string ']'
         { $$ = yy.create({ type: 'attribute_equals', name: $2, value: $4 }) }
-    | '[' padded_ident SUBSTRINGMATCH padded_ident_or_string ']'
+    | '[' padded_namespace_prefix_ident SUBSTRINGMATCH padded_ident_or_string ']'
         { $$ = yy.create({ type: 'attribute_contains', name: $2, value: $4 }) }
-    | '[' padded_ident DOES_NOT_CONTAIN padded_ident_or_string ']'
+    | '[' padded_namespace_prefix_ident DOES_NOT_CONTAIN padded_ident_or_string ']'
         { $$ = yy.create({ type: 'attribute_does_not_contain', name: $2, value: $4 }) }
-    | '[' padded_ident INCLUDES padded_ident_or_string ']'
+    | '[' padded_namespace_prefix_ident INCLUDES padded_ident_or_string ']'
         { $$ = yy.create({ type: 'attribute_contains_word', name: $2, value: $4 }) }
-    | '[' padded_ident DASHMATCH padded_ident_or_string ']'
+    | '[' padded_namespace_prefix_ident DASHMATCH padded_ident_or_string ']'
         { $$ = yy.create({ type: 'attribute_contains_prefix', name: $2, value: $4 }) }
-    | '[' padded_ident PREFIXMATCH padded_ident_or_string ']'
+    | '[' padded_namespace_prefix_ident PREFIXMATCH padded_ident_or_string ']'
         { $$ = yy.create({ type: 'attribute_starts_with', name: $2, value: $4 }) }
-    | '[' padded_ident SUFFIXMATCH padded_ident_or_string ']'
+    | '[' padded_namespace_prefix_ident SUFFIXMATCH padded_ident_or_string ']'
         { $$ = yy.create({ type: 'attribute_ends_with', name: $2, value: $4 }) }
     ;
 
-padded_ident
+padded_namespace_prefix_ident
+    : S namespace_prefix_ident S
+        { $$ = $2 }
+    | S namespace_prefix_ident
+        { $$ = $2 }
+    | namespace_prefix_ident S
+        { $$ = $1 }
+    | namespace_prefix_ident
+        { $$ = $1 }
+    ;
+
+padded_ident_or_string
     : S ident S
         { $$ = $2 }
     | S ident
@@ -169,10 +196,6 @@ padded_ident
         { $$ = $1 }
     | ident
         { $$ = $1 }
-    ;
-
-padded_ident_or_string
-    : padded_ident
     | S string S
         { $$ = $1 }
     | S string
