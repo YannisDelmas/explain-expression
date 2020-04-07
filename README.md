@@ -35,7 +35,7 @@ Si ce champ est un objet, les modèles d'explication fonctionnent par sous-type.
 }
 ```
 
-Les modèles sont des chaînes de caractères dans lesquels un certains nombre de remplacements de type [Mustache](https://github.com/janl/mustache.js):
+Les modèles sont des chaînes de caractères dans lesquelles l'application effectue un certains nombre de remplacements de type [Mustache](https://github.com/janl/mustache.js):
 
 - `{{propriété}}` : Remplacé par la valeur de la propriété, interprétée comme un token. Remplacé par rien, si la propriété est absente.
 - `{{&propriété}}` : Remplacé par la valeur de la propriété, comme simple valeur. Vide si la propriété est absente.
