@@ -18,27 +18,37 @@ cssSelectorExplain({
 		pseudo_class: {
 			'=': 'name',
 			'?': 'de pseudo-classe <code>{{&name}}</code> {{#ref}}:pseudo-classe{{/ref}}',
+			'link': 'qui est un lien qui n’a pas été visité (récemment) {{#ref}}:link{{/ref}}',
+			'visited': 'qui est un lien déjà visité (récemment) {{#ref}}:visited{{/ref}}',
 			'hover': 'en train d’être survolé {{#ref}}:hover{{/ref}}',
 			'active': 'en train d’être activé {{#ref}}:active{{/ref}}',
 			'focus': 'qui a actuellement le focus {{#ref}}:focus{{/ref}}',
-			'empty': 'vide (sans enfant ni contenu) {{#ref}}:empty{{/ref}}',
+			// target
+			// enabled
+			// disabled
 			'checked': 'coché {{#ref}}:checked{{/ref}}',
-			'link': 'qui est un lien qui n’a pas été visité (récemment) {{#ref}}:link{{/ref}}',
-			'visited': 'qui est un lien déjà visité (récemment) {{#ref}}:visited{{/ref}}',
+			// indeterminate
+			// root
 			'first-child': 'qui est le premier enfant de son parent {{#ref}}:first-child{{/ref}}',
 			'last-child': 'qui est le dernier enfant de son parent {{#ref}}:last-child{{/ref}}',
+			// first-of-type
+			// last-of-type
+			// only-child
+			// only-of-type
+			'empty': 'vide (sans enfant ni contenu) {{#ref}}:empty{{/ref}}',
 		},
 		pseudo_func: {
 			'=': 'name',
 			'?': 'de pseudo-classe{{#ref}}{{/ref}} <code>{{&name}}</code><blockquote>avec le paramètre {{args}}</blockquote>',
+			// lang
 			'nth-child': 'qui, dans son parent, est un enfant de rang{{#ref}}:nth-child(){{/ref}}&ensp;{{args}}',
 			'nth-last-child': 'qui, dans son parent, est un enfant de rang{{#ref}}:nth-last-child(){{/ref}}&ensp;{{args}} en partant de la fin',
-			'nth-child': 'qui, dans son parent, est un enfant de rang{{#ref}}{{/ref}}&ensp;{{args}}',
-			'nth-last-child': 'qui, dans son parent, est un enfant de rang{{#ref}}{{/ref}}&ensp;{{args}} en partant de la fin',
+			'nth-of-type': 'qui, dans son parent, est de rang{{#ref}}{{/ref}}&ensp;{{args}} parmi les éléments de même balise',
+			'nth-last-of-type': 'qui, dans son parent, est de rang{{#ref}}{{/ref}}&ensp;{{args}}, en partant de la fin, parmi les éléments de même balise',
 		},
 		an_plus_b: '<span class="value">{{a}}</span>×n <span class="value">{{+b}}</span>',
-		odd: '«&nbsp;rang impair&nbsp;»',
-		even: '«&nbsp;rang pair&nbsp;»',
+		odd: '<span class="value">impair</span>',
+		even: '<span class="value">pair</span>',
 		has_attribute: 'qui possède l’attribut <code>{{&name}}</code> {{#ref}}[attrib]{{/ref}}',
 		attribute_equals: 'qui possède l’attribut <code>{{&name}}</code> avec la valeur <code>{{&value}}</code> {{#ref}}[attrib]{{/ref}}',
 		attribute_starts_with: 'qui possède l’attribut <code>{{&name}}</code> dont la valeur commence par «&nbsp;<span class="value">{{&value}}</span>&nbsp;» {{#ref}}[attrib]{{/ref}}',
@@ -67,20 +77,32 @@ cssSelectorExplain({
 		class: 'https://www.w3.org/TR/selectors-3/#class-html',
 		universal: 'https://www.w3.org/TR/selectors-3/#universal-selector',
 		element: 'https://www.w3.org/TR/selectors-3/#type-selectors',
+		negation: 'https://www.w3.org/TR/selectors-3/#pseudo-classes',
 		pseudo_class: 'https://www.w3.org/TR/selectors-3/#pseudo-classes',
+		pseudo_class__link: 'https://www.w3.org/TR/selectors-3/#the-link-pseudo-classes-link-and-visited',
+		pseudo_class__visited: 'https://www.w3.org/TR/selectors-3/#the-link-pseudo-classes-link-and-visited',
 		pseudo_class__hover: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act',
 		pseudo_class__active: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act',
 		pseudo_class__focus: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act',
-		pseudo_class__empty: 'https://www.w3.org/TR/selectors-3/#empty-pseudo',
+		// pseudo_class__target
+		// pseudo_class__enabled
+		// pseudo_class__disabled
 		pseudo_class__checked: 'https://www.w3.org/TR/selectors-3/#checked',
-		pseudo_class__link: 'https://www.w3.org/TR/selectors-3/#the-link-pseudo-classes-link-and-visited',
-		pseudo_class__visited: 'https://www.w3.org/TR/selectors-3/#the-link-pseudo-classes-link-and-visited',
+		// pseudo_class__indeterminate
+		// pseudo_class__root
 		'pseudo_class__first-child': 'https://www.w3.org/TR/selectors-3/#first-child-pseudo',
 		'pseudo_class__last-child': 'https://www.w3.org/TR/selectors-3/#last-child-pseudo',
+		// pseudo_class__first-of-type
+		// pseudo_class__last-of-type
+		// pseudo_class__only-child
+		// pseudo_class__only-of-type	
+		pseudo_class__empty: 'https://www.w3.org/TR/selectors-3/#empty-pseudo',
 		pseudo_func: 'https://www.w3.org/TR/selectors-3/#pseudo-classes',
+		// pseudo_func__lang
 		'pseudo_func__nth-child': 'https://www.w3.org/TR/selectors-3/#nth-child-pseudo',
 		'pseudo_func__nth-last-child': 'https://www.w3.org/TR/selectors-3/#nth-last-child-pseudo',
-		negation: 'https://www.w3.org/TR/selectors-3/#pseudo-classes',
+		// pseudo_func__nth-of-type
+		// pseudo_func__nth-last-of-type
 		has_attribute: 'https://www.w3.org/TR/selectors-3/#attribute-selectors',
 		attribute_equals: 'https://www.w3.org/TR/selectors-3/#attribute-selectors',
 		attribute_starts_with: 'https://www.w3.org/TR/selectors-3/#attribute-substrings',

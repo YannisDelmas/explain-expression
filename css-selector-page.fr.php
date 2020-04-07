@@ -1,6 +1,6 @@
 <?php
 
-$cssSelector = [
+$cssSelector = Array(
 	'title' => 'Explique un sélecteur CSS',
 	'docTitle' => 'Explique un sélecteur CSS 3',
 	'info' => '
@@ -38,4 +38,4 @@ $cssSelector = [
 		</p>',
 		'subjects' => 'Sujet(s)&nbsp;:',
 		'specificity' => 'Spécificité&nbsp;:'
-];
+);
