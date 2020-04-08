@@ -62,7 +62,8 @@ header('Content-Type: text/html; charset=utf-8');
 			<code class="exemple">p.info.retrait-1re-ligne</code>,
 			<code class="exemple">E > F</code>,
 			<code class="exemple">section > header</code>.
-			<code class="exemple">E#ident</code>,
+			<code class="exemple">E:lang(L)</code>,
+			<code class="exemple">:lang(fr) > q</code>,
 			<code class="exemple">#chap42</code>.
 		</p>
 		<p>
@@ -71,6 +72,7 @@ header('Content-Type: text/html; charset=utf-8');
 		<ul>
 			<li>
 				CSS 1&nbsp;:
+				<code class="exemple">E#ident</code>,
 				<code class="exemple">h1#chapter1, *#z98y, button.expliquer</code>,
 				<code class="exemple">E:active</code>,
 				<code class="exemple">E::first-letter</code>.
@@ -96,7 +98,7 @@ header('Content-Type: text/html; charset=utf-8');
 				<code class="exemple">E:disabled</code>,
 				<code class="exemple">E::before</code>,
 				<code class="exemple">E ~ F</code>,
-				<code class="exemple">E:not(.abc)</code>.
+				<code class="exemple">E:not(.abc)</code>,
 				<code class="exemple">[name="bascule"]:checked + label</code>,
 				<code class="exemple">#s71:not(aside)</code>,
 				<code class="exemple">a:link, p.citation:hover::before</code>,

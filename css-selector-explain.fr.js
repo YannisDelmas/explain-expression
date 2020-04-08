@@ -40,7 +40,7 @@ cssSelectorExplain({
 		pseudo_func: {
 			'=': 'name',
 			'?': 'de pseudo-classe{{#ref}}{{/ref}} <code>{{&name}}</code><blockquote>avec le paramètre {{args}}</blockquote>',
-			// lang
+			'lang' : 'qui est dans la langue{{#ref}}{{/ref}} «&nbsp;<span class="value">{{&args}}</span>&nbsp;»',
 			'nth-child': 'qui, dans son parent, est un enfant de rang{{#ref}}:nth-child(){{/ref}}&ensp;{{args}}',
 			'nth-last-child': 'qui, dans son parent, est un enfant de rang{{#ref}}:nth-last-child(){{/ref}}&ensp;{{args}} en partant de la fin',
 			'nth-of-type': 'qui, dans son parent, est de rang{{#ref}}{{/ref}}&ensp;{{args}} parmi les éléments de même balise',
@@ -98,7 +98,7 @@ cssSelectorExplain({
 		// pseudo_class__only-of-type	
 		pseudo_class__empty: 'https://www.w3.org/TR/selectors-3/#empty-pseudo',
 		pseudo_func: 'https://www.w3.org/TR/selectors-3/#pseudo-classes',
-		// pseudo_func__lang
+		pseudo_func__lang: 'https://www.w3.org/TR/selectors-3/#lang-pseudo',
 		'pseudo_func__nth-child': 'https://www.w3.org/TR/selectors-3/#nth-child-pseudo',
 		'pseudo_func__nth-last-child': 'https://www.w3.org/TR/selectors-3/#nth-last-child-pseudo',
 		// pseudo_func__nth-of-type
