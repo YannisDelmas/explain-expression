@@ -214,10 +214,11 @@ header('Content-Type: text/html; charset=utf-8');
 				let contenu = [];
 				for(clé in token) {
 					if ( clé == 'type' ) continue;
-					contenu.push(`<span class="token-attr">
-													<span class="token-value">${clé}</span>
-													${fabriqueExplication(token[clé])}
-												</span>`);
+					contenu.push(
+						`<span class="token-attr">
+							<span class="token-value">${clé}</span>
+							${fabriqueExplication(token[clé])}
+						</span>`);
 				}
 				return contenu.length
 					? (`<span class="token">
