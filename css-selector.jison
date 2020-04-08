@@ -246,6 +246,8 @@ pseudo
         { $$ = { type: 'pseudo_func', name: $2, args: { type: 'even' } } }
     | ':' ident '(' an_plus_b ')'
         { $$ = { type: 'pseudo_func', name: $2, args: $4 } }
+    | ':' ident '(' IDENT ')' /* un identificateur autre que 'n', qui est déjà dans an_plus_b */
+        { $$ = { type: 'pseudo_func', name: $2, args: $4 } }
     | ':' ident '(' integer ')'
         { $$ = { type: 'pseudo_func', name: $2, args: $4 } }
     | ':' ident '(' ')'
