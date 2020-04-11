@@ -21,20 +21,20 @@ cssSelectorExplain({
 			'link': 'qui est un lien qui n’a pas été visité (récemment) {{#ref}}:link{{/ref}}',
 			'visited': 'qui est un lien déjà visité (récemment) {{#ref}}:visited{{/ref}}',
 			'hover': 'en train d’être survolé {{#ref}}:hover{{/ref}}',
-			'active': 'en train d’être activé {{#ref}}:active{{/ref}}',
+			'active': 'en train d’être activé {{#ref}}:active{{/ref}} (p.ex. clic sur un lien)',
 			'focus': 'qui a actuellement le focus {{#ref}}:focus{{/ref}}',
-			// target
-			// enabled
-			// disabled
-			'checked': 'coché {{#ref}}:checked{{/ref}}',
-			// indeterminate
-			// root
+			'target': 'qui est actuellement ciblé par le navigateur {{#ref}}:target{{/ref}}',
+			'enabled': 'qui n’est pas actuellement désactivé {{#ref}}:enabled{{/ref}}',
+			'disabled': 'qui est actuellement désactivé {{#ref}}:disabled{{/ref}}',
+			'checked': 'actuellement coché {{#ref}}:checked{{/ref}}',
+			'indeterminate': 'qui est un élément de formulaire dans un état indéterminé {{#ref}}:indeterminate{{/ref}}',
+			'root': 'racine du document{{#ref}}{{/ref}}',
 			'first-child': 'qui est le premier enfant de son parent {{#ref}}:first-child{{/ref}}',
 			'last-child': 'qui est le dernier enfant de son parent {{#ref}}:last-child{{/ref}}',
-			// first-of-type
-			// last-of-type
-			// only-child
-			// only-of-type
+			'first-of-type': 'qui, dans son parent, est le premier{{#ref}}{{/ref}} parmi les éléments de même balise',
+			'last-of-type': 'qui, dans son parent, est le dernier{{#ref}}{{/ref}} parmi les éléments de même balise',
+			'only-child': 'enfant unique{{#ref}}{{/ref}} de son parent',
+			'only-of-type': 'qui n’a aucun nœud frère de même balise{{#ref}}{{/ref}}',
 			'empty': 'vide (sans enfant ni contenu) {{#ref}}:empty{{/ref}}',
 		},
 		pseudo_func: {
@@ -84,25 +84,25 @@ cssSelectorExplain({
 		pseudo_class__hover: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act',
 		pseudo_class__active: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act',
 		pseudo_class__focus: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act',
-		// pseudo_class__target
-		// pseudo_class__enabled
-		// pseudo_class__disabled
+		pseudo_class__target: 'https://www.w3.org/TR/selectors-3/#target-pseudo',
+		pseudo_class__enabled: 'https://www.w3.org/TR/selectors-3/#enableddisabled',
+		pseudo_class__disabled: 'https://www.w3.org/TR/selectors-3/#enableddisabled',
 		pseudo_class__checked: 'https://www.w3.org/TR/selectors-3/#checked',
-		// pseudo_class__indeterminate
-		// pseudo_class__root
+		pseudo_class__indeterminate: 'https://www.w3.org/TR/selectors-3/#indeterminate',
+		pseudo_class__root: 'https://www.w3.org/TR/selectors-3/#root-pseudo',
 		'pseudo_class__first-child': 'https://www.w3.org/TR/selectors-3/#first-child-pseudo',
 		'pseudo_class__last-child': 'https://www.w3.org/TR/selectors-3/#last-child-pseudo',
-		// pseudo_class__first-of-type
-		// pseudo_class__last-of-type
-		// pseudo_class__only-child
-		// pseudo_class__only-of-type	
+		'pseudo_class__first-of-type': 'https://www.w3.org/TR/selectors-3/#first-of-type-pseudo',
+		'pseudo_class__last-of-type': 'https://www.w3.org/TR/selectors-3/#last-of-type-pseudo',
+		'pseudo_class__only-child': 'https://www.w3.org/TR/selectors-3/#only-child-pseudo',
+		'pseudo_class__only-of-type': 'https://www.w3.org/TR/selectors-3/#only-of-type-pseudo',
 		pseudo_class__empty: 'https://www.w3.org/TR/selectors-3/#empty-pseudo',
 		pseudo_func: 'https://www.w3.org/TR/selectors-3/#pseudo-classes',
 		pseudo_func__lang: 'https://www.w3.org/TR/selectors-3/#lang-pseudo',
 		'pseudo_func__nth-child': 'https://www.w3.org/TR/selectors-3/#nth-child-pseudo',
 		'pseudo_func__nth-last-child': 'https://www.w3.org/TR/selectors-3/#nth-last-child-pseudo',
-		// pseudo_func__nth-of-type
-		// pseudo_func__nth-last-of-type
+		'pseudo_func__nth-of-type': 'https://www.w3.org/TR/selectors-3/#nth-of-type-pseudo',
+		'pseudo_func__nth-last-of-type': 'https://www.w3.org/TR/selectors-3/#nth-last-of-type-pseudo',
 		has_attribute: 'https://www.w3.org/TR/selectors-3/#attribute-selectors',
 		attribute_equals: 'https://www.w3.org/TR/selectors-3/#attribute-selectors',
 		attribute_starts_with: 'https://www.w3.org/TR/selectors-3/#attribute-substrings',

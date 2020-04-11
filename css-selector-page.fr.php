@@ -1,6 +1,6 @@
 <?php
 
-$cssSelector = Array(
+$interface = Array(
 	'title' => 'Explique un sélecteur CSS',
 	'docTitle' => 'Explique un sélecteur CSS 3',
 	'info' => '
@@ -16,6 +16,7 @@ $cssSelector = Array(
 			Ces sujets sont des éléments et pseudo-éléments.
 			Les déclarations définissent la valeur de propiétés de cet élément.
 		</p>',
+	'placeholder' => 'sélecteur à expliquer',
 	'explain' => 'expliquer',
 	'exampleA' => 'Exemples élémentaires (CSS 1)&nbsp;:',
 	'exampleB' => 'Exemples simples (CSS 2, CSS 1)&nbsp;:',
@@ -36,6 +37,7 @@ $cssSelector = Array(
 			<a href="https://github.com/featurist/bo-selector"><span class="fa fa-github"></span>
 			bo-selector</a>.
 		</p>',
-		'subjects' => 'Sujet(s)&nbsp;:',
-		'specificity' => 'Spécificité&nbsp;:'
+	'JSlang' => ['Sujet(s)&nbsp;:', 'Spécificité&nbsp;:']
 );
+
+include("css-selector-page.php");
