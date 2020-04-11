@@ -37,7 +37,7 @@ $interface = Array(
 			<a href="https://github.com/featurist/bo-selector"><span class="fa fa-github"></span>
 			bo-selector</a>.
 		</p>',
-	'JSlang' => ['Sujet(s)&nbsp;:', 'Spécificité&nbsp;:']
+	'JSlang' => ['Sujet(s)&nbsp;: ', 'Spécificité&nbsp;: ']
 );
 
 include("css-selector-page.php");

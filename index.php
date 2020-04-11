@@ -10,8 +10,8 @@
  */
 
 /* Initialisations */
-$lang = 'fr';
-$module = 'css-selector';
+$lang = isset($_REQUEST['lang'])? strtr($_REQUEST['lang'], '\\/.:\'"', ''): 'fr';
+$module = isset($_REQUEST['module'])? strtr($_REQUEST['module'], '\\/.:\'"', ''): 'css-selector';
 include("{$module}-page.{$lang}.php");
 
 /* Encodage */
@@ -26,7 +26,7 @@ header('Content-Type: text/html; charset=utf-8');
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
 	<link rel="stylesheet" href="explain-expression.css">
 </head>
-<body class="module-<?= $module ?>">
+<body class="module-<?= $module ?>" data-module="<?= $module ?>">
 	<header>
 		<h1><?= $interface['docTitle'] ?></h1>
 		<div class="chapeau"><?= $interface['info'] ?></div>
@@ -56,7 +56,8 @@ header('Content-Type: text/html; charset=utf-8');
 	<script src="<?= $module ?>-page.js"></script>
 	<script>
 		var JSlang = <?= json_encode($interface['JSlang']) ?>;
-		document.addEventListener('DOMContentLoaded', function(){
+		window.addEventListener('load', function(){
+			console.info('window🗲 load');
 			// `expression` est la case de texte contenant l'expression à analyser
 			let expression = document.getElementById('expression');
 			// elle a d'emblée le focus

@@ -10,36 +10,39 @@ Les contributeurs sont les bienvenus, soit pour ajouter le traitement des _Expre
 
 ## Explanations file format / format du fichier d'explication
 
-Les fichiers donnant les explications sont au format JavaScript: un objet servant de tableau associatif enrobé dans un appel de fonction `nomModuleExplain()`, par exemple `cssSelectorExplain()` pour le module d'explication des sélecteurs css `nom-module`.
+Les fichiers donnant les explications sont au format JavaScript: un objet servant de tableau associatif enrobé dans un appel de fonction `nomModuleExplain()`, par exemple `cssSelectorExplain()` pour le module d'explication des sélecteurs css.
 
 Pour les sélecteurs CSS, la structure est la suivante:
 ```javascript
 cssSelectorExplain({
 	module: 'css-selector',
 	lang: /* code ISO de langue */,
-	explanations: { /* liste des explications */ },
-	references:   { /* liste des références */ },
-	specificity:  { /* ne pas modifier cette partie */ }
+	explanations: { /* arborescence des explications */ },
+	references:   { /* arborescence des références */ },
+	specificity:  { /* spécifique à ce module : spécificité */ }
 });
 ```
-Pour un token `{type: 'TTT', abc: …, def: …, ghi: …}`, l'application consulte le champ `explanations.TTT`.
-Si ce champ est une chaîne de caractère, elle sert de modèle d'explication.
-Si ce champ est un objet, les modèles d'explication fonctionnent par sous-type. Ces modèles d'explications de sous-type ont la structure suivante:
 
-```javascript
-{
-	'=': /* nom du champ à utiliser comme sous-type */,
-	'?': /* modèle par défaut */,
-	'XYZ': /* modèle pour le sous-type XYZ */,
-	…
-}
-```
+Pour chaque `item`, l'arborescence `explanations` fournit un modèle
+[Mustache](https://github.com/janl/mustache.js).
+La propriété `explanations[':type']` indique quelle propriété des items doit être utilisée pour
+trouver le modèle. Pour un item de type `abc`, c'est `explanations['abc']` qui donnera le modèle.
+Si ceci n'existe pas, l'application utilisera le modèle `explanations[':default']`  (ou
+la chaîne vide, à défaut).
+Si `explanations['abc']` est lui-même un objet, la recherche se poursuit récursivement en utilisant
+la propriété `explanations['abc'][':type']`.
 
-Les modèles sont des chaînes de caractères dans lesquelles l'application effectue un certains nombre de remplacements de type [Mustache](https://github.com/janl/mustache.js):
+Contrairement au fonctionnement par défaut de la bibliothèque
+[Mustache](https://github.com/janl/mustache.js), les remplacements `{{propriété}}` non numériques
+sont considérés comme des items et l'arborescence `explanations` est utilisée pour leur trouver
+un modèle.
+Pour utiliser une valeur brute sans remplacement, on utilisera l'écriture `{{&propriété}}`
+ou `{{{propriété}}}`.
+Pour effectuer un test ou une boucle sur une propriété, on peut utiliser des sections
+`{{#propriété}}préfixe{{.}}suffixe{{/propriété}}` ou `{{#propriété}}contenu{{/propriété}}`.
+Le contenu des sections est également interprété.
 
-- `{{propriété}}` : Remplacé par la valeur de la propriété, interprétée comme un token. Remplacé par rien, si la propriété est absente.
-- `{{&propriété}}` : Remplacé par la valeur de la propriété, comme simple valeur. Vide si la propriété est absente.
-- `{{+propriété}}` : Remplacé par la valeur de la propriété, comme nombre dont le signe est obligatoirement indiqué. Vide si la propriété est absente.
-- `{{#ref}}indication{{/ref}}` : Remplacé par un lien donnant une référence et contenant, éventuellement, une indication. Vide s'il n'y a pas de référence pour ce type ou sous-type.
-- `{{#propriété}}préfixe{{.}}suffixe{{/propriété}}` : Si la propriété est présente, on l'insère, encadrée par un préfixe et un suffixe. Si cette propriété contient une liste, l'application itère sur cette liste, le préfixe et le suffixe sont répétés pour chaque item de la liste.
-L'écriture `{{.}}` est traitée comme token et `{{&.}}` comme simple valeur.
+En plus des propriétés des items, il est possible d'utiliser la propriété spéciale `ref`, comme
+section, pour utiliser l'arborescence `references`. La recherche dans `references` suit les
+mêmes principes que ceux de l'arborescence `explanations`.
+On utilisera l'expression: `{{#ref}}indication{{/ref}}`.
