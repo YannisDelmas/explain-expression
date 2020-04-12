@@ -78,6 +78,13 @@ input {
 	border-bottom-right-radius: 6px;
 }
 
+button {
+	background-color: #CCC;
+}
+button:hover {
+	background-color: #EEE;
+}
+
 /* 4) Zone d'explication */
 
 .explication output {

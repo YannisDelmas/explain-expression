@@ -10,8 +10,8 @@ $interface = Array(
 		</p>
 		<p>
 			Rappel&nbsp;: En CSS une <em>règle</em> est une écriture du type
-			<code class="language-css">S { D }</code>, où «S» est un <em>sélecteur</em> et
-			«D» une succession de <em>déclarations</em>.
+			«&nbsp;S { D }&nbsp;», où «&nbsp;S&nbsp;» est un <em>sélecteur</em> et
+			«&nbsp;D&nbsp;» une succession de <em>déclarations</em>.
 			Le sélecteur définit la liste des <em>sujets</em> à qui s’applique la règle.
 			Ces sujets sont des éléments et pseudo-éléments.
 			Les déclarations définissent la valeur de propiétés de cet élément.

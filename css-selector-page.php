@@ -66,7 +66,7 @@ $interface['examples'] = <<<EOT
 	<code class="exemple">[xml|lang]</code>.
 </li>
 <li>
-	CSS 4&nbsp;
+	<a href="https://css4-selectors.com/selectors/">CSS 4</a>&nbsp;:
 	<code class="exemple">section:dir(rtl)</code>,
 	<code class="exemple">h1:not(main *)</code>,
 	<code class="exemple">button:is(:hover, :focus)</code>,

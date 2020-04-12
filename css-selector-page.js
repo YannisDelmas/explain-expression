@@ -35,6 +35,9 @@ function cssSelectorExplain(donnéesJSON) {
 chargeAsync(`${module}-explain.${lang}.js`, 'explications'); // appelle cssSelectorExplain()
 
 // parser
+window.addEventListener('load', function(){
+	cssSelector.yy.create = (data => data);
+});
 chargeAsync(`${module}.jison.js`, 'parser');
 
 // bibliothèque Mustache
@@ -70,7 +73,6 @@ function trouveModele(base, item) {
  */
 function calculeSpécificité(token) {
 	function iterate(token, a = [0,0,0]) {
-		console.debug('iterate', token, a);
 		if ( ! token ) return a;
 		if ( Array.isArray(token) ) {
 			if ( ! token.length ) return a;
@@ -166,8 +168,12 @@ window.addEventListener('load', function(){
 function analyse(){
 	let explication = document.querySelector('.explication output');
 	let texteBrut = document.getElementById('expression').value;
+	if ( ! texteBrut ) {
+		explication.innerHTML = '<p>&nbsp;</p>';
+		explication.classList.remove('erreur');
+		return;
+	}
 	try {
-		cssSelector.yy.create = (data => data);
 		let texteTokenisé = cssSelector.parse(texteBrut);
 		console.info('tokens: ', texteTokenisé);
 		explication.innerHTML =
@@ -179,7 +185,7 @@ function analyse(){
 				item.innerHTML = '+'+ item.innerHTML;
 			}
 		});
-		explication.classList.remove('erreur');				
+		explication.classList.remove('erreur');
 	} catch(error) {
 		explication.innerHTML = '<pre>'+ error.toString()+ '</pre>';
 		explication.classList.add('erreur');
