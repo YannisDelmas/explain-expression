@@ -21,6 +21,10 @@ input, button, .explication {
 	line-height: 160%;
 }
 
+p {
+	margin: 1ex 0;
+}
+
 /* 2) Mise en page générale */
 
 html {

@@ -24,7 +24,7 @@ var lang = document.querySelector('html').getAttribute('lang');
 var module = document.body.dataset.module;
 
 // données d'explication
-var affiche, ref, spécificité;
+var affiche, ref, spécificité, spécificité2;
 function cssSelectorExplain(donnéesJSON) {
 	affiche = donnéesJSON.explanations;
 	ref = donnéesJSON.references;
@@ -40,46 +40,6 @@ chargeAsync(`${module}.jison.js`, 'parser');
 // bibliothèque Mustache
 chargeAsync('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.min.js');
 
-/**
- * Calcule la spécificité d'un sélecteur CSS.
- * 
- * Calcule la spécificité d'un token à l'aide de l'objet `spécificité`,
- * utilisé comme tableau associatif, récursivement. Les types qui ne sont pas
- * mentionnés dans ce tableau sont passés, les autres incrémentent l'index
- * indiqué comme valeur de `spécificité[type]`. La spécificité en cours de calcul
- * est représentée par un tableau `[identifieurs, classes, éléments]`.
- * 
- * @param  {Object} token - Le token à expliquer.
- * @return {String}
- */
-function calculeSpécificité(token) {
-	function itère(token, v) {
-		if ( Array.isArray(token) ) {
-			v = token
-				.map(t => itère(t,[0,0,0]))
-				.reduce((a, v) => [v[0]+a[0], v[1]+a[1], v[2]+a[2]], v);
-		} else if ( typeof token == 'object' ) {
-			if ( spécificité[token.type] != undefined ) {
-				v[spécificité[token.type]] ++;
-			}
-			for(const param in token) {
-				if ( typeof token[param] == 'string' ) continue;
-				v = itère(token[param], v);
-			}
-		}
-		return v;
-	}
-	function metEnForme(v) {
-		return `<span class="specificite">
-					<span class="specificite--item">${v[0]}</span><sub>#</sub>
-					<span class="specificite--item">${v[1]}</span><sub><strong>.</strong></sub>
-					<span class="specificite--item">${v[2]}</span><sub>&lt;/></sub>
-				</span>`;
-
-	}
-	if ( typeof token != 'object' ) return '';
-	return token.selectors.map(t => metEnForme(itère(t,[0,0,0]))).join(', ');
-}
 
 /**
  * Retrouve un modèle dans un arbre de modèles.
@@ -94,6 +54,69 @@ function trouveModele(base, item) {
 		return trouveModele(modele, item);
 	return modele;
 }
+
+
+/**
+ * Calcule la spécificité d'un sélecteur CSS.
+ * 
+ * Calcule la spécificité d'un token à l'aide de l'objet `spécificité`,
+ * utilisé comme tableau associatif, récursivement. Les types qui ne sont pas
+ * mentionnés dans ce tableau sont passés, les autres incrémentent l'index
+ * indiqué comme valeur de `spécificité[type]`. La spécificité en cours de calcul
+ * est représentée par un tableau `[identifieurs, classes, éléments]`.
+ * 
+ * @param  {Object} token - Le token à expliquer.
+ * @return {String}
+ */
+function calculeSpécificité(token) {
+	function iterate(token, a = [0,0,0]) {
+		console.debug('iterate', token, a);
+		if ( ! token ) return a;
+		if ( Array.isArray(token) ) {
+			if ( ! token.length ) return a;
+			return token.map(t => iterate(t)).reduce(arraySum, a);
+		}
+		let s = trouveModele(spécificité, token);
+		if ( ! s ) return a;
+		return eval(s)(token, a);
+	}
+	function specMax(liste) {
+		let max = [0, 0, 0];
+		liste.forEach(item => {
+			if ( arraySuperior(item, max) ) max = item;
+		});
+		return max;
+	}
+	function metEnForme(v) {
+		if ( Array.isArray(v[0]) )
+			return v.map(metEnForme).join(', ');
+		return `<span class="specificite">
+					<span class="specificite--item">${v[0]}</span><sub>#</sub>
+					<span class="specificite--item">${v[1]}</span><sub><strong>.</strong></sub>
+					<span class="specificite--item">${v[2]}</span><sub>&lt;/></sub>
+				</span>`;
+
+	}
+	return metEnForme(iterate(token));
+}
+function arraySum(a1, a2) {
+	if ((! Array.isArray(a2)) || ! Array.isArray(a1) ) return undefined;
+	let n = Math.max(a1.length, a2.length);
+	let s = Array.from({length: n});
+	for (let i = 0; i < n; i++) {
+		s[i] = (a1[i]?a1[i]:0) + (a2[i]?a2[i]:0);
+	}
+	return s;
+}
+function arraySuperior(a1, a2) {
+	if ((! Array.isArray(a2)) || ! Array.isArray(a1) ) return undefined;
+	let n = Math.max(a1.length, a2.length);
+	for (let i = 0; i < n; i++) {
+		if ( (a1[i]?a1[i]:'') > (a2[i]?a2[i]:'') ) return true;
+	}
+	return false;
+}
+
 
 /**
  * Fabrique l'explication d'une expression tokenisée.

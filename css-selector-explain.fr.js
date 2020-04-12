@@ -4,19 +4,27 @@ cssSelectorExplain({
 	explanations: {
 		':type': 'type',
 		':default': '<span class="token"><span class="token-type">{{&type}}</span></span>',
-		selectors_group: 'un ou plusieurs des cas suivants {{#ref}} liste{{/ref}}&nbsp;:<ol>{{#selectors}}<li>{{.}}</li>{{/selectors}}</ol>',
+
+		/* Level 1-3 selectors, except :not(), plus :dir() (CSS4) */
 		simple_selector_sequence: '{{#selectors}}{{.}}{{/selectors}}',
-		combinator_selector: '{{right}}<blockquote>qui est{{#ref}}{{/ref}} {{combinator}} {{left}}</blockquote>',
-		descendant: 'dans {{#ref}} descendant{{/ref}} ',
-		child: 'immédiatement dans {{#ref}} enfant{{/ref}}',
-		subsequent_sibling: '{{right}}<blockquote>qui suit{{#ref}}suiveur{{/ref}}, dans le même parent, {{left}}</blockquote>',
-		next_sibling: '{{right}}<blockquote>qui est immédiatement après{{#ref}}successeur{{/ref}} {{left}}</blockquote>',
+		combinator_selector: '{{right}}<blockquote>qui {{combinator}} {{left}}</blockquote>',
+			descendant: 'est dans {{#ref}} descendant{{/ref}} ',
+			child: 'est immédiatement dans {{#ref}} enfant{{/ref}}',
+			subsequent_sibling: 'suit{{#ref}}suiveur{{/ref}}, dans le même parent,',
+			next_sibling: 'est immédiatement après{{#ref}}successeur{{/ref}}',
 		id: 'd’identifiant <code>{{&name}}</code> {{#ref}} #id{{/ref}} ',
 		class: 'de classe <code>{{&name}}</code> {{#ref}} .classe{{/ref}} ',
-		universal: 'n’importe quel élément {{#ref}}{{/ref}} {{#namespace}}&ensp;dans l’espace de nom <code>{{&.}}</code>{{/namespace}} <blockquote>{{#constraints}}<p>{{.}}</p>{{/constraints}}</blockquote>',
-		element: 'un élément <code>&lt;{{&name}}></code> {{#ref}}{{/ref}}<blockquote>{{#constraints}}<p>{{.}}</p>{{/constraints}}</blockquote>',
+		universal:
+			'un élément{{#ref}}{{/ref}}\
+			{{#namespace}}&ensp;dans l’espace de nom <code>{{&.}}</code>{{/namespace}}\
+			{{#universal_namespace}}&ensp;dans n’importe quel espace de nom{{/universal_namespace}} \
+			<blockquote>{{#constraints}}<p>{{.}}</p>{{/constraints}}</blockquote>',
+		element:
+			'un élément\
+			<code>{{^universal_namespace}}&lt;{{/universal_namespace}}{{#namespace}}{{&.}}:{{/namespace}}{{&name}}{{^universal_namespace}}>{{/universal_namespace}}</code> {{#ref}}{{/ref}}\
+			{{#universal_namespace}}&ensp;dans n’importe quel espace de nom{{/universal_namespace}} \
+			<blockquote>{{#constraints}}<p>{{.}}</p>{{/constraints}}</blockquote>',
 		constraint_list: 'un élément {{#ref}}{{/ref}}<blockquote>{{#constraints}}<p>{{.}}</p>{{/constraints}}</blockquote>',
-		negation: 'qui n’est pas{{#ref}}:not(){{/ref}} &hellip; <blockquote>{{args}}</blockquote>',
 		pseudo_class: {
 			':type': 'name',
 			':default': 'de pseudo-classe <code>{{&name}}</code> {{#ref}}:pseudo-classe{{/ref}}',
@@ -43,21 +51,31 @@ cssSelectorExplain({
 			':type': 'name',
 			':default': 'de pseudo-classe{{#ref}}{{/ref}} <code>{{&name}}</code><blockquote>avec le paramètre {{args}}</blockquote>',
 			'lang' : 'qui est dans la langue{{#ref}}{{/ref}} «&nbsp;<span class="value">{{&args}}</span>&nbsp;»',
+			'dir': 'dont la langue s’écrit {{args}}{{#ref}} :dir(){{/ref}}',
 			'nth-child': 'qui, dans son parent, est un enfant de rang{{#ref}}:nth-child(){{/ref}}&ensp;{{args}}',
 			'nth-last-child': 'qui, dans son parent, est un enfant de rang{{#ref}}:nth-last-child(){{/ref}}&ensp;{{args}} en partant de la fin',
 			'nth-of-type': 'qui, dans son parent, est de rang{{#ref}}{{/ref}}&ensp;{{args}} parmi les éléments de même balise',
 			'nth-last-of-type': 'qui, dans son parent, est de rang{{#ref}}{{/ref}}&ensp;{{args}}, en partant de la fin, parmi les éléments de même balise',
 		},
-		an_plus_b: '<span class="value">{{a}}</span>×n <span class="make-signed"><span class="value">{{b}}</span></span>',
-		odd: '<span class="value">impair</span>',
-		even: '<span class="value">pair</span>',
-		has_attribute: 'qui possède l’attribut <code>{{&name}}</code> {{#ref}}[attrib]{{/ref}}',
-		attribute_equals: 'qui possède l’attribut <code>{{&name}}</code> avec la valeur <code>{{&value}}</code> {{#ref}}[attrib]{{/ref}}',
-		attribute_starts_with: 'qui possède l’attribut <code>{{&name}}</code> dont la valeur commence par «&nbsp;<span class="value">{{&value}}</span>&nbsp;» {{#ref}}[attrib]{{/ref}}',
-		attribute_ends_with: 'qui possède l’attribut <code>{{&name}}</code> dont la valeur se termine par «&nbsp;<span class="value">{{&value}}</span>&nbsp;» {{#ref}}[attrib]{{/ref}}',
-		attribute_contains: 'qui possède l’attribut <code>{{&name}}</code> dont la valeur contient «&nbsp;<span class="value">{{&value}}</span>&nbsp;» {{#ref}}[attrib]{{/ref}}',
-		attribute_contains_word: 'qui possède l’attribut <code>{{&name}}</code> dont la valeur est constitué d’une suite de mots séparés par des espaces dont l’un est «&nbsp;<span class="value">{{&value}}</span>&nbsp;» {{#ref}}[attrib]{{/ref}}',
-		attribute_contains_prefix: 'qui possède l’attribut <code>{{&name}}</code> dont la valeur est <code>{{&value}}</code> ou commence par <code>{{&value}}-</code> {{#ref}}[attrib]{{/ref}}',
+			an_plus_b: '<span class="value">{{a}}</span>×n <span class="make-signed"><span class="value">{{b}}</span></span>',
+			odd: '<span class="value">impair</span>',
+			even: '<span class="value">pair</span>',
+			ltr: '<span class="value">de gauche à droite</span>',
+			rtl: '<span class="value">de droite à gauche</span>',
+		attribute: {
+			':type': 'subtype',
+			has_attribute: 'qui possède l’attribut {{name}} {{#ref}}[attrib]{{/ref}}',
+			attribute_equals: 'qui possède l’attribut {{name}} avec la valeur <code>{{&value}}</code> {{#ref}}[attrib]{{/ref}}',
+			attribute_starts_with: 'qui possède l’attribut {{name}} dont la valeur commence par «&nbsp;<span class="value">{{&value}}</span>&nbsp;» {{#ref}}[attrib]{{/ref}}',
+			attribute_ends_with: 'qui possède l’attribut {{name}} dont la valeur se termine par «&nbsp;<span class="value">{{&value}}</span>&nbsp;» {{#ref}}[attrib]{{/ref}}',
+			attribute_contains: 'qui possède l’attribut {{name}} dont la valeur contient «&nbsp;<span class="value">{{&value}}</span>&nbsp;» {{#ref}}[attrib]{{/ref}}',
+			attribute_contains_word: 'qui possède l’attribut {{name}} dont la valeur est constitué d’une suite de mots séparés par des espaces dont l’un est «&nbsp;<span class="value">{{&value}}</span>&nbsp;» {{#ref}}[attrib]{{/ref}}',
+			attribute_contains_prefix: 'qui possède l’attribut {{name}} dont la valeur est <code>{{&value}}</code> ou commence par <code>{{&value}}-</code> {{#ref}}[attrib]{{/ref}}',
+		},
+		namespace_prefix_ident:
+			'<code>{{&ident}}</code>\
+			{{#namespace}}&ensp;dans l’espace de nom <code>{{&.}}</code>{{/namespace}}\
+			{{#universal_namespace}}&ensp;dans n’importe quel espace de nom{{/universal_namespace}}',
 		pseudo_element: {
 			':type': 'name',
 			':default': 'un pseudo-élément <code>{{&name}}</code> {{#ref}}::pseudo-élément{{/ref}} attaché à {{subject}}',
@@ -67,11 +85,36 @@ cssSelectorExplain({
 			'after': 'un pseudo-élément ajouté à la fin {{#ref}}::after{{/ref}} d’{{subject}}',
 		},
 		pseudo_element_old: '&hellip; auquel est attaché un pseudo-élément <code>{{&name}}</code> <span class="erreur">&rarr; ancienne notation à corriger</span>{{#ref}}::pseudo-élément{{/ref}}',
+		
+		/* logical selectors : liste (CSS1), :not() (CSS3); :is() :where() :has() (CSS4) */
+		logical: {
+			':type': 'name',
+			':default': '<code>{{&name}}</code> {{#ref}}{{/ref}} &hellip; <blockquote>{{args}}</blockquote>',
+			selector_list: 'un ou plusieurs des cas suivants {{#ref}} liste{{/ref}}&nbsp;:<ol>{{#selectors}}<li>{{.}}</li>{{/selectors}}</ol>',
+			not: 'qui n’est pas{{#ref}}{{/ref}} &hellip; <blockquote>{{args}}</blockquote>',
+			is: 'qui est{{#ref}}{{/ref}} &hellip; <blockquote>{{args}}</blockquote>',
+			where: 'qui est{{#ref}}{{/ref}} &hellip; <blockquote>{{args}}</blockquote>',
+			// has
+		},
+		
+		/* sélecteurs introduit dans CSS3-UI */
+		// E:read-write, E:read-only, E:placeholder-shown, E:default, 
+		// E:valid, E:invalid, E:in-range, E:out-of-range, E:required, E:optional
+		
+		/* other CSS4 - https://www.w3.org/TR/selectors-4/ */
+		// E[foo="bar" i], E[foo="bar" s]
+		// E:dir(ltr)
+		// E:lang(zh, "*-hant")
+		// E:any-link, E:local-link, E:target-within, E:scope
+		// E:current, E:current(s), E:past, E:future
+		// E:focus-within, E:focus-visible
+		// E:blank, E:user-invalid
+		// E:nth-child(n [of S]?), E:nth-last-child(n [of S]?)
+		// F || E, E:nth-col(n), E:nth-last-col(n)
 	},
 	references: {
 		/* https://www.w3.org/TR/selectors-3/ https://www.w3.org/TR/CSS2/ */
 		':type': 'type',
-		selectors_group: 'https://www.w3.org/TR/selectors-3/#grouping',
 		descendant: 'https://www.w3.org/TR/selectors-3/#descendant-combinators',
 		child: 'https://www.w3.org/TR/selectors-3/#child-combinators',
 		subsequent_sibling: 'https://www.w3.org/TR/selectors-3/#general-sibling-combinators',
@@ -80,7 +123,6 @@ cssSelectorExplain({
 		class: 'https://www.w3.org/TR/selectors-3/#class-html',
 		universal: 'https://www.w3.org/TR/selectors-3/#universal-selector',
 		element: 'https://www.w3.org/TR/selectors-3/#type-selectors',
-		negation: 'https://www.w3.org/TR/selectors-3/#pseudo-classes',
 		pseudo_class: {
 			':type': 'name',
 			':default': 'https://www.w3.org/TR/selectors-3/#pseudo-classes',
@@ -111,14 +153,18 @@ cssSelectorExplain({
 			'nth-last-child': 'https://www.w3.org/TR/selectors-3/#nth-last-child-pseudo',
 			'nth-of-type': 'https://www.w3.org/TR/selectors-3/#nth-of-type-pseudo',
 			'nth-last-of-type': 'https://www.w3.org/TR/selectors-3/#nth-last-of-type-pseudo',
+			dir: 'https://www.w3.org/TR/selectors-4/#the-dir-pseudo',
 		},
-		has_attribute: 'https://www.w3.org/TR/selectors-3/#attribute-selectors',
-		attribute_equals: 'https://www.w3.org/TR/selectors-3/#attribute-selectors',
-		attribute_starts_with: 'https://www.w3.org/TR/selectors-3/#attribute-substrings',
-		attribute_ends_with: 'https://www.w3.org/TR/selectors-3/#attribute-substrings',
-		attribute_contains: 'https://www.w3.org/TR/selectors-3/#attribute-substrings',
-		attribute_contains_word: 'https://www.w3.org/TR/selectors-3/#attribute-representation',
-		attribute_contains_prefix: 'https://www.w3.org/TR/selectors-3/#attribute-representation',
+		attribute: {
+			':type': 'subtype',
+			has_attribute: 'https://www.w3.org/TR/selectors-3/#attribute-selectors',
+			attribute_equals: 'https://www.w3.org/TR/selectors-3/#attribute-selectors',
+			attribute_starts_with: 'https://www.w3.org/TR/selectors-3/#attribute-substrings',
+			attribute_ends_with: 'https://www.w3.org/TR/selectors-3/#attribute-substrings',
+			attribute_contains: 'https://www.w3.org/TR/selectors-3/#attribute-substrings',
+			attribute_contains_word: 'https://www.w3.org/TR/selectors-3/#attribute-representation',
+			attribute_contains_prefix: 'https://www.w3.org/TR/selectors-3/#attribute-representation',
+		},
 		pseudo_element: {
 			':type': 'name',
 			':default': 'https://www.w3.org/TR/selectors-3/#pseudo-elements',
@@ -128,23 +174,36 @@ cssSelectorExplain({
 			after: 'https://www.w3.org/TR/selectors-3/#gen-content',
 		},
 		pseudo_element_old: 'https://www.w3.org/TR/selectors-3/#pseudo-elements',
+		logical: {
+			':type': 'name',
+			':default': 'https://www.w3.org/TR/selectors-4/#logical-combination',
+			selector_list: 'https://www.w3.org/TR/selectors-3/#grouping',
+			not: 'https://www.w3.org/TR/selectors-4/#negation',
+			is: 'https://www.w3.org/TR/selectors-4/#matches',
+			where: 'https://www.w3.org/TR/selectors-4/#zero-matches',
+			has: 'https://www.w3.org/TR/selectors-4/#relational',
+		},
 	},
 	specificity: {
-		element: 2,
-		pseudo_element_old: 2,
-		pseudo_element: 2,
-		class: 1,
-		pseudo_class: 1,
-		pseudo_func: 1,
-		has_attribute: 1,
-		attribute_equals: 1,
-		attribute_starts_with: 1,
-		attribute_ends_with: 1,
-		attribute_contains: 1,
-		attribute_contains_word: 1,
-		attribute_contains_prefix: 1,
-		id: 0
-		/* negation: «Selectors inside the negation pseudo-class are counted like any other,
-		but the negation itself does not count as a pseudo-class.» */
-	},
+		':type': 'type',
+		simple_selector_sequence: '(t,a) => iterate(t.selectors[0], a)',
+		constraint_list: '(t,a) => iterate(t.constraints, a)',
+		universal: '(t,a) => iterate(t.constraints, a)',
+		element: '(t,a) => iterate(t.constraints, arraySum([0,0,1], a))',
+		pseudo_element: '(t,a) => iterate(t.subject, arraySum([0,0,1], a))',
+		pseudo_element_old: '(t,a) => arraySum([0,0,1], a)',
+		class:        '(t,a) => arraySum([0,1,0], a)',
+		pseudo_class: '(t,a) => arraySum([0,1,0], a)',
+		pseudo_func:  '(t,a) => arraySum([0,1,0], a)',
+		attribute:    '(t,a) => arraySum([0,1,0], a)',
+		combinator_selector: '(t,a) => iterate([t.left, t.right], a)',
+		id: '(t,a) => arraySum([1,0,0], a)',
+		logical: {
+			':type': 'name',
+			selector_list: '(t,a) => t.selectors.map(i => iterate(i))',
+			not: '(t,a) => arraySum(specMax(t.args.selectors.map(i => iterate(i))), a)',
+			is:  '(t,a) => arraySum(specMax(t.args.selectors.map(i => iterate(i))), a)',
+			where: '(t,a) => a',
+		},
+	}
 });

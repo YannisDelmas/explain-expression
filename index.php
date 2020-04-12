@@ -44,13 +44,23 @@ header('Content-Type: text/html; charset=utf-8');
 	</main>
 	<section class="exemples"><?= $interface['examples'] ?></section>
 	<footer>
-		<p class="message">
-			Les contributeurs sont les bienvenus pour ajouter d'autres types d'expressions
-			(par exemple les expressions régulières)
-			ou pour traduire les explications dans d'autres langues.
-			<br><span class="fa-language fa"></span><i lang="en">Contributors are welcome to add
+		<div class="message">
+			<?php if ( $_SERVER['HTTP_HOST'] != 'delmas-rigoutsos.nom.fr' ) { ?>
+			<p>
+				Cette page est sur un <strong>serveur de développement</strong>,
+				une <a href="https://delmas-rigoutsos.nom.fr/outils/explain-expression/"><strong>version stable</strong></a> est également disponible.
+			</p>
+			<?php } ?>
+			<p>
+				Les contributeurs sont les bienvenus pour ajouter d'autres types d'expressions
+				(par exemple les expressions régulières)
+				ou pour traduire les explications dans d'autres langues.
+			</p>
+			<p>
+				<span class="fa-language fa"></span> <i lang="en">Contributors are welcome to add
 			other types of expressions or to translate the explanations into other languages.</i>
-		</p>
+			</p>
+		</div>
 		<?= $interface['footer'] ?>
 	</footer>
 	<script src="<?= $module ?>-page.js"></script>

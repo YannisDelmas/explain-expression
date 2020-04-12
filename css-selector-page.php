@@ -65,5 +65,12 @@ $interface['examples'] = <<<EOT
 	<code class="exemple">#abc svg|circle</code>,
 	<code class="exemple">[xml|lang]</code>.
 </li>
+<li>
+	CSS 4&nbsp;
+	<code class="exemple">section:dir(rtl)</code>,
+	<code class="exemple">h1:not(main *)</code>,
+	<code class="exemple">button:is(:hover, :focus)</code>,
+	<code class="exemple">a:where(:not(:hover))</code>.
+</li>
 </ul>
 EOT;
