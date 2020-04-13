@@ -26,12 +26,6 @@ regexp = match:match alternates:( "|" match )*
 match = (!repeat) parts:match_fragment*
       { return {type:'match', sequence: parts}; }
 
-anchor = "^" { return {type:'anchor', name: 'begin'}; }
-       / "$" { return {type:'anchor', name:  'end' }; }
-
-match_fragment = content:( anchor / group / lookahead / charset / terminal ) repeat:repeat?
-    { return Object.assign(repeat?repeat:{}, {type: 'match_fragment', content: content}); }
-
 repeat = spec:( repeat_any / repeat_required / repeat_optional / repeat_spec ) greedy:"?"?
     { return Object.assign(spec, {repeat_greedy: (greedy=='?')}); }
   
@@ -52,11 +46,20 @@ repeat_spec
     / "{" exact:[0-9]+ "}"
       { return {type: 'repeat', repeat: 'exact', repeat_exact:parseInt(exact.join(''))}; }
 
-lookahead = "(" modality:( "?=" / "?!" ) content:regexp ")"
-    {return {type: 'lookahead', content: content, modality:modality}; }
+match_fragment = content:( anchor / group / lookahead / lookbehind / charset / terminal ) repeat:repeat?
+    { return Object.assign(repeat?repeat:{}, {type: 'match_fragment', content: content}); }
+
+anchor = "^" { return {type:'anchor', name: 'begin'}; }
+       / "$" { return {type:'anchor', name:  'end' }; }
 
 group = "(" capture:( "?:" )? content:regexp ")"
     {return {type: 'group', content: content, capture: capture!='?:'}; }
+
+lookahead = "(" modality:( "?=" / "?!" ) content:regexp ")"
+    {return {type: 'lookahead', content: content, positive:(modality=='?=')}; }
+
+lookbehind = "(" modality:( "?<=" / "?<!" ) content:regexp ")"
+    {return {type: 'lookbehind', content: content, positive:(modality=='?=')}; }
 
 // suite à traiter
 
