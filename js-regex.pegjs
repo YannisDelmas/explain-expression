@@ -5,13 +5,13 @@
 
 root = "/" expr:regexp "/" flags:([yigmu]*)
       {
-        let d = { type: 'regular_expression', expr: expr };
-        if ( flags.includes('y') ) d.sticky = true;
-        if ( flags.includes('i') ) d.ci = true;
-        if ( flags.includes('g') ) d.global = true;
-        if ( flags.includes('m') ) d.multiline = true;
-        if ( flags.includes('u') ) d.unicode = true;
-        return d;
+        return { type: 'regular_expression', expr: expr,
+            sticky: flags.includes('y'),
+            ci: flags.includes('i'),
+            global: flags.includes('g'),
+            multiline: flags.includes('m'),
+            unicode: flags.includes('u')
+        };
       }
 
 regexp = match:match alternates:( "|" match )*
@@ -26,28 +26,40 @@ regexp = match:match alternates:( "|" match )*
 match = (!repeat) parts:match_fragment*
       { return {type:'match', sequence: parts}; }
 
-
 anchor = "^" { return {type:'anchor', name: 'begin'}; }
        / "$" { return {type:'anchor', name:  'end' }; }
 
+match_fragment = content:( anchor / group / lookahead / charset / terminal ) repeat:repeat?
+    { return Object.assign(repeat?repeat:{}, {type: 'match_fragment', content: content}); }
+
+repeat = spec:( repeat_any / repeat_required / repeat_optional / repeat_spec ) greedy:"?"?
+    { return Object.assign(spec, {repeat_greedy: (greedy=='?')}); }
+  
+repeat_any = "*"
+    { return {type: 'repeat', repeat: 'any', repeat_min:0}; }
+  
+repeat_required = "+" 
+    { return {type: 'repeat', repeat: 'required', repeat_min:1}; }
+  
+repeat_optional = "?"
+    { return {type: 'repeat', repeat: 'optional', repeat_min:0, repeat_max:1}; }
+  
+repeat_spec
+    = "{" min:[0-9]+ "," max:[0-9]+ "}"
+      { return {type: 'repeat', repeat: 'minmax', repeat_min:parseInt(min.join('')), repeat_max:parseInt(max.join(''))}; }
+    / "{" min:[0-9]+ ",}"
+      { return {type: 'repeat', repeat: 'min', repeat_min:parseInt(min.join(''))}; }
+    / "{" exact:[0-9]+ "}"
+      { return {type: 'repeat', repeat: 'exact', repeat_exact:parseInt(exact.join(''))}; }
+
+lookahead = "(" modality:( "?=" / "?!" ) content:regexp ")"
+    {return {type: 'lookahead', content: content, modality:modality}; }
+
+group = "(" capture:( "?:" )? content:regexp ")"
+    {return {type: 'group', content: content, capture: capture!='?:'}; }
+
 // suite à traiter
 
-match_fragment = content:( anchor / subexp / charset / terminal ) repeat:repeat?
-  {return 'TODO'; }
-
-  repeat = spec:( repeat_any / repeat_required / repeat_optional / repeat_spec ) greedy:"?"?
-  
-  repeat_any = "*" 
-  
-  repeat_required = "+" 
-  
-  repeat_optional = "?"
-  
-  repeat_spec = ( "{" min:[0-9]+ "," max:[0-9]+ "}"
-                 / "{" min:[0-9]+ ",}"
-                 / "{" exact:[0-9]+ "}" )
-
-  subexp = "(" capture:( "?:" / "?=" / "?!" )? regexp ")"
   charset = "[" invert:"^"? parts:( charset_range / charset_terminal )* "]"
   charset_range = first:charset_range_terminal "-" last:charset_range_terminal 
   charset_terminal = charset_escape 
