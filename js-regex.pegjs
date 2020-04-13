@@ -3,6 +3,10 @@
 // test -> https://pegjs.org/online
 // cf. https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Expressions_r%C3%A9guli%C3%A8res
 
+{
+  function readInt(list) { return parseInt(list.join('')); }
+}
+
 root = "/" expr:regexp "/" flags:([yigmu]*)
       {
         return { type: 'regular_expression', expr: expr,
@@ -26,6 +30,11 @@ regexp = match:match alternates:( "|" match )*
 match = (!repeat) parts:match_fragment*
       { return {type:'match', sequence: parts}; }
 
+match_fragment = content:( boundary / group / lookahead / lookbehind / charset / terminal ) repeat:repeat?
+    { return Object.assign(repeat?repeat:{}, {type: 'match_fragment', content: content}); }
+
+// quantifiers
+
 repeat = spec:( repeat_any / repeat_required / repeat_optional / repeat_spec ) greedy:"?"?
     { return Object.assign(spec, {repeat_greedy: (greedy=='?')}); }
   
@@ -40,68 +49,84 @@ repeat_optional = "?"
   
 repeat_spec
     = "{" min:[0-9]+ "," max:[0-9]+ "}"
-      { return {type: 'repeat', repeat: 'minmax', repeat_min:parseInt(min.join('')), repeat_max:parseInt(max.join(''))}; }
+      { return {type: 'repeat', repeat: 'minmax', repeat_min:readInt(min), repeat_max:readInt(max)}; }
     / "{" min:[0-9]+ ",}"
-      { return {type: 'repeat', repeat: 'min', repeat_min:parseInt(min.join(''))}; }
+      { return {type: 'repeat', repeat: 'min', repeat_min:readInt(min)}; }
     / "{" exact:[0-9]+ "}"
-      { return {type: 'repeat', repeat: 'exact', repeat_exact:parseInt(exact.join(''))}; }
+      { return {type: 'repeat', repeat: 'exact', repeat_exact:readInt(exact)}; }
 
-match_fragment = content:( anchor / group / lookahead / lookbehind / charset / terminal ) repeat:repeat?
-    { return Object.assign(repeat?repeat:{}, {type: 'match_fragment', content: content}); }
+// boundaries
+
+boundary = anchor / word_boundary / non_word_boundary;
 
 anchor = "^" { return {type:'anchor', name: 'begin'}; }
        / "$" { return {type:'anchor', name:  'end' }; }
 
+word_boundary = "\\b" { return {type:'word_boundary'}; }
+non_word_boundary = "\\B" { return {type:'non_word_boundary'}; }
+
+// groups
+
 group = "(" capture:( "?:" )? content:regexp ")"
-    {return {type: 'group', content: content, capture: capture!='?:'}; }
+    { return {type: 'group', content: content, capture: capture!='?:'}; }
 
 lookahead = "(" modality:( "?=" / "?!" ) content:regexp ")"
-    {return {type: 'lookahead', content: content, positive:(modality=='?=')}; }
+    { return {type: 'lookahead', content: content, inverse:(modality=='?!')}; }
 
 lookbehind = "(" modality:( "?<=" / "?<!" ) content:regexp ")"
-    {return {type: 'lookbehind', content: content, positive:(modality=='?=')}; }
+    { return {type: 'lookbehind', content: content, inverse:(modality=='?<!')}; }
 
-// suite à traiter
+// character sets
 
-  charset = "[" invert:"^"? parts:( charset_range / charset_terminal )* "]"
-  charset_range = first:charset_range_terminal "-" last:charset_range_terminal 
-  charset_terminal = charset_escape 
-                    / charset_literal 
-  charset_range_terminal = charset_range_escape 
-                          / charset_literal
-  charset_escape = "\\" esc:(
-         code:[bdDfnrsStvwW] arg:""?
-       / control_escape
-       / octal_escape
-       / hex_escape
-       / unicode_escape
-       / null_escape )
-  charset_range_escape = "\\" esc:(
-         code:[bfnrtv] arg:""?
-       / control_escape
-       / octal_escape
-       / hex_escape
-       / unicode_escape
-       / null_escape )
-  charset_literal = ( ""? literal:[^\\\]] )
-                   / ( literal:"\\" &"c" )
-                   / ( "\\" literal:[^bdDfnrsStvwW] )
-  terminal = "."
-            / escape 
-            / literal 
-  escape = "\\" esc:(
-         code:[bBdDfnrsStvwW1-9] arg:""?
-       / control_escape
-       / octal_escape
-       / hex_escape
-       / unicode_escape
-       / null_escape )
-  literal = ( ""? literal:[^|\\/.\[\(\)?+*$^] )
-           / ( literal:"\\" &"c" )
-           / ( "\\" literal:. )
+charset = "[" invert:"^"? parts:( charset_range / charset_terminal )* "]"
+    { return {type: 'character_set', parts: parts}; }
 
-  control_escape = code:"c" arg:[a-zA-Z]
-  octal_escape = code:"0" arg:[0-7]+
-  hex_escape = code:"x" arg:( [0-9a-fA-F] [0-9a-fA-F] )
-  unicode_escape = code:"u" arg:( [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] )
-  null_escape = code:"0" arg:""?
+charset_range = first:charset_range_terminal "-" last:charset_range_terminal 
+    { return {type: 'character_range', first: first, last: last}; }
+
+charset_range_terminal = charset_range_escape / charset_literal
+charset_terminal = charset_escape / charset_literal 
+
+charset_escape = character_class / charset_range_escape
+charset_range_escape
+    = escape_char
+    / control_escape
+    / octal_escape
+    / hex_escape
+    / unicode_escape
+
+//TODO
+charset_literal = ( ""? literal:[^\\\]] )
+                  / ( literal:"\\" &"c" )
+                  / ( "\\" literal:[^bdDfnrsStvwW] )
+
+// terminal, including escapes
+
+terminal = "."  { return {type: 'any_character'}; }
+          / terminal_escape 
+          / literal
+
+// TODO
+literal = ( ""? literal:[^|\\/.\[\(\)?+*$^] )
+          / ( literal:"\\" &"c" )
+          / ( "\\" literal:. )
+
+// escapes
+
+terminal_escape
+      = "\\" code:[1-9] { return {type: 'group_reference',  code: parseInt(code)}; }
+      / escape_char
+      / character_class
+      / control_escape
+      / octal_escape
+      / hex_escape
+      / unicode_escape
+
+escape_char    = "\\" code:[bfnrtv]  { return {type: 'escape_character',  code: code}; }
+character_class= "\\" code:[dDsSwW]  { return {type: 'character_class',   code: code}; }
+control_escape = "\\c" code:[a-zA-Z] { return {type: 'control_character', code: code}; }
+octal_escape   = "\\0" code:[0-7]+   { return {type: 'octal_escape', code: code?(code.join('')):'0'}; }
+hex_escape     = "\\x" code:( [0-9a-fA-F] [0-9a-fA-F] )
+          { return {type: 'hex_escape', code: code.join('')}; }
+unicode_escape = "\\u" code:( [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] )
+          { return {type: 'unicode_escape', code: code.join('')}; }
