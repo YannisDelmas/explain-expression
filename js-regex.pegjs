@@ -1,132 +1,183 @@
-// From https://gitlab.com/javallone/regexper-static/-/blob/master/src/js/parser/javascript/grammar.peg
-//	MIT LICENCE
 // test -> https://pegjs.org/online
+// reference: https://www.ecma-international.org/ecma-262/10.0/index.html#sec-regexp-regular-expression-objects
 // cf. https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Expressions_r%C3%A9guli%C3%A8res
 
 {
   function readInt(list) { return parseInt(list.join('')); }
 }
 
-root = "/" expr:regexp "/" flags:([yigmu]*)
-      {
-        return { type: 'regular_expression', expr: expr,
-            sticky: flags.includes('y'),
-            ci: flags.includes('i'),
-            global: flags.includes('g'),
-            multiline: flags.includes('m'),
-            unicode: flags.includes('u')
-        };
-      }
+RegularExpression = "/" pattern:Pattern "/" flags:([gimsuy]*)
+    {
+      return {
+        type: 'RegularExpression', pattern: pattern,
+        global: flags.includes('g'),
+        ignoreCase: flags.includes('i'),
+        multiline: flags.includes('m'),
+        dotAll: flags.includes('s'),
+        unicode: flags.includes('u'),
+        sticky: flags.includes('y')
+      };
+    }
 
-regexp = match:match alternates:( "|" match )*
-        {
-          if ( alternates.length == 0 )
-            return match;
-          alternates = alternates.map(x => x[1]);
-          alternates.unshift(match);
-          return {type: 'alternates', branches: alternates};
-        }
+Pattern = first:Alternative alternatives:( "|" Alternative )*
+    {
+      if ( alternatives.length == 0 )
+        return first;
+      alternatives = alternatives.map(x => x[1]);
+      alternatives.unshift(first);
+      return {type: 'Disjunction', alternatives: alternatives};
+    }
 
-match = (!repeat) parts:match_fragment*
-      { return {type:'match', sequence: parts}; }
+Alternative = (!Quantifier) terms:Term*
+    { return {type:'Alternative', terms: terms}; }
 
-match_fragment = content:( boundary / group / lookahead / lookbehind / charset / terminal ) repeat:repeat?
-    { return Object.assign(repeat?repeat:{}, {type: 'match_fragment', content: content}); }
+Term
+  = Assertion
+  / Atom
+  / atom:Atom quantifier:Quantifier
+    { return Object.assign({quantifier:quantifier}, atom); }
+
+// assertions
+
+Assertion
+  = "^" { return {type:'Assertion', name:'anchor_begin'}; }
+  / "$" { return {type:'Assertion', name:'anchor_end' }; }
+  / "\\b" { return {type:'Assertion', name:'word_boundary'}; }
+  / "\\B" { return {type:'Assertion', name:'non_word_boundary'}; }
+  / "(" modality:( "?=" / "?!" ) content:Pattern ")"
+    { return {type:'Assertion', name:'lookahead', content: content, inverse:(modality=='?!')}; }
+  / "(" modality:( "?<=" / "?<!" ) content:Pattern ")"
+    { return {type:'Assertion', name:'lookbehind', content: content, inverse:(modality=='?<!')}; }
 
 // quantifiers
 
-repeat = spec:( repeat_any / repeat_required / repeat_optional / repeat_spec ) greedy:"?"?
-    { return Object.assign(spec, {repeat_greedy: (greedy=='?')}); }
-  
-repeat_any = "*"
-    { return {type: 'repeat', repeat: 'any', repeat_min:0}; }
-  
-repeat_required = "+" 
-    { return {type: 'repeat', repeat: 'required', repeat_min:1}; }
-  
-repeat_optional = "?"
-    { return {type: 'repeat', repeat: 'optional', repeat_min:0, repeat_max:1}; }
-  
-repeat_spec
-    = "{" min:[0-9]+ "," max:[0-9]+ "}"
-      { return {type: 'repeat', repeat: 'minmax', repeat_min:readInt(min), repeat_max:readInt(max)}; }
-    / "{" min:[0-9]+ ",}"
-      { return {type: 'repeat', repeat: 'min', repeat_min:readInt(min)}; }
-    / "{" exact:[0-9]+ "}"
-      { return {type: 'repeat', repeat: 'exact', repeat_exact:readInt(exact)}; }
+Quantifier
+  = QuantifierPrefix
+  / prefix:QuantifierPrefix greedy:"?"
+    { return Object.assign(spec, {greedy: true}); }
 
-// boundaries
+QuantifierPrefix
+  = "*"   { return {type:'Quantifier', repeat:'any', min:0}; }
+  / "+"   { return {type:'Quantifier', repeat:'required', min:1}; }
+  / "?"   { return {type:'Quantifier', repeat:'optional', min:0, max:1}; }
+  / "{" exact:[0-9]+ "}"
+    {
+      let n = readInt(exact);
+      return {type:'Quantifier', repeat:'exact', min:n, max:n};
+    }
+  / "{" min:[0-9]+ ",}"
+    { return {type:'Quantifier', repeat:'min', min:readInt(min)}; }
+  / "{" min:[0-9]+ "," max:[0-9]+ "}"
+    { return {type:'Quantifier', repeat:'minmax', min:readInt(min), max:readInt(max)}; }
 
-boundary = anchor / word_boundary / non_word_boundary;
+// atoms
 
-anchor = "^" { return {type:'anchor', name: 'begin'}; }
-       / "$" { return {type:'anchor', name:  'end' }; }
-
-word_boundary = "\\b" { return {type:'word_boundary'}; }
-non_word_boundary = "\\B" { return {type:'non_word_boundary'}; }
+Atom
+  = PatternCharacter
+  / "."  { return {type: 'CharacterSet', code:'any'}; }
+  / "\\" AtomEscape
+  / CharacterClass
+  / Group
 
 // groups
 
-group = "(" capture:( "?:" )? content:regexp ")"
-    { return {type: 'group', content: content, capture: capture!='?:'}; }
+Group
+  = "(" capture:( "?:" )? content:Pattern ")"
+    { return {type:'Group', content: content, capture: capture!='?:'}; }
+  / "(?" name:GroupName content:Pattern ")"
+    { return {type:'Group', name: name.value, content: content, capture: true}; }
 
-lookahead = "(" modality:( "?=" / "?!" ) content:regexp ")"
-    { return {type: 'lookahead', content: content, inverse:(modality=='?!')}; }
+GroupName
+  = "<" name:([^!-#%-@] [^!-#%-/:-@]+) ">"
+    { return {type:'GroupName', value: name}; }
 
-lookbehind = "(" modality:( "?<=" / "?<!" ) content:regexp ")"
-    { return {type: 'lookbehind', content: content, inverse:(modality=='?<!')}; }
+  // RegExpIdentifierName = RegExpIdentifierStart RegExpIdentifierPart*
+  // RegExpIdentifierStart is unicode ID_Start, $, _ or escape sequence
+  // RegExpIdentifierPart is unicode ID_Continue, $, _ or escape sequence
+  // Today (2020-04-15) \p{ID_Start} is not yet implemented to test
+  // the property. Another mean would be to try the identifier, but groups
+  // are not yet implemented everywhere. So we simplify the expression.
 
-// character sets
+// character classes
 
-charset = "[" invert:"^"? parts:( charset_range / charset_terminal )* "]"
-    { return {type: 'character_set', parts: parts}; }
+CharacterClass
+  = "[" invert:"^"? parts:ClassRanges "]"
+    { return {type: 'CharacterClass', parts: parts, invert:(invert=="^")}; }
 
-charset_range = first:charset_range_terminal "-" last:charset_range_terminal 
-    { return {type: 'character_range', first: first, last: last}; }
+ClassRanges
+  = NonemptyClassRanges
+  / ""  { return []; }
 
-charset_range_terminal = charset_range_escape / charset_literal
-charset_terminal = charset_escape / charset_literal 
+NonemptyClassRanges
+  = begin:ClassAtom "-" end:ClassAtom ranges:ClassRanges
+    {
+      ranges.unshift({type: 'CharacterRange', begin: begin, end: end});
+      return ranges;
+    }
+  / first:ClassAtom ranges:NonemptyClassRangesNoDash
+    { ranges.unshift(first); return ranges; }
+  / first:ClassAtom
+    { return [first]; }
 
-charset_escape = character_class / charset_range_escape
-charset_range_escape
-    = escape_char
-    / control_escape
-    / octal_escape
-    / hex_escape
-    / unicode_escape
+NonemptyClassRangesNoDash
+  = begin:ClassAtomNoDash "-" end:ClassAtom ranges:ClassRanges
+    {
+      ranges.unshift({type: 'CharacterRange', begin: begin, end: end});
+      return ranges;
+    }
+  / first:ClassAtomNoDash ranges:NonemptyClassRangesNoDash
+    { ranges.unshift(first); return ranges; }
+  / first:ClassAtom
+    { return [first]; }
 
-//TODO
-charset_literal = ( ""? literal:[^\\\]] )
-                  / ( literal:"\\" &"c" )
-                  / ( "\\" literal:[^bdDfnrsStvwW] )
+ClassAtom
+  = '-'    { return {type:'Litteral', value: '-'}; }
+  / ClassAtomNoDash
 
-// terminal, including escapes
+ClassAtomNoDash
+  = literal:[^-\\\]]
+    { return {type:'Litteral', value: literal}; }
+  / "\\" value:ClassEscape
+    { return value; }
 
-terminal = "."  { return {type: 'any_character'}; }
-          / terminal_escape 
-          / literal
+ClassEscape
+  = "b"
+    { return {type:'ControlEscape', code: 'b'}; }
+  / "-"
+    { return {type:'Litteral', value: '-'}; }
+  / CharacterEscape
 
-// TODO
-literal = ( ""? literal:[^|\\/.\[\(\)?+*$^] )
-          / ( literal:"\\" &"c" )
-          / ( "\\" literal:. )
+// litterals
 
-// escapes
+PatternCharacter
+  = literal:[^/^$\\.*+?()[\]{}|]
+    { return {type:'Litteral', value: literal}; }
 
-terminal_escape
-      = "\\" code:[1-9] { return {type: 'group_reference',  code: parseInt(code)}; }
-      / escape_char
-      / character_class
-      / control_escape
-      / octal_escape
-      / hex_escape
-      / unicode_escape
+AtomEscape
+  = code:([1-9] [0-9]*)
+    { return {type: 'GroupReference', number: parseInt(code)}; }
+  / "k" name:GroupName
+    { return {type: 'GroupReference', name: name.value}; }
+  / CharacterClassEscape
+  / CharacterEscape
 
-escape_char    = "\\" code:[bfnrtv]  { return {type: 'escape_character',  code: code}; }
-character_class= "\\" code:[dDsSwW]  { return {type: 'character_class',   code: code}; }
-control_escape = "\\c" code:[a-zA-Z] { return {type: 'control_character', code: code}; }
-octal_escape   = "\\0" code:[0-7]+   { return {type: 'octal_escape', code: code?(code.join('')):'0'}; }
-hex_escape     = "\\x" code:( [0-9a-fA-F] [0-9a-fA-F] )
-          { return {type: 'hex_escape', code: code.join('')}; }
-unicode_escape = "\\u" code:( [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] )
-          { return {type: 'unicode_escape', code: code.join('')}; }
+CharacterClassEscape
+  = code:[dDsSwW]
+    { return {type:'CharacterSet', code: code}; }
+  // to add later : p{UnicodePropertyValueExpression}
+
+CharacterEscape
+  = code:[fnrtv]
+    { return {type:'ControlEscape', code: code}; }
+  / "c" code:[a-zA-Z]
+    { return {type:'ControlCharacter', code: code.toUpperCase()}; }
+  / "0" (! [0-9])
+    { return {type:'Litteral', name: 'NUL'}; }
+  / "x" code:([0-9A-Fa-f] [0-9A-Fa-f])
+    { return {type:'HexEscape', code: code.join('').toUpperCase()}; }
+  / "u" code:( [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] )
+    { return {type:'UnicodeEscape', code: code.join('').toUpperCase()}; }
+  / "u{" code:( [0-9a-fA-F]+ ) "}"
+    { return {type:'UnicodeEscape', code: code.join('').toUpperCase()}; }
+  / char:.
+    { return {type:'Litteral', value: char}; }
