@@ -28,14 +28,19 @@ Pattern = first:Alternative alternatives:( "|" Alternative )*
       return {type: 'Disjunction', alternatives: alternatives};
     }
 
-Alternative = (!Quantifier) terms:Term*
-    { return {type:'Alternative', terms: terms}; }
+Alternative
+  = first:Term terms:Term+
+    { terms.unshift(first); return {type:'TermList', terms: terms}; }
+  / term:Term
+    { return term; }
+  / ""
+    { return {type:'Empty'}; }
 
 Term
   = Assertion
-  / Atom
   / atom:Atom quantifier:Quantifier
-    { return Object.assign({quantifier:quantifier}, atom); }
+    { quantifier.term = atom; return quantifier; }
+  / Atom
 
 // assertions
 
@@ -52,23 +57,23 @@ Assertion
 // quantifiers
 
 Quantifier
-  = QuantifierPrefix
-  / prefix:QuantifierPrefix greedy:"?"
-    { return Object.assign(spec, {greedy: true}); }
+  = prefix:QuantifierPrefix greedy:"?"
+    { prefix.repeatNonGreedy= true; return prefix; }
+  / QuantifierPrefix
 
 QuantifierPrefix
-  = "*"   { return {type:'Quantifier', repeat:'any', min:0}; }
-  / "+"   { return {type:'Quantifier', repeat:'required', min:1}; }
-  / "?"   { return {type:'Quantifier', repeat:'optional', min:0, max:1}; }
+  = "*"   { return {type:'Quantifier', repeat:'any', repeatMin:0}; }
+  / "+"   { return {type:'Quantifier', repeat:'required', repeatMin:1}; }
+  / "?"   { return {type:'Quantifier', repeat:'optional', repeatMin:0, repeatMax:1}; }
   / "{" exact:[0-9]+ "}"
     {
       let n = readInt(exact);
-      return {type:'Quantifier', repeat:'exact', min:n, max:n};
+      return {type:'Quantifier', repeat:'exact', repeatMin:n, repeatMax:n};
     }
   / "{" min:[0-9]+ ",}"
-    { return {type:'Quantifier', repeat:'min', min:readInt(min)}; }
+    { return {type:'Quantifier', repeat:'min', repeatMin:readInt(min)}; }
   / "{" min:[0-9]+ "," max:[0-9]+ "}"
-    { return {type:'Quantifier', repeat:'minmax', min:readInt(min), max:readInt(max)}; }
+    { return {type:'Quantifier', repeat:'minmax', repeatMin:readInt(min), repeatMax:readInt(max)}; }
 
 // atoms
 

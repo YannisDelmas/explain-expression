@@ -24,7 +24,7 @@ var lang = document.querySelector('html').getAttribute('lang');
 var module = document.body.dataset.module;
 
 // données d'explication
-var affiche, ref, spécificité, spécificité2;
+var affiche, ref, spécificité;
 function cssSelectorExplain(donnéesJSON) {
 	affiche = donnéesJSON.explanations;
 	ref = donnéesJSON.references;
@@ -39,10 +39,6 @@ window.addEventListener('load', function(){
 	cssSelector.yy.create = (data => data);
 });
 chargeAsync(`${module}.jison.js`, 'parser');
-
-// bibliothèque Mustache
-chargeAsync('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.min.js');
-
 
 /**
  * Retrouve un modèle dans un arbre de modèles.

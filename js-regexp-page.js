@@ -1,5 +1,5 @@
 /**
- * Explique une expression: explique un sélecteur CSS3.
+ * Explique une expression: Explique une expression régulière Javascript.
  *
  * @author	Yannis Delmas
  */
@@ -24,59 +24,17 @@ var lang = document.querySelector('html').getAttribute('lang');
 var module = document.body.dataset.module;
 
 // données d'explication
-var affiche, ref, spécificité;
-function cssSelectorExplain(donnéesJSON) {
+var affiche, ref;
+function jsRegexpExplain(donnéesJSON) {
 	affiche = donnéesJSON.explanations;
 	ref = donnéesJSON.references;
-	spécificité = donnéesJSON.specificity;
 	let explications = document.getElementById('explications');
 	explications.parentNode.removeChild(explications);
 }
-chargeAsync(`${module}-explain.${lang}.js`, 'explications'); // appelle cssSelectorExplain()
+chargeAsync(`${module}-explain.${lang}.js`, 'explications');
 
-// parser
-chargeAsync(`${module}.jison.js`, 'parser');
+chargeAsync(`${module}.pegjs.js`);
 
-/**
- * Calcule la spécificité d'un sélecteur CSS.
- * 
- * Calcule la spécificité d'un token à l'aide de l'objet `spécificité`,
- * utilisé comme tableau associatif, récursivement. Les types qui ne sont pas
- * mentionnés dans ce tableau sont passés, les autres incrémentent l'index
- * indiqué comme valeur de `spécificité[type]`. La spécificité en cours de calcul
- * est représentée par un tableau `[identifieurs, classes, éléments]`.
- * 
- * @param  {Object} token - Le token à expliquer.
- * @return {String}
- */
-function calculeSpécificité(token) {
-	function itère(token, v) {
-		if ( Array.isArray(token) ) {
-			v = token
-				.map(t => itère(t,[0,0,0]))
-				.reduce((a, v) => [v[0]+a[0], v[1]+a[1], v[2]+a[2]], v);
-		} else if ( typeof token == 'object' ) {
-			if ( spécificité[token.type] != undefined ) {
-				v[spécificité[token.type]] ++;
-			}
-			for(const param in token) {
-				if ( typeof token[param] == 'string' ) continue;
-				v = itère(token[param], v);
-			}
-		}
-		return v;
-	}
-	function metEnForme(v) {
-		return `<span class="specificite">
-					<span class="specificite--item">${v[0]}</span><sub>#</sub>
-					<span class="specificite--item">${v[1]}</span><sub><strong>.</strong></sub>
-					<span class="specificite--item">${v[2]}</span><sub>&lt;/></sub>
-				</span>`;
-
-	}
-	if ( typeof token != 'object' ) return '';
-	return token.selectors.map(t => metEnForme(itère(t,[0,0,0]))).join(', ');
-}
 
 /**
  * Retrouve un modèle dans un arbre de modèles.
@@ -140,20 +98,16 @@ window.addEventListener('load', function(){
 function analyse(){
 	let explication = document.querySelector('.explication output');
 	let texteBrut = document.getElementById('expression').value;
+	if ( ! texteBrut ) {
+		explication.innerHTML = '<p>&nbsp;</p>';
+		explication.classList.remove('erreur');
+		return;
+	}
 	try {
-		cssSelector.yy.create = (data => data);
-		let texteTokenisé = cssSelector.parse(texteBrut);
+		let texteTokenisé = jsRegexp.parse(texteBrut);
 		console.info('tokens: ', texteTokenisé);
-		explication.innerHTML =
-			'<div>'+ JSlang[0]+ afficheMustache(texteTokenisé)+ '</div>'+
-			'<div>'+ JSlang[1]+ calculeSpécificité(texteTokenisé)+ '</div>';
-		explication.querySelectorAll('.make-signed').forEach(function(item){
-			let text = item.innerText;
-			if ( text[0] != '+' && text[0] != '-' ) {
-				item.innerHTML = '+'+ item.innerHTML;
-			}
-		});
-		explication.classList.remove('erreur');				
+		explication.innerHTML = afficheMustache(texteTokenisé);
+		explication.classList.remove('erreur');
 	} catch(error) {
 		explication.innerHTML = '<pre>'+ error.toString()+ '</pre>';
 		explication.classList.add('erreur');

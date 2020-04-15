@@ -35,7 +35,7 @@ header('Content-Type: text/html; charset=utf-8');
 		<form action="javascript:analyse()">
 			<div class="input-group">
 				<input type="text" name="expression" id="expression" placeholder="<?= $interface['placeholder'] ?>">
-				<button type="submit" id="expliquer"><span class="fa fa-cog"></span> <?= $interface['explain'] ?></button>
+				<button type="submit" id="expliquer" disabled><span class="fa fa-cog"></span> <?= $interface['explain'] ?></button>
 			</div>
 		</form>
 		<div class="explication">
@@ -63,11 +63,14 @@ header('Content-Type: text/html; charset=utf-8');
 		</div>
 		<?= $interface['footer'] ?>
 	</footer>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.min.js" integrity="sha256-MPgtcamIpCPKRRm1ppJHkvtNBAuE71xcOM+MmQytXi8=" crossorigin="anonymous"></script>
 	<script src="<?= $module ?>-page.js"></script>
 	<script>
 		var JSlang = <?= json_encode($interface['JSlang']) ?>;
 		window.addEventListener('load', function(){
 			console.info('window🗲 load');
+			// le bouton est rendu actif quand la page est opérationnelle
+			document.getElementById('expliquer').disabled = false;
 			// `expression` est la case de texte contenant l'expression à analyser
 			let expression = document.getElementById('expression');
 			// elle a d'emblée le focus
