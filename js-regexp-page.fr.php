@@ -13,10 +13,23 @@ $interface = Array(
 	'examples' => '
 		<p>Exemples&nbsp;:
 		<p>
-			<code class="exemple">/a*|bc{5,}?/yi</code>,
-			<code class="exemple">TODO</code>,
-			<code class="exemple">TODO</code>,
-			<code class="exemple">TODO</code>.
+			<code class="exemple">/A/gimuy</code>,
+			<code class="exemple">/A|B/</code>,
+			<code class="exemple">/AB/</code>,
+			<code class="exemple">/A?/</code>,
+			<code class="exemple">/A*/</code>,
+			<code class="exemple">/A+/</code>,
+			<code class="exemple">/A{2}/</code>,
+			<code class="exemple">/A{2,}/</code>,
+			<code class="exemple">/A{2,4}/</code>,
+			<code class="exemple">/A+?/</code>,
+			<code class="exemple">/./</code>,
+			<code class="exemple">/A(B)C/</code>,
+			<code class="exemple">/(m).*\1/</code>,
+			<code class="exemple">/\d{2}/</code>,
+			<code class="exemple">/\w+/</code> (lettres, chiffres, soulignés),
+			<code class="exemple">/[\w.+-]+/</code> (possibilités de points, plus et tirets),
+			<code class="exemple">/^[\w\.\+-]+@([\w-]+\.)+[a-z]{2,}$/i</code> (e-mail).
 		</p>
 	',
 	'footer' => '

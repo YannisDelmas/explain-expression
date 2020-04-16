@@ -13,7 +13,7 @@ footer .message {
 	font-size: 120%;
 }
 
-input, button, .explication {
+form input, form button, .explication {
 	font-size: 141%;
 }
 
@@ -54,7 +54,7 @@ footer .message {
 
 form * { text-align: center; }
 form > * { margin: 1ex auto; }
-input {
+form input {
 	width: 30em;
 }
 .input-group {
@@ -98,7 +98,7 @@ button:hover {
 	background-color: #FCC;
 }
 
-.explication p, .explication ol {
+.explication p, .explication ol, .explication ul {
 	margin: 0.25ex 0;
 }
 .explication blockquote {
@@ -130,6 +130,11 @@ code {
 code, .value {
 	background: #CCE;
 	color: #006;
+}
+
+.explication input {
+	width: 50%;
+	font-size: 92%;
 }
 
 /* 4bis) Zone d'explication — détail n'apparaissent pas, normalement, pour l'utilisateur */

@@ -80,7 +80,7 @@ QuantifierPrefix
 Atom
   = PatternCharacter
   / "."  { return {type: 'CharacterSet', code:'any'}; }
-  / "\\" AtomEscape
+  / "\\" esc:AtomEscape { return esc; }
   / CharacterClass
   / Group
 

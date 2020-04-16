@@ -24,10 +24,11 @@ var lang = document.querySelector('html').getAttribute('lang');
 var module = document.body.dataset.module;
 
 // données d'explication
-var affiche, ref;
+var affiche, ref, interface;
 function jsRegexpExplain(donnéesJSON) {
 	affiche = donnéesJSON.explanations;
 	ref = donnéesJSON.references;
+	interface = donnéesJSON.interface;
 	let explications = document.getElementById('explications');
 	explications.parentNode.removeChild(explications);
 }
@@ -93,8 +94,19 @@ window.addEventListener('load', function(){
 });
 
 /**
+ * Test de l'expression régulière saisie sur un exemple.
+ */
+function testeRE(){
+	let cible = document.getElementById('cible').value;
+	let n = cible.search(re);
+	document.getElementById('match').innerText =
+		(n<0)?interface['not_found']:(interface['found'].replace('%d', n));
+}
+
+/**
  * Fonction organisant la tokenisation puis les affichages.
  */
+var re; // typed RE
 function analyse(){
 	let explication = document.querySelector('.explication output');
 	let texteBrut = document.getElementById('expression').value;
@@ -103,13 +115,33 @@ function analyse(){
 		explication.classList.remove('erreur');
 		return;
 	}
+	let texteTokenisé;
 	try {
-		let texteTokenisé = jsRegexp.parse(texteBrut);
-		console.info('tokens: ', texteTokenisé);
-		explication.innerHTML = afficheMustache(texteTokenisé);
+		texteTokenisé = jsRegexp.parse(texteBrut);
 		explication.classList.remove('erreur');
+		//document.getElementById('testRE').addEventListener()
 	} catch(error) {
 		explication.innerHTML = '<pre>'+ error.toString()+ '</pre>';
 		explication.classList.add('erreur');
+		return;
+	}
+	console.info('tokens: ', texteTokenisé);
+	let sortie = afficheMustache(texteTokenisé)
+	let m;
+	if ((m = texteBrut.match(/^\/([^/]*)\/([gimsuy]*)$/) )) {
+		re = undefined;
+		try {
+			re = RegExp(m[1], m[2]);
+			sortie += '<div>'+ interface['test']
+				+' <input id="cible" type="text" value="Lorem ipsum@dolor.sit 4m3t">'
+				+'<p id="match"></p></div>';
+		} catch (e) {
+			sortie += '<div>'+ interface['test_impossible']+ '</div>';
+		}
+	}
+	explication.innerHTML = sortie;
+	if ( re != undefined ) {
+		testeRE();
+		document.getElementById('cible').addEventListener('keyup', testeRE);
 	}
 }
