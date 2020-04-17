@@ -53,7 +53,6 @@ header('Content-Type: text/html; charset=utf-8');
 			<?php } ?>
 			<p>
 				Les contributeurs sont les bienvenus pour ajouter d'autres types d'expressions
-				(par exemple les expressions régulières)
 				ou pour traduire les explications dans d'autres langues.
 			</p>
 			<p>
@@ -69,8 +68,6 @@ header('Content-Type: text/html; charset=utf-8');
 		var JSlang = <?= json_encode($interface['JSlang']) ?>;
 		window.addEventListener('load', function(){
 			console.info('window🗲 load');
-			// le bouton est rendu actif quand la page est opérationnelle
-			document.getElementById('expliquer').disabled = false;
 			// `expression` est la case de texte contenant l'expression à analyser
 			let expression = document.getElementById('expression');
 			// elle a d'emblée le focus

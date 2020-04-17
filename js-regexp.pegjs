@@ -50,9 +50,9 @@ Assertion
   / "\\b" { return {type:'Assertion', name:'word_boundary'}; }
   / "\\B" { return {type:'Assertion', name:'non_word_boundary'}; }
   / "(" modality:( "?=" / "?!" ) content:Pattern ")"
-    { return {type:'Assertion', name:'lookahead', content: content, inverse:(modality=='?!')}; }
+    { return {type:'Assertion', name:'lookahead', content: content, invert:(modality=='?!')}; }
   / "(" modality:( "?<=" / "?<!" ) content:Pattern ")"
-    { return {type:'Assertion', name:'lookbehind', content: content, inverse:(modality=='?<!')}; }
+    { return {type:'Assertion', name:'lookbehind', content: content, invert:(modality=='?<!')}; }
 
 // quantifiers
 
@@ -88,13 +88,16 @@ Atom
 
 Group
   = "(" capture:( "?:" )? content:Pattern ")"
-    { return {type:'Group', content: content, capture: capture!='?:'}; }
+    {
+      capture = (capture!='?:');
+      return {type:'Group', content: content, capture: capture, number: capture?compteur:null };
+    }
   / "(?" name:GroupName content:Pattern ")"
-    { return {type:'Group', name: name.value, content: content, capture: true}; }
+    { return {type:'Group', name: name.value, content: content, capture: true, number: compteur}; }
 
 GroupName
-  = "<" name:([^!-#%-@] [^!-#%-/:-@]+) ">"
-    { return {type:'GroupName', value: name}; }
+  = "<" name1:[^!-#%-@] name2:[^!-#%-/:-@]+ ">"
+    { return {type:'GroupName', value: name1+name2.join('')}; }
 
   // RegExpIdentifierName = RegExpIdentifierStart RegExpIdentifierPart*
   // RegExpIdentifierStart is unicode ID_Start, $, _ or escape sequence
@@ -136,20 +139,21 @@ NonemptyClassRangesNoDash
     { return [first]; }
 
 ClassAtom
-  = '-'    { return {type:'Litteral', value: '-'}; }
-  / ClassAtomNoDash
+  = ClassAtomNoDash
+  / '-'    { return {type:'Litteral', value: '-'}; }
 
 ClassAtomNoDash
-  = literal:[^-\\\]]
-    { return {type:'Litteral', value: literal}; }
-  / "\\" value:ClassEscape
+  = "\\" value:ClassEscape
     { return value; }
+  / literal:[^-\\\]]
+    { return {type:'Litteral', value: literal}; }
 
 ClassEscape
   = "b"
     { return {type:'ControlEscape', code: 'b'}; }
   / "-"
     { return {type:'Litteral', value: '-'}; }
+  / CharacterClassEscape
   / CharacterEscape
 
 // litterals
@@ -175,7 +179,7 @@ CharacterEscape
   = code:[fnrtv]
     { return {type:'ControlEscape', code: code}; }
   / "c" code:[a-zA-Z]
-    { return {type:'ControlCharacter', code: code.toUpperCase()}; }
+    { return {type:'ControlCharacter', control: code.toUpperCase(), code: code.charCodeAt()-64}; }
   / "0" (! [0-9])
     { return {type:'Litteral', name: 'NUL'}; }
   / "x" code:([0-9A-Fa-f] [0-9A-Fa-f])

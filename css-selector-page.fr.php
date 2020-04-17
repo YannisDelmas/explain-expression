@@ -5,6 +5,9 @@ $interface = Array(
 	'docTitle' => 'Explique un sélecteur CSS 3',
 	'info' => '
 		<p>
+			<a href="?module=js-regexp"><span class="fa fa-cubes"></span> Module pour les expressions régulières</a>
+		</p>
+		<p>
 			Cette application pédagogique explique un sélecteur CSS&nbsp;3 indiqué dans la
 			case de texte ci-dessous en détaillant les sujets qu’il désigne.
 		</p>

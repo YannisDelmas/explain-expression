@@ -156,6 +156,8 @@ window.addEventListener('load', function(){
 		return escapeHTML(data);
 	};
 	Mustache.escape = afficheMustache;
+	// le bouton n'est rendu actif que quand la page est opérationnelle
+	document.getElementById('expliquer').disabled = false;
 });
 
 /**

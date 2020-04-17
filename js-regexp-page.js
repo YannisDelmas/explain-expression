@@ -9,7 +9,7 @@
  * Chargement asynchrone d'un script JS.
  */
 function chargeAsync(uri, id) {
-	console.debug('chargeAsync #', id, ' : ', uri);
+	console.info('load async script #', id, ' : ', uri);
 	let script = document.createElement('script');
 	script.src = uri;
 	if ( id != undefined ) script.id = id;
@@ -24,11 +24,12 @@ var lang = document.querySelector('html').getAttribute('lang');
 var module = document.body.dataset.module;
 
 // données d'explication
-var affiche, ref, interface;
+var affiche, ref, messages, modeleDiagram;
 function jsRegexpExplain(donnéesJSON) {
 	affiche = donnéesJSON.explanations;
 	ref = donnéesJSON.references;
-	interface = donnéesJSON.interface;
+	modeleDiagram = donnéesJSON.rr_diagram;
+	messages = donnéesJSON.messages;
 	let explications = document.getElementById('explications');
 	explications.parentNode.removeChild(explications);
 }
@@ -36,6 +37,16 @@ chargeAsync(`${module}-explain.${lang}.js`, 'explications');
 
 chargeAsync(`${module}.pegjs.js`);
 
+{
+	console.info('load async module : railroad.js');
+	let script = document.createElement('script');
+	script.setAttribute('type', 'module');
+	script.innerText =
+		'import rr, * as rrClass from "./railroad.js";\
+		Object.assign(window, rr);\
+		window.rrOptions = rrClass.Options;';
+	document.querySelector('head').appendChild(script);
+}
 
 /**
  * Retrouve un modèle dans un arbre de modèles.
@@ -60,7 +71,7 @@ function trouveModele(base, item) {
  * 
  * @see README.md
  */
-var escapeHTML, afficheMustache;
+var escapeHTML, afficheMustache, diagrammeMustache;
 window.addEventListener('load', function(){
 	console.info('window🗲 load');
 	escapeHTML = Mustache.escape;
@@ -86,11 +97,33 @@ window.addEventListener('load', function(){
 		// Cas 4 : token
 		if ( typeof data == 'object' ) {
 			let copie = Object.assign({ref: prepareReference}, data);
+			Mustache.escape = afficheMustache;
 			return Mustache.render(trouveModele(affiche, copie), copie);
 		}
+		// par défaut : fonctionnement normal de Mustache
 		return escapeHTML(data);
 	};
-	Mustache.escape = afficheMustache;
+	diagrammeMustache = function(data) {
+		// Cas 1 : nombre -> renvoyer tel quel
+		if ( typeof data == 'number' )
+			return data;
+		// Cas 2 : nul ou vide -> renvoyer ''
+		if ( ! data )
+			return '';
+		// Cas 3 : chaîne -> traiter comme un token
+		if ( typeof data == 'string' ) {
+			data = { type: data };
+		}
+		// Cas 4 : token
+		if ( typeof data == 'object' ) {
+			Mustache.escape = diagrammeMustache;
+			return Mustache.render(trouveModele(modeleDiagram, data), data);
+		}
+		// par défaut : fonctionnement normal de Mustache
+		return escapeHTML(data);
+	};
+	// le bouton n'est rendu actif que quand la page est opérationnelle
+	document.getElementById('expliquer').disabled = false;
 });
 
 /**
@@ -100,8 +133,19 @@ function testeRE(){
 	let cible = document.getElementById('cible').value;
 	let n = cible.search(re);
 	document.getElementById('match').innerText =
-		(n<0)?interface['not_found']:(interface['found'].replace('%d', n));
+		(n<0)?messages['not_found']:(messages['found'].replace('%d', n));
 }
+
+/**
+ * Compteur pour les groupes.
+ */
+var compteur = (function () {
+	let valeurCompteur;
+	return function (valeur) {
+		if ( valeur == undefined ) return ++valeurCompteur;
+		return (( valeurCompteur = valeur ));
+	}
+})();
 
 /**
  * Fonction organisant la tokenisation puis les affichages.
@@ -126,20 +170,31 @@ function analyse(){
 		return;
 	}
 	console.info('tokens: ', texteTokenisé);
-	let sortie = afficheMustache(texteTokenisé)
+	compteur(0);
+	let sortie = '<div id="diagramme"></div>'+ afficheMustache(texteTokenisé);
+	let diagramme;
 	let m;
-	if ((m = texteBrut.match(/^\/([^/]*)\/([gimsuy]*)$/) )) {
+	if ((m = texteBrut.match(/^\/(.*)\/([gimsuy]*)$/) )) {
 		re = undefined;
 		try {
 			re = RegExp(m[1], m[2]);
-			sortie += '<div>'+ interface['test']
+			sortie += '<div>'+ messages['test']
 				+' <input id="cible" type="text" value="Lorem ipsum@dolor.sit 4m3t">'
 				+'<p id="match"></p></div>';
 		} catch (e) {
-			sortie += '<div>'+ interface['test_impossible']+ '</div>';
+			sortie += '<div>'+ messages['test_impossible']+ '</div>';
+		}
+		try {
+			compteur(0);
+			diagramme = eval(diagrammeMustache(texteTokenisé)).format();
+		} catch (e) {
+			console.error(e);
 		}
 	}
 	explication.innerHTML = sortie;
+	if ( diagramme ) {
+		diagramme.addTo(document.getElementById('diagramme'));
+	}
 	if ( re != undefined ) {
 		testeRE();
 		document.getElementById('cible').addEventListener('keyup', testeRE);
