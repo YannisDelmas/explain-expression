@@ -164,9 +164,9 @@
                 return first;
               alternatives = alternatives.map(x => x[1]);
               alternatives.unshift(first);
-              return {type: 'Disjunction', alternatives: alternatives};
+              return {type: 'Disjunction', alternatives: alternatives, number: alternatives.length};
             },
-        peg$c8 = function(first, terms) { terms.unshift(first); return {type:'TermList', terms: terms}; },
+        peg$c8 = function(first, terms) { terms.unshift(first); return {type:'TermList', terms: terms, number: terms.length}; },
         peg$c9 = function(term) { return term; },
         peg$c10 = "",
         peg$c11 = function() { return {type:'Empty'}; },
@@ -251,7 +251,7 @@
         peg$c84 = peg$literalExpectation("[", false),
         peg$c85 = "]",
         peg$c86 = peg$literalExpectation("]", false),
-        peg$c87 = function(invert, parts) { return {type: 'CharacterClass', parts: parts, invert:(invert=="^")}; },
+        peg$c87 = function(invert, parts) { return {type: 'CharacterClass', parts: parts, number: parts.length, invert:(invert=="^")}; },
         peg$c88 = function() { return []; },
         peg$c89 = "-",
         peg$c90 = peg$literalExpectation("-", false),

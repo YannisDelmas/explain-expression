@@ -65,7 +65,7 @@ jsRegexpExplain({
 		':type': 'type',
 		':default': 'Comment("«{{&type}}» (pas implémenté)")',
 		RegularExpression: 'ComplexDiagram({{pattern}})',
-		Disjunction: 'Choice(Math.floor("{{#alternatives}}x{{/alternatives}}".length/2){{#alternatives}},{{.}}{{/alternatives}})',
+		Disjunction: 'Choice(Math.floor({{&number}}/2){{#alternatives}},{{.}}{{/alternatives}})',
 		TermList: 'Sequence({{#terms}}{{.}},{{/terms}})',
 		Quantifier: {
 			':type': 'repeat',
@@ -113,7 +113,7 @@ jsRegexpExplain({
 			v: 'Terminal("v. tab")',
 			b: 'Terminal("ret. arrière")',
 		},
-		CharacterClass: 'Object.assign(Group(Choice(Math.floor("{{#parts}}x{{/parts}}".length/2){{#parts}},{{.}}{{/parts}}), "un {{#invert}}pas {{/invert}}parmi"), {attrs:{class:"js-regexp-CharacterClass{{#invert}} invert{{/invert}}"}})',
+		CharacterClass: 'Object.assign(Group(Choice(Math.floor({{&number}}/2){{#parts}},{{.}}{{/parts}}), "un {{#invert}}pas {{/invert}}parmi"), {attrs:{class:"js-regexp-CharacterClass{{#invert}} invert{{/invert}}"}})',
 		CharacterRange: 'Sequence({{begin}},Comment(".."),{{end}})',
 		ControlCharacter: 'Terminal("contrôle-{{&control}}")',
 		HexEscape: 'Terminal("\\\\x{{&code}}")',

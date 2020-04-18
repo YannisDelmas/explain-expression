@@ -26,12 +26,12 @@ Pattern = first:Alternative alternatives:( "|" Alternative )*
         return first;
       alternatives = alternatives.map(x => x[1]);
       alternatives.unshift(first);
-      return {type: 'Disjunction', alternatives: alternatives};
+      return {type: 'Disjunction', alternatives: alternatives, number: alternatives.length};
     }
 
 Alternative
   = first:Term terms:Term+
-    { terms.unshift(first); return {type:'TermList', terms: terms}; }
+    { terms.unshift(first); return {type:'TermList', terms: terms, number: terms.length}; }
   / term:Term
     { return term; }
   / ""
@@ -111,7 +111,7 @@ GroupName
 
 CharacterClass
   = "[" invert:"^"? parts:ClassRanges "]"
-    { return {type: 'CharacterClass', parts: parts, invert:(invert=="^")}; }
+    { return {type: 'CharacterClass', parts: parts, number: parts.length, invert:(invert=="^")}; }
 
 ClassRanges
   = NonemptyClassRanges
