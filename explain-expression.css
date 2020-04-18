@@ -240,7 +240,7 @@ svg.railroad-diagram .js-regexp-CharacterClass rect.group-box + * .comment {
 }
 
 .explication .underline {
-	text-decoration: underline overline #069;
+	background-color: #9CF;
 	position: relative;
 }
 .explication .underline::before {
