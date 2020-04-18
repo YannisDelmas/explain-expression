@@ -96,8 +96,12 @@ window.addEventListener('load', function(){
 function testeRE(){
 	let cible = document.getElementById('cible').value;
 	let n = cible.search(re);
-	document.getElementById('match').innerText =
-		(n<0)?config.messages['not_found']:(config.messages['found'].replace('%d', n));
+	document.getElementById('match').innerHTML =
+		(n<0)
+		? config.messages['not_found']
+		: ('<p>'+ config.messages['found']+ '</p><blockquote>'+
+			cible.replace(re, '<span class="underline">$&</span>')+ '</blockquote>')
+		;
 }
 
 /**
@@ -142,8 +146,8 @@ function analyse(){
 		re = undefined;
 		try {
 			re = RegExp(m[1], m[2]);
-			sortie += '<div>'+ config.messages['test']
-				+' <input id="cible" type="text" value="Lorem ipsum@dolor.sit 4m3t">'
+			sortie += '<hr><div>'+ config.messages['test']
+				+' <input id="cible" type="text" value="Lorém ipsum@dolor.σιτ 4m3t">'
 				+'<p id="match"></p></div>';
 		} catch (e) {
 			sortie += '<div>'+ config.messages['test_impossible']+ '</div>';

@@ -99,6 +99,10 @@ button:hover {
 .explication output.erreur {
 	background-color: #FCC;
 }
+.explication output hr {
+	margin: 1ex -1ex;
+	border-color: #333;
+}
 
 .explication p, .explication ol, .explication ul {
 	margin: 0.25ex 0;
@@ -222,8 +226,11 @@ svg.railroad-diagram rect.group-box {
 svg.railroad-diagram .js-regexp-CharacterClass rect.group-box {
 	stroke-dasharray: none;
 	stroke-width: 2;
-	stroke: #999;
-	fill: #DDD;
+	stroke: #666;
+	fill: #DFD;
+}
+svg.railroad-diagram .js-regexp-CharacterClass.invert rect.group-box {
+	fill: #FDD;
 }
 svg.railroad-diagram .js-regexp-CharacterClass path {
 	stroke: none;
@@ -232,6 +239,17 @@ svg.railroad-diagram .js-regexp-CharacterClass rect.group-box + * .comment {
 	font: bold 14px monospace;
 }
 
+.explication .underline {
+	text-decoration: underline overline #069;
+	position: relative;
+}
+.explication .underline::before {
+	content: '';
+	position: absolute; left: 0; bottom: -6px;
+	border-style: solid;
+	border-color: transparent transparent #069 transparent;
+	border-width: 0 10px 10px 0;
+}
 
 /* 5) Exemples */
 

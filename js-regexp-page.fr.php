@@ -10,9 +10,9 @@ $interface = Array(
 		<p>
 			Il existe de nombreux systèmes d’<em>expressions régulières</em>
 			ou <em>expressions rationnelles</em>. La variante détaillée ici
-			est celle du Javascript / ECMAscript. La plupart des constructions
-			listées dans les exemples sont reconnues par l’ensemble des
-			systèmes d’expressions régulières.
+			est celle du HTML&nbsp;5 et du Javascript / ECMAscript.
+			La plupart des constructions listées dans les exemples sont reconnues
+			par l’ensemble des systèmes d’expressions régulières.
 		</p>
 	',
 	'placeholder' => 'RegExp à expliquer',
@@ -43,12 +43,12 @@ $interface = Array(
 			</li>
 			<li>
 				Expressions courantes&nbsp;:
-				<code class="exemple">/^[a-z0-9_-]{3,16}$/</code>,
+				<code class="exemple">/[a-z][a-z0-9_-]{3,16}/i</code> (nom d’utilisateur),
 				<code class="exemple">/\d{2}/</code>,
 				<code class="exemple">/\w+/</code> (lettres, chiffres, soulignés),
 				<code class="exemple">/[\w.+-]+/</code> (possibilités de points, plus et tirets),
-				<code class="exemple">/^[\w.+-]+@([\w-]+\.)+[a-z]{2,}$/i</code> (adresse mail),
-				<code class="exemple">/^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/[\w.-]+)*\/?$/i</code> (adresse web).
+				<code class="exemple">/[\w.+-]+@([^\s@.]+\.)+[^\s@.]{2,}/u</code> (adresse mail),
+				<code class="exemple">/(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/[\w.-]+)*\/?/i</code> (adresse web).
 			</li>
 			<li>
 				Expressions avancées&nbsp;:
@@ -64,11 +64,10 @@ $interface = Array(
 			<a href="https://github.com/YannisDelmas/explain-expression/"><span class="fa fa-github"></span>
 			Code source</a> de cette application.
 			Les diagrammes sont réalisés à l’aide de la biliothèque
-			<a href="https://github.com/tabatkins/railroad-diagrams">railroad-diagrams</a>
+			<a href="https://github.com/tabatkins/railroad-diagrams"><span class="fa fa-github"></span> railroad-diagrams</a>
 			de Tab Atkins.
 			Image de fond par H.&nbsp;Galeano,
 			<a href="https://www.toptal.com/designers/subtlepatterns/full-bloom-pattern/">subtle
 			patterns</a>.
 		</p>',
-	'JSlang' => []
 );

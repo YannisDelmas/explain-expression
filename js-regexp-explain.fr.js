@@ -54,8 +54,8 @@ jsRegexpExplain({
 		CharacterClass: 'un caractère qui {{#invert}}n’est pas{{/invert}}{{^invert}}est{{/invert}} parmi&nbsp;:<ul>{{#parts}}<li>{{.}}</li>{{/parts}}</ul>',
 		CharacterRange: 'les caractères compris entre {{begin}} et {{end}}',
 		ControlCharacter: 'le caractère <span class="value">contrôle-{{&control}}</span> (code {{&code}})',
-		HexEscape: 'le caractère de code hexadécimal <span class="value">{{&code}}</span>',
-		UnicodeEscape: 'le caractère Unicode de code hexadécimal <span class="value">{{&code}}</span>',
+		HexEscape: 'le caractère de code hexadécimal <span class="value">{{&code}}</span><sub>h</sub>',
+		UnicodeEscape: 'le caractère Unicode de code hexadécimal <span class="value">{{&code}}</span><sub>h</sub>',
 	},
 	references: {
 		':type': 'type',
@@ -113,7 +113,7 @@ jsRegexpExplain({
 			v: 'Terminal("v. tab")',
 			b: 'Terminal("ret. arrière")',
 		},
-		CharacterClass: 'Object.assign(Group(Choice(Math.floor("{{#parts}}x{{/parts}}".length/2){{#parts}},{{.}}{{/parts}}), "un {{#invert}}pas {{/invert}}parmi"), {attrs:{class:"js-regexp-CharacterClass"}})',
+		CharacterClass: 'Object.assign(Group(Choice(Math.floor("{{#parts}}x{{/parts}}".length/2){{#parts}},{{.}}{{/parts}}), "un {{#invert}}pas {{/invert}}parmi"), {attrs:{class:"js-regexp-CharacterClass{{#invert}} invert{{/invert}}"}})',
 		CharacterRange: 'Sequence({{begin}},Comment(".."),{{end}})',
 		ControlCharacter: 'Terminal("contrôle-{{&control}}")',
 		HexEscape: 'Terminal("\\\\x{{&code}}")',
@@ -123,6 +123,6 @@ jsRegexpExplain({
 		'test': 'Tester cette expression sur un exemple&nbsp;:',
 		'test_impossible': 'Cette expression n’est pas reconnue par votre navigateur.',
 		'not_found': 'Pas de correspondance trouvée.',
-		'found': 'Correspondance trouvée en position %d.',
+		'found': 'Correspondance(s) trouvée(s)&nbsp;:',
 	}
 });
