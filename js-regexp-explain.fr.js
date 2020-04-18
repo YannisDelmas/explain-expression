@@ -12,8 +12,8 @@ jsRegexpExplain({
 		TermList: 'Successivement, la suite des motifs suivants&nbsp;:<ol>{{#terms}}<li>{{.}}</li>{{/terms}}</ol>',
 		Quantifier: {
 			':type': 'repeat',
-			':default': 'répété {{^repeatMax}}au moins {{/repeatMax}}<span class="value">{{repeatMin}}</span>{{#repeatMax}} à <span class="value">{{repeatMax}}</span>{{/repeatMax}} fois{{#repeatNonGreedy}}, de façon non vorace{{/repeatNonGreedy}}&nbsp;: <blockquote>{{term}}</div></blockquote>',
-			exact: 'répété <span class="value">{{repeatMin}}</span> fois&nbsp;: <blockquote>{{term}}</div></blockquote>',
+			':default': 'répété {{^repeatMax}}au moins {{/repeatMax}}<span class="value">{{repeatMin}}</span>{{#repeatMax}} à <span class="value">{{repeatMax}}</span>{{/repeatMax}} fois{{#repeatNonGreedy}}, de façon non vorace{{/repeatNonGreedy}}&nbsp;: {{term}}',
+			exact: 'répété <span class="value">{{repeatMin}}</span> fois&nbsp;: {{term}}',
 		},
 		Assertion: {
 			':type': 'name',
