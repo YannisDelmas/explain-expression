@@ -5,7 +5,7 @@ $interface = Array(
 	'docTitle' => 'Explique un sélecteur CSS 3',
 	'info' => '
 		<p>
-			<a href="?module=js-regexp"><span class="fa fa-cubes"></span> Module pour les expressions régulières</a>
+			<a href="?module=js-regexp"><span class="fa fa-cubes"></span> Explique une expression régulière</a>
 		</p>
 		<p>
 			Cette application pédagogique explique un sélecteur CSS&nbsp;3 indiqué dans la
@@ -39,8 +39,7 @@ $interface = Array(
 			certaines parties sont reprises de
 			<a href="https://github.com/featurist/bo-selector"><span class="fa fa-github"></span>
 			bo-selector</a>.
-		</p>',
-	'JSlang' => ['Sujet(s)&nbsp;: ', 'Spécificité&nbsp;: ']
+		</p>'
 );
 
 include("css-selector-page.php");

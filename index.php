@@ -12,6 +12,7 @@
 /* Initialisations */
 $lang = isset($_REQUEST['lang'])? strtr($_REQUEST['lang'], '\\/.:\'"', ''): 'fr';
 $module = isset($_REQUEST['module'])? strtr($_REQUEST['module'], '\\/.:\'"', ''): 'css-selector';
+$develMode = ( $_SERVER['HTTP_HOST'] != 'delmas-rigoutsos.nom.fr' );
 include("{$module}-page.{$lang}.php");
 
 /* Encodage */
@@ -45,7 +46,7 @@ header('Content-Type: text/html; charset=utf-8');
 	<section class="exemples"><?= $interface['examples'] ?></section>
 	<footer>
 		<div class="message">
-			<?php if ( $_SERVER['HTTP_HOST'] != 'delmas-rigoutsos.nom.fr' ) { ?>
+			<?php if ( $develMode ) { ?>
 			<p>
 				Cette page est sur un <strong>serveur de développement</strong>,
 				une <a href="https://delmas-rigoutsos.nom.fr/outils/explain-expression/"><strong>version stable</strong></a> est également disponible.
@@ -63,11 +64,18 @@ header('Content-Type: text/html; charset=utf-8');
 		<?= $interface['footer'] ?>
 	</footer>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.min.js" integrity="sha256-MPgtcamIpCPKRRm1ppJHkvtNBAuE71xcOM+MmQytXi8=" crossorigin="anonymous"></script>
+	<script>
+		var config = {
+			lang: '<?= $lang ?>',
+			module: '<?= $module ?>',
+			devel: <?= $develMode?'true':'false' ?>,
+		};
+	</script>
+	<script src="explain-expression.js"></script>
 	<script src="<?= $module ?>-page.js"></script>
 	<script>
-		var JSlang = <?= json_encode($interface['JSlang']) ?>;
 		window.addEventListener('load', function(){
-			console.info('window🗲 load');
+			debug('window🗲 load');
 			// `expression` est la case de texte contenant l'expression à analyser
 			let expression = document.getElementById('expression');
 			// elle a d'emblée le focus

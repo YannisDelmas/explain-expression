@@ -5,7 +5,7 @@ $interface = Array(
 	'docTitle' => 'Explique une expression régulière',
 	'info' => '
 		<p>
-			<a href="'. dirname($_SERVER['PHP_SELF']). '/"><span class="fa fa-cubes"></span> Module pour les sélecteurs CSS</a>
+			<a href="'. dirname($_SERVER['PHP_SELF']). '/"><span class="fa fa-cubes"></span> Explique un sélecteur CSS</a>
 		</p>
 		<p>
 			Il existe de nombreux systèmes d’<em>expressions régulières</em>

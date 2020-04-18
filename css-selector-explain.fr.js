@@ -205,5 +205,9 @@ cssSelectorExplain({
 			is:  '(t,a) => arraySum(specMax(t.args.selectors.map(i => iterate(i))), a)',
 			where: '(t,a) => a',
 		},
-	}
+	},
+	messages: {
+		'subjects': 'Sujet(s)&nbsp;: ',
+		'specificity': 'Spécificité&nbsp;: ',
+	},
 });

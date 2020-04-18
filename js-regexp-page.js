@@ -6,39 +6,17 @@
 
 
 /**
- * Chargement asynchrone d'un script JS.
- */
-function chargeAsync(uri, id) {
-	console.info('load async script #', id, ' : ', uri);
-	let script = document.createElement('script');
-	script.src = uri;
-	if ( id != undefined ) script.id = id;
-	document.querySelector('head').appendChild(script);
-}
-
-
-/**
  * Initialisations spécifiques à ce module.
  */
-var lang = document.querySelector('html').getAttribute('lang');
-var module = document.body.dataset.module;
-
-// données d'explication
-var affiche, ref, messages, modeleDiagram;
-function jsRegexpExplain(donnéesJSON) {
-	affiche = donnéesJSON.explanations;
-	ref = donnéesJSON.references;
-	modeleDiagram = donnéesJSON.rr_diagram;
-	messages = donnéesJSON.messages;
-	let explications = document.getElementById('explications');
-	explications.parentNode.removeChild(explications);
+function jsRegexpExplain(data) {
+	config = Object.assign(config, data);
 }
-chargeAsync(`${module}-explain.${lang}.js`, 'explications');
+chargeAsync(`${config.module}-explain.${config.lang}.js`, 'explications');
 
-chargeAsync(`${module}.pegjs.js`);
+chargeAsync(`${config.module}.pegjs.js`);
 
 {
-	console.info('load async module : railroad.js');
+	debug('load async module : railroad.js');
 	let script = document.createElement('script');
 	script.setAttribute('type', 'module');
 	script.innerText =
@@ -49,35 +27,21 @@ chargeAsync(`${module}.pegjs.js`);
 }
 
 /**
- * Retrouve un modèle dans un arbre de modèles.
- */
-function trouveModele(base, item) {
-	let type = base[':type'];
-	if ( type == undefined ) return '';
-	let modele = base[item[type]];
-	if ( modele == undefined )
-		return (base[':default'] == undefined)? '': base[':default'];
-	if ( typeof modele == 'object' )
-		return trouveModele(modele, item);
-	return modele;
-}
-
-/**
  * Fabrique l'explication d'une expression tokenisée.
  * 
  * Fonction récursive déterminant l'explication d'une expression tokenisée
- * en exploitant les indications données dans l'objet `affiche`. Voir
+ * en exploitant les indications données dans l'arborescence de modèle. Voir
  * le fichier `README.md` pour le détail du modèle d'explication.
  * 
  * @see README.md
  */
 var escapeHTML, afficheMustache, diagrammeMustache;
 window.addEventListener('load', function(){
-	console.info('window🗲 load');
+	debug('window🗲 load');
 	escapeHTML = Mustache.escape;
 	function prepareReference() {
 		return function(text, render) {
-			let reference = trouveModele(ref, this);
+			let reference = trouveModele(config.references, this);
 			return reference
 				? `<a class="ref" href="${reference}"><span class="fa fa-info-circle"></span>${render(text)}</a>`
 				: '';
@@ -98,7 +62,7 @@ window.addEventListener('load', function(){
 		if ( typeof data == 'object' ) {
 			let copie = Object.assign({ref: prepareReference}, data);
 			Mustache.escape = afficheMustache;
-			return Mustache.render(trouveModele(affiche, copie), copie);
+			return Mustache.render(trouveModele(config.explanations, copie), copie);
 		}
 		// par défaut : fonctionnement normal de Mustache
 		return escapeHTML(data);
@@ -117,7 +81,7 @@ window.addEventListener('load', function(){
 		// Cas 4 : token
 		if ( typeof data == 'object' ) {
 			Mustache.escape = diagrammeMustache;
-			return Mustache.render(trouveModele(modeleDiagram, data), data);
+			return Mustache.render(trouveModele(config.rr_diagram, data), data);
 		}
 		// par défaut : fonctionnement normal de Mustache
 		return escapeHTML(data);
@@ -133,7 +97,7 @@ function testeRE(){
 	let cible = document.getElementById('cible').value;
 	let n = cible.search(re);
 	document.getElementById('match').innerText =
-		(n<0)?messages['not_found']:(messages['found'].replace('%d', n));
+		(n<0)?config.messages['not_found']:(config.messages['found'].replace('%d', n));
 }
 
 /**
@@ -169,7 +133,7 @@ function analyse(){
 		explication.classList.add('erreur');
 		return;
 	}
-	console.info('tokens: ', texteTokenisé);
+	debug('tokens: ', texteTokenisé);
 	compteur(0);
 	let sortie = '<div id="diagramme"></div>'+ afficheMustache(texteTokenisé);
 	let diagramme;
@@ -178,15 +142,15 @@ function analyse(){
 		re = undefined;
 		try {
 			re = RegExp(m[1], m[2]);
-			sortie += '<div>'+ messages['test']
+			sortie += '<div>'+ config.messages['test']
 				+' <input id="cible" type="text" value="Lorem ipsum@dolor.sit 4m3t">'
 				+'<p id="match"></p></div>';
 		} catch (e) {
-			sortie += '<div>'+ messages['test_impossible']+ '</div>';
+			sortie += '<div>'+ config.messages['test_impossible']+ '</div>';
 		}
 		try {
 			compteur(0);
-			diagramme = eval(diagrammeMustache(texteTokenisé)).format();
+			diagramme = eval(debug(diagrammeMustache(texteTokenisé))).format();
 		} catch (e) {
 			console.error(e);
 		}
