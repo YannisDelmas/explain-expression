@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "compile js-regexp.pegjs.js",
+			"type": "shell",
+			"command": "pegjs -o js-regexp.pegjs.js --format globals -e jsRegexp js-regexp.pegjs"
+		},
+		{
+			"label": "compile css-selector.jison.js",
+			"type": "shell",
+			"command": "jison css-selector.jison -o css-selector.jison.js"
+		}
+	]
+}

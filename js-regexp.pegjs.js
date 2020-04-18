@@ -147,7 +147,8 @@
         peg$c3 = peg$classExpectation(["g", "i", "m", "s", "u", "y"], false, false),
         peg$c4 = function(pattern, flags) {
               return {
-                type: 'RegularExpression', pattern: pattern,
+                type: 'RegularExpression',
+                pattern: pattern, flags: flags.join(''),
                 global: flags.includes('g'),
                 ignoreCase: flags.includes('i'),
                 multiline: flags.includes('m'),

@@ -9,7 +9,8 @@
 RegularExpression = "/" pattern:Pattern "/" flags:([gimsuy]*)
     {
       return {
-        type: 'RegularExpression', pattern: pattern,
+        type: 'RegularExpression',
+        pattern: pattern, flags: flags.join(''),
         global: flags.includes('g'),
         ignoreCase: flags.includes('i'),
         multiline: flags.includes('m'),

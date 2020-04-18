@@ -131,7 +131,6 @@ function analyse(){
 	try {
 		texteTokenisé = jsRegexp.parse(texteBrut);
 		explication.classList.remove('erreur');
-		//document.getElementById('testRE').addEventListener()
 	} catch(error) {
 		explication.innerHTML = '<pre>'+ error.toString()+ '</pre>';
 		explication.classList.add('erreur');
@@ -141,23 +140,22 @@ function analyse(){
 	compteur(0);
 	let sortie = '<div id="diagramme"></div>'+ afficheMustache(texteTokenisé);
 	let diagramme;
-	let m;
-	if ((m = texteBrut.match(/^\/(.*)\/([gimsuy]*)$/) )) {
-		re = undefined;
-		try {
-			re = RegExp(m[1], m[2]);
-			sortie += '<hr><div>'+ config.messages['test']
-				+' <input id="cible" type="text" value="Lorém ipsum@dolor.σιτ 4m3t">'
-				+'<p id="match"></p></div>';
-		} catch (e) {
-			sortie += '<div>'+ config.messages['test_impossible']+ '</div>';
-		}
-		try {
-			compteur(0);
-			diagramme = eval(debug(diagrammeMustache(texteTokenisé))).format();
-		} catch (e) {
-			console.error(e);
-		}
+	let m = texteBrut.match(/^\/(.*)\/([gimsuy]*)$/);
+	re = undefined;
+	try {
+		re = RegExp(m[1], m[2]);
+		sortie += '<hr><div>'+ config.messages['test']
+			+' <input id="cible" type="text" value="Lorém ipsum@dolor.σιτ 4m3t">'
+			+'<p id="match"></p></div>';
+	} catch (e) {
+		sortie += '<div>'+ config.messages['test_impossible']+ '</div>';
+		debug('error trying RegExp in browser:', e);
+	}
+	try {
+		compteur(0);
+		diagramme = eval(debug(diagrammeMustache(texteTokenisé))).format();
+	} catch (e) {
+		debug('diagram building error:', e);
 	}
 	explication.innerHTML = sortie;
 	if ( diagramme ) {
