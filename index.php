@@ -70,6 +70,7 @@ header('Content-Type: text/html; charset=utf-8');
 			module: '<?= $module ?>',
 			devel: <?= $develMode?'true':'false' ?>,
 		};
+		<?php if ( isset($module_script) ) echo $module_script; ?>
 	</script>
 	<script src="explain-expression.js"></script>
 	<script src="<?= $module ?>-page.js"></script>

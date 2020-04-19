@@ -22,9 +22,9 @@ $interface = Array(
 		<ul>
 			<li>
 				Structures générales&nbsp;:
-				<code class="exemple">/A/gimuy</code>,
-				<code class="exemple">/A|B/</code>,
-				<code class="exemple">/AB/</code>,
+				<code class="exemple">/A/gimuy</code> (drapeaux),
+				<code class="exemple">/ABC/</code> (succession),
+				<code class="exemple">/A|B|C/</code> (alternative),
 				<code class="exemple">/A?/</code>,
 				<code class="exemple">/A*/</code>,
 				<code class="exemple">/A+/</code>,
@@ -32,14 +32,16 @@ $interface = Array(
 				<code class="exemple">/A{2,}/</code>,
 				<code class="exemple">/A{2,4}/</code>,
 				<code class="exemple">/A+?/</code>,
-				<code class="exemple">/./</code>,
 				<code class="exemple">/A(B)C/</code>,
 				<code class="exemple">/(m).*\1/</code>,
 				<code class="exemple">/^i/</code>,
 				<code class="exemple">/m$/</code>,
 				<code class="exemple">/\bi/</code>,
 				<code class="exemple">/^A(B)?C(D)(?:EF)+(?=G)/</code>,
-				<code class="exemple">/\/\.\$\(/</code>.
+				<code class="exemple">/./</code>,
+				<code class="exemple">/[-a-z+.]/</code>,
+				<code class="exemple">/[^0-9\s]/</code>,
+				<code class="exemple">/\/\.\$\(/</code> (échappement).
 			</li>
 			<li>
 				Expressions courantes&nbsp;:
@@ -71,3 +73,5 @@ $interface = Array(
 			patterns</a>.
 		</p>',
 );
+
+include("js-regexp-page.php");

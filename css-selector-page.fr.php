@@ -2,7 +2,7 @@
 
 $interface = Array(
 	'title' => 'Explique un sélecteur CSS',
-	'docTitle' => 'Explique un sélecteur CSS 3',
+	'docTitle' => 'Explique un sélecteur CSS',
 	'info' => '
 		<p>
 			<a href="?module=js-regexp"><span class="fa fa-cubes"></span> Explique une expression régulière</a>

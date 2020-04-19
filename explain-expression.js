@@ -38,3 +38,12 @@ function trouveModele(templateList, item) {
 		return trouveModele(template, item);
 	return template;
 }
+
+/**
+ * Encodage HTML.
+ */
+function encodeHTMLEntities(text) {
+	let textArea = document.createElement('textarea');
+	textArea.innerText = text;
+	return textArea.innerHTML;
+}

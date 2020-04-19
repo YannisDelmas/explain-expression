@@ -5,15 +5,15 @@ jsRegexpExplain({
 		':type': 'type',
 		':default': '<span class="token"><span class="token-type">{{&type}}</span> (pas implémenté)</span>',
 		RegularExpression:
-			'Expression régulière{{#global}}, globale{{/global}}{{#ignoreCase}}, insensible à la casse{{/ignoreCase}}{{#multiline}}, multiligne{{/multiline}}{{#dotAll}}, avec point attrape-tout{{/dotAll}}{{#unicode}}, compatible Unicode{{/unicode}}{{#sticky}}, sticky{{/sticky}}&nbsp;:\
+			'Expression régulière{{#ref}} RegExp{{/ref}}{{#global}}, globale{{/global}}{{#ignoreCase}}, insensible à la casse{{/ignoreCase}}{{#multiline}}, multiligne{{/multiline}}{{#dotAll}}, avec point attrape-tout{{/dotAll}}{{#unicode}}, compatible Unicode{{/unicode}}{{#sticky}}, sticky{{/sticky}}&nbsp;:\
 			<blockquote>{{pattern}}</blockquote>',
 		Empty: 'le motif vide',
 		Disjunction: 'L’un des motifs suivants&nbsp;:<ul>{{#alternatives}}<li>{{.}}</li>{{/alternatives}}</ul>',
 		TermList: 'Successivement, la suite des motifs suivants&nbsp;:<ol>{{#terms}}<li>{{.}}</li>{{/terms}}</ol>',
 		Quantifier: {
 			':type': 'repeat',
-			':default': 'répété {{^repeatMax}}au moins {{/repeatMax}}<span class="value">{{repeatMin}}</span>{{#repeatMax}} à <span class="value">{{repeatMax}}</span>{{/repeatMax}} fois{{#repeatNonGreedy}}, de façon non vorace{{/repeatNonGreedy}}&nbsp;: {{term}}',
-			exact: 'répété <span class="value">{{repeatMin}}</span> fois&nbsp;: {{term}}',
+			':default': '<span class="value">{{repeatMin}}</span>{{#repeatMax}} à <span class="value">{{repeatMax}}</span>{{/repeatMax}} fois{{^repeatMax}} au moins{{/repeatMax}}{{#ref}}{{/ref}}{{#repeatNonGreedy}}, de façon non vorace{{/repeatNonGreedy}}&nbsp;: {{term}}',
+			exact: '<span class="value">{{repeatMin}}</span> fois{{#ref}}{{/ref}}&nbsp;: {{term}}',
 		},
 		Assertion: {
 			':type': 'name',
@@ -59,12 +59,33 @@ jsRegexpExplain({
 	},
 	references: {
 		':type': 'type',
+		RegularExpression: 'https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Expressions_r%C3%A9guli%C3%A8res',
+		Quantifier:  'https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Expressions_r%C3%A9guli%C3%A8res/Quantificateurs',
 		// TODO
+		// Disjunction: '',
+		// Assertion: {
+		// 	':type': 'name',
+		// 	anchor_begin: '',
+		// 	anchor_end: '',
+		// 	word_boundary: '',
+		// 	non_word_boundary: '',
+		// 	lookahead: '',
+		// 	lookbehind: '',
+		// },
+		// Group: '',
+		// GroupReference: '',
+		// CharacterSet: '',
+		// Litteral: '',
+		// ControlEscape: '',
+		// CharacterClass: '',
+		// ControlCharacter: '',
+		// HexEscape: '',
+		// UnicodeEscape: '',
 	},
 	rr_diagram: {
 		':type': 'type',
 		':default': 'Comment("«{{&type}}» (pas implémenté)")',
-		RegularExpression: 'ComplexDiagram({{pattern}})',
+		RegularExpression: 'Diagram({{pattern}})',
 		Disjunction: 'Choice(Math.floor({{&number}}/2){{#alternatives}},{{.}}{{/alternatives}})',
 		TermList: 'Sequence({{#terms}}{{.}},{{/terms}})',
 		Quantifier: {
@@ -120,6 +141,7 @@ jsRegexpExplain({
 		UnicodeEscape: 'Terminal("\\\\u{"+"{{&code}}}")',
 	},
 	messages: {
+		'diagram': 'Diagramme de l’automate <span id="dl"></span>&nbsp;:',
 		'test': 'Tester cette expression sur un exemple&nbsp;:',
 		'test_impossible': 'Cette expression n’est pas reconnue par votre navigateur.',
 		'not_found': 'Pas de correspondance trouvée.',

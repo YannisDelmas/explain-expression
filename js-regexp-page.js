@@ -116,6 +116,24 @@ var compteur = (function () {
 })();
 
 /**
+ * Téléchargement du SVG.
+ */
+function createSvgLink() {
+	let texteBrut = document.getElementById('expression').value;
+	let svg = document.querySelector('#diagramme svg');
+	let svgFile =
+		`<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="railroad-diagram" width="${svg.getAttribute('width')}" height="${svg.getAttribute('height')}" viewBox="${svg.getAttribute('viewBox')}">
+		<title>Railroad-diagram of regular expression ${encodeHTMLEntities(texteBrut)}</title>
+		<defs><style type="text/css">${SvgExportCss}</style></defs>
+		${svg.innerHTML}
+		</svg>`;
+	let blob = new Blob([svgFile], {type: 'image/svg+xml;charset=utf-8'});
+	this.download = 'diagram.svg';
+	this.href = URL.createObjectURL(blob);
+}
+
+/**
  * Fonction organisant la tokenisation puis les affichages.
  */
 var re; // typed RE
@@ -138,7 +156,8 @@ function analyse(){
 	}
 	debug('tokens: ', texteTokenisé);
 	compteur(0);
-	let sortie = '<div id="diagramme"></div>'+ afficheMustache(texteTokenisé);
+	let sortie = '<figure id="diagramme"><figcaption>'+ config.messages['diagram']+
+		'</figcaption></figure><div>'+ afficheMustache(texteTokenisé)+ '</div>';
 	let diagramme;
 	let m = texteBrut.match(/^\/(.*)\/([gimsuy]*)$/);
 	re = undefined;
@@ -160,6 +179,8 @@ function analyse(){
 	explication.innerHTML = sortie;
 	if ( diagramme ) {
 		diagramme.addTo(document.getElementById('diagramme'));
+		document.getElementById('dl').innerHTML = '(<a href="#"><span class="fa fa-download"></span> SVG</a>)';
+		document.querySelector('#dl > a').addEventListener('click', createSvgLink, true);
 	}
 	if ( re != undefined ) {
 		testeRE();

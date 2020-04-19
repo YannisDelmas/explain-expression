@@ -10,11 +10,11 @@ body {
 }
 
 footer .message {
-	font-size: 120%;
+	font-size: 109%;
 }
 
 form input, form button, .explication {
-	font-size: 141%;
+	font-size: 119%;
 }
 
 .explication {
@@ -48,6 +48,10 @@ footer .message {
 	border-radius: 0.8em;
 	padding: 1ex;
 	margin: 1ex 2em;
+}
+
+figure img, figure svg {
+	max-width: 100%;
 }
 
 /* 3) Formulaire */
@@ -88,6 +92,10 @@ button:hover {
 /* 4) Zone d'explication */
 
 /* 4.a) Éléments généraux */
+
+.explication figure {
+	margin: 1ex 0;
+}
 
 .explication output {
 	display: block;
@@ -212,9 +220,6 @@ svg.railroad-diagram path.diagram-text {
 	stroke: black;
 	fill: white;
 	cursor: help;
-}
-svg.railroad-diagram g.diagram-text:hover path.diagram-text {
-	fill: #EEE;
 }
 
 svg.railroad-diagram rect.group-box {
