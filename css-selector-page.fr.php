@@ -2,16 +2,19 @@
 
 $interface = Array(
 	'title' => 'Explique un sélecteur CSS',
-	'docTitle' => 'Explique un sélecteur CSS 3',
+	'docTitle' => 'Explique un sélecteur CSS',
 	'info' => '
+		<p>
+			<a href="?module=js-regexp"><span class="fa fa-cubes"></span> Explique une expression régulière</a>
+		</p>
 		<p>
 			Cette application pédagogique explique un sélecteur CSS&nbsp;3 indiqué dans la
 			case de texte ci-dessous en détaillant les sujets qu’il désigne.
 		</p>
 		<p>
 			Rappel&nbsp;: En CSS une <em>règle</em> est une écriture du type
-			<code class="language-css">S { D }</code>, où «S» est un <em>sélecteur</em> et
-			«D» une succession de <em>déclarations</em>.
+			«&nbsp;S { D }&nbsp;», où «&nbsp;S&nbsp;» est un <em>sélecteur</em> et
+			«&nbsp;D&nbsp;» une succession de <em>déclarations</em>.
 			Le sélecteur définit la liste des <em>sujets</em> à qui s’applique la règle.
 			Ces sujets sont des éléments et pseudo-éléments.
 			Les déclarations définissent la valeur de propiétés de cet élément.
@@ -36,8 +39,7 @@ $interface = Array(
 			certaines parties sont reprises de
 			<a href="https://github.com/featurist/bo-selector"><span class="fa fa-github"></span>
 			bo-selector</a>.
-		</p>',
-	'JSlang' => ['Sujet(s)&nbsp;: ', 'Spécificité&nbsp;: ']
+		</p>'
 );
 
 include("css-selector-page.php");

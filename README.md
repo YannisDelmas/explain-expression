@@ -15,11 +15,12 @@ Les fichiers donnant les explications sont au format JavaScript: un objet servan
 Pour les sélecteurs CSS, la structure est la suivante:
 ```javascript
 cssSelectorExplain({
-	module: 'css-selector',
-	lang: /* code ISO de langue */,
+	module: 'css-selector' /* nom du module */,
+	lang:   'fr' /* code ISO de langue */,
 	explanations: { /* arborescence des explications */ },
 	references:   { /* arborescence des références */ },
-	specificity:  { /* spécifique à ce module : spécificité */ }
+	specificity:  { /* spécifique à ce module : spécificité */ },
+	messages:     { /* autres messages d'interface */ }
 });
 ```
 

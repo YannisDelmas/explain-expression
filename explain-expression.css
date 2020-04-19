@@ -10,15 +10,19 @@ body {
 }
 
 footer .message {
-	font-size: 120%;
+	font-size: 109%;
 }
 
-input, button, .explication {
-	font-size: 141%;
+form input, form button, .explication {
+	font-size: 119%;
 }
 
 .explication {
 	line-height: 160%;
+}
+
+p {
+	margin: 1ex 0;
 }
 
 /* 2) Mise en page générale */
@@ -46,11 +50,15 @@ footer .message {
 	margin: 1ex 2em;
 }
 
+figure img, figure svg {
+	max-width: 100%;
+}
+
 /* 3) Formulaire */
 
 form * { text-align: center; }
 form > * { margin: 1ex auto; }
-input {
+form input {
 	width: 30em;
 }
 .input-group {
@@ -74,7 +82,20 @@ input {
 	border-bottom-right-radius: 6px;
 }
 
+button {
+	background-color: #CCC;
+}
+button:hover {
+	background-color: #EEE;
+}
+
 /* 4) Zone d'explication */
+
+/* 4.a) Éléments généraux */
+
+.explication figure {
+	margin: 1ex 0;
+}
 
 .explication output {
 	display: block;
@@ -86,8 +107,12 @@ input {
 .explication output.erreur {
 	background-color: #FCC;
 }
+.explication output hr {
+	margin: 1ex -1ex;
+	border-color: #333;
+}
 
-.explication p, .explication ol {
+.explication p, .explication ol, .explication ul {
 	margin: 0.25ex 0;
 }
 .explication blockquote {
@@ -121,19 +146,32 @@ code, .value {
 	color: #006;
 }
 
-/* 4bis) Zone d'explication — détail n'apparaissent pas, normalement, pour l'utilisateur */
+.explication input {
+	width: 50%;
+	font-size: 92%;
+}
+
+.explication .dl rt {
+	font-size: 40%;
+}
+
+/* 4.b) Détails n'apparaissent pas, normalement, pour l'utilisateur */
 
 .explication .token-type, .explication .token-value, .explication .token-error {
 	margin-right: 1em;
 	padding: 1px 0.5ex;
 	border-width: 1px; border-style: dashed;
 }
-.explication .token  { 
+.explication span.token  { 
 	display: inline-block;
 	margin: 2px;
 	border: 1px solid #990;
 	background-color: rgba(255,255,153,0.2);
 }
+.explication tspan.token  {
+	fill: #990;
+}
+
 .explication .token-type  { border-color: #990; background-color: #FF9; }
 .explication .token-attr {
 	display: inline-block;
@@ -148,6 +186,79 @@ code, .value {
 	background-color: rgba(0,255,0, 0.2);
 }
 .explication .token-error { border-color: #900; background-color: #FCC; }
+
+/* 4.c) Spécifique au module js-regexp */
+
+svg.railroad-diagram path {
+	stroke-width: 3;
+	stroke: black;
+	fill: rgba(0,0,0,0);
+}
+svg.railroad-diagram text {
+	font: bold 14px monospace;
+	text-anchor: middle;
+	white-space: pre;
+}
+svg.railroad-diagram text.diagram-text {
+	font-size: 12px;
+}
+svg.railroad-diagram text.diagram-arrow {
+	font-size: 16px;
+}
+svg.railroad-diagram text.label {
+	text-anchor: start;
+}
+svg.railroad-diagram text.comment {
+	font: italic 12px monospace;
+}
+svg.railroad-diagram g.non-terminal text {
+	font-style: italic;
+}
+svg.railroad-diagram rect {
+	stroke-width: 3;
+	stroke: black;
+	fill: #9CF;
+}
+svg.railroad-diagram path.diagram-text {
+	stroke-width: 3;
+	stroke: black;
+	fill: white;
+	cursor: help;
+}
+
+svg.railroad-diagram rect.group-box {
+	stroke-dasharray: 10 10;
+	stroke: #069;
+	fill: none;
+}
+
+svg.railroad-diagram .js-regexp-CharacterClass rect.group-box {
+	stroke-dasharray: none;
+	stroke-width: 2;
+	stroke: #666;
+	fill: #DFD;
+}
+svg.railroad-diagram .js-regexp-CharacterClass.invert rect.group-box {
+	fill: #FDD;
+}
+svg.railroad-diagram .js-regexp-CharacterClass path {
+	stroke: none;
+}
+svg.railroad-diagram .js-regexp-CharacterClass rect.group-box + * .comment {
+	font: bold 14px monospace;
+}
+
+.explication .underline {
+	background-color: #9CF;
+	position: relative;
+}
+.explication .underline::before {
+	content: '';
+	position: absolute; left: 0; bottom: -6px;
+	border-style: solid;
+	border-color: transparent transparent #069 transparent;
+	border-width: 0 10px 10px 0;
+}
 
 /* 5) Exemples */
 

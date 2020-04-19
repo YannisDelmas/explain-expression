@@ -37,9 +37,6 @@ chargeAsync(`${module}-explain.${lang}.js`, 'explications'); // appelle cssSelec
 // parser
 chargeAsync(`${module}.jison.js`, 'parser');
 
-// bibliothèque Mustache
-chargeAsync('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.min.js');
-
 /**
  * Calcule la spécificité d'un sélecteur CSS.
  * 

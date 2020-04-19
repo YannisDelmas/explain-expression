@@ -19,20 +19,14 @@
 "$="                     return 'SUFFIXMATCH';
 \"[^\n\r\f\\"]*\"        return 'SINGLE_QUOTED_STRING';
 \'[^\n\r\f\\']*\'        return 'DOUBLE_QUOTED_STRING';
-/*
-\+\d+                    return 'POSITIVE_INTEGER';
-\-\d+                    return 'NEGATIVE_INTEGER';
-*/
 \d+                      return 'INTEGER';
-'(odd)'                  return 'ODD_ARGUMENT';
-"(even)"                 return 'EVEN_ARGUMENT';
 '#'                      return '#';
 ","                      return ',';
 "."                      return '.';
 "["                      return '[';
 "]"                      return ']';
 "="                      return '=';
-":not("                  return 'NOT';
+\:("not"|"where"|"is")\( return 'LOGICAL_ABSOLUTE';
 "::"                     return 'DOUBLE_COLON';
 ":"                      return ':';
 "("                      return '(';
@@ -57,13 +51,13 @@
 %% /* language grammar */
 
 expressions
-    : selectors_group EOF
+    : selector_list EOF
         { return $1;}
     ;
 
-selectors_group
-    : selectors_group (comma selector)
-        { $1.selectors.push($3); $1.type = 'selectors_group'; $$ = $1 }
+selector_list
+    : selector_list (comma selector)
+        { $1.selectors.push($3); $1.type='logical'; $1.name='selector_list'; $$ = $1 }
     | selector
         { $$ = yy.create({ type: 'simple_selector_sequence', selectors: [$1] }) }
     ;
@@ -97,33 +91,40 @@ simple_selector
 
 combinator_selector
     : selector padded_child_combinator simple_selector
-        { $$ = yy.create({ type: 'combinator_selector', left: $1, right: $3, combinator: 'child' }) }
+        { $$ = yy.create({ type: 'combinator_selector', combinator: 'child', left: $1, right: $3 }) }
     | selector S simple_selector
-        { $$ = yy.create({ type: 'combinator_selector', left: $1, right: $3, combinator: 'descendant' }) }
+        { $$ = yy.create({ type: 'combinator_selector', combinator: 'descendant', left: $1, right: $3 }) }
     | selector padded_tilde simple_selector
-        { $$ = yy.create({ type: 'subsequent_sibling', left: $1, right: $3 }) }
+        { $$ = yy.create({ type: 'combinator_selector', combinator: 'subsequent_sibling', left: $1, right: $3 }) }
     | selector padded_plus simple_selector
-        { $$ = yy.create({ type: 'next_sibling', left: $1, right: $3 }) }
+        { $$ = yy.create({ type: 'combinator_selector', combinator: 'next_sibling', left: $1, right: $3 }) }
     ;
 
 namespace_prefix
-    : ident '|'
-        { $$ = $1+ ':'; }
-    | '*' '|'
-        { $$ = $1+ ':'; }
+    : ident '|'       { $$ = $1 }
+    |  '*'  '|'       { $$ = $1 }
     ;
 
 namespace_prefix_ident
     : namespace_prefix ident
-        { $$ = $1+ $2; }
+        { $$ = yy.create({type: 'namespace_prefix_ident', namespace: $1, ident: $2}) }
     | ident
+        { $$ = yy.create({type: 'namespace_prefix_ident', namespace: '', ident: $1}) }
     ;
 
 element
     : namespace_prefix_ident
-        { $$ = yy.create({ type: 'element', name: $1, constraints: [] }) }
+        {
+            $$ = yy.create({ type: 'element', name: $1.ident, constraints: [] });
+            if ( $1.namespace == '*' ) $$.universal_namespace = true;
+            else if ( $1.namespace != '' ) $$.namespace = $1.namespace;
+        }
     | namespace_prefix '*'
-        { $$ = yy.create({ type: 'universal', name: $2, namespace: $1, constraints: [] }) }
+        {
+            $$ = yy.create({ type: 'universal', constraints: [] });
+            if ( $1 == '*' ) $$.universal_namespace = true;
+            else $$.namespace = $1;
+        }
     | '*'
         { $$ = yy.create({ type: 'universal', name: $1, constraints: [] }) }
     ;
@@ -138,8 +139,8 @@ constraint_list
 constraint
     :   class
     |   hash
-    |   attrib
     |   pseudo
+    |   attrib
     ;
 
 class
@@ -159,21 +160,21 @@ ident
 
 attrib
     : '[' padded_namespace_prefix_ident ']'
-        { $$ = yy.create({ type: 'has_attribute', name: $2 }) }
+        { $$ = yy.create({ type: 'attribute', subtype: 'has_attribute', name: $2 }) }
     | '[' padded_namespace_prefix_ident '=' padded_ident_or_string ']'
-        { $$ = yy.create({ type: 'attribute_equals', name: $2, value: $4 }) }
+        { $$ = yy.create({ type: 'attribute', subtype: 'attribute_equals', name: $2, value: $4 }) }
     | '[' padded_namespace_prefix_ident SUBSTRINGMATCH padded_ident_or_string ']'
-        { $$ = yy.create({ type: 'attribute_contains', name: $2, value: $4 }) }
+        { $$ = yy.create({ type: 'attribute', subtype: 'attribute_contains', name: $2, value: $4 }) }
     | '[' padded_namespace_prefix_ident DOES_NOT_CONTAIN padded_ident_or_string ']'
-        { $$ = yy.create({ type: 'attribute_does_not_contain', name: $2, value: $4 }) }
+        { $$ = yy.create({ type: 'attribute', subtype: 'attribute_does_not_contain', name: $2, value: $4 }) }
     | '[' padded_namespace_prefix_ident INCLUDES padded_ident_or_string ']'
-        { $$ = yy.create({ type: 'attribute_contains_word', name: $2, value: $4 }) }
+        { $$ = yy.create({ type: 'attribute', subtype: 'attribute_contains_word', name: $2, value: $4 }) }
     | '[' padded_namespace_prefix_ident DASHMATCH padded_ident_or_string ']'
-        { $$ = yy.create({ type: 'attribute_contains_prefix', name: $2, value: $4 }) }
+        { $$ = yy.create({ type: 'attribute', subtype: 'attribute_contains_prefix', name: $2, value: $4 }) }
     | '[' padded_namespace_prefix_ident PREFIXMATCH padded_ident_or_string ']'
-        { $$ = yy.create({ type: 'attribute_starts_with', name: $2, value: $4 }) }
+        { $$ = yy.create({ type: 'attribute', subtype: 'attribute_starts_with', name: $2, value: $4 }) }
     | '[' padded_namespace_prefix_ident SUFFIXMATCH padded_ident_or_string ']'
-        { $$ = yy.create({ type: 'attribute_ends_with', name: $2, value: $4 }) }
+        { $$ = yy.create({ type: 'attribute', subtype: 'attribute_ends_with', name: $2, value: $4 }) }
     ;
 
 padded_namespace_prefix_ident
@@ -235,23 +236,21 @@ string
     ;
 
 pseudo
-    : NOT selectors_group ')'
-        { $$ = { type: 'negation', args: $2 } }
-        /*  Règle pour le :not() façon CSS4 (en CSS3, seulement sélecteur simple).
-            Ne devrait pas être autorisé pour les autres functional_pseudo.
-         */
-    | ':' ident ODD_ARGUMENT
-        { $$ = { type: 'pseudo_func', name: $2, args: { type: 'odd' } } }
-    | ':' ident EVEN_ARGUMENT
-        { $$ = { type: 'pseudo_func', name: $2, args: { type: 'even' } } }
-    | ':' ident '(' an_plus_b ')'
-        { $$ = { type: 'pseudo_func', name: $2, args: $4 } }
-    | ':' ident '(' IDENT ')' /* un identificateur autre que 'n', qui est déjà dans an_plus_b */
-        { $$ = { type: 'pseudo_func', name: $2, args: $4 } }
-    | ':' ident '(' integer ')'
-        { $$ = { type: 'pseudo_func', name: $2, args: $4 } }
+    : LOGICAL_ABSOLUTE selector_list ')'
+        { $$ = yy.create({ type: 'logical', name: $1.substring(1,$1.length-1), args: $2 }) }
     | ':' ident '(' ')'
-        { $$ = { type: 'pseudo_func', name: $2 } }
+        { $$ = yy.create({ type: 'pseudo_func', name: $2 }) }
+    | ':' ident '(' integer ')'
+        { $$ = yy.create({ type: 'pseudo_func', name: $2, args: $4 }) }
+    | ':' ident '(' an_plus_b ')'
+        { $$ = yy.create({ type: 'pseudo_func', name: $2, args: $4 }) }
+    | ':' ident '(' IDENT ')' 
+        {
+            /* un identificateur autre que 'n', qui est déjà dans an_plus_b */
+            $$ = { type: 'pseudo_func', name: $2,
+                args: ['odd', 'even', 'ltr', 'rtl'].includes($4)? yy.create({type: $4}): $4
+            }
+        }
     | ':' ident
         { $$ = yy.create({ type: ['first-line','first-letter','before','after'].includes($2)?'pseudo_element_old':'pseudo_class', name: $2 }) }
     ;
@@ -277,9 +276,9 @@ integer_n
 an_plus_b
     /* https://www.w3.org/TR/selectors-3/#nth-child-pseudo */
     : integer_n '+' INTEGER
-        { $$ = { type: 'an_plus_b', a: $1, b: Number($3) } }
+        { $$ = yy.create({ type: 'an_plus_b', a: $1, b: Number($3) }) }
     | integer_n '-' INTEGER
-        { $$ = { type: 'an_plus_b', a: $1, b: -Number($3) } }
+        { $$ = yy.create({ type: 'an_plus_b', a: $1, b: -Number($3) }) }
     | integer_n
-        { $$ = { type: 'an_plus_b', a: $1, b: 0 } }
+        { $$ = yy.create({ type: 'an_plus_b', a: $1, b: 0 }) }
     ;
