@@ -141,7 +141,7 @@ jsRegexpExplain({
 		UnicodeEscape: 'Terminal("\\\\u{"+"{{&code}}}")',
 	},
 	messages: {
-		'diagram': 'Diagramme de l’automate <span id="dl"></span>&nbsp;:',
+		'diagram': 'Diagramme de l’automate <span class="dl"></span>&nbsp;:',
 		'test': 'Tester cette expression sur un exemple&nbsp;:',
 		'test_impossible': 'Cette expression n’est pas reconnue par votre navigateur.',
 		'not_found': 'Pas de correspondance trouvée.',

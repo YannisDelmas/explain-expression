@@ -151,6 +151,10 @@ code, .value {
 	font-size: 92%;
 }
 
+.explication .dl rt {
+	font-size: 40%;
+}
+
 /* 4.b) Détails n'apparaissent pas, normalement, pour l'utilisateur */
 
 .explication .token-type, .explication .token-value, .explication .token-error {

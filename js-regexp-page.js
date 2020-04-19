@@ -116,9 +116,12 @@ var compteur = (function () {
 })();
 
 /**
- * Téléchargement du SVG.
+ * Préparation des téléchargements.
+ * 
+ * Inspiré de https://gitlab.com/javallone/regexper-static/-/blob/master/src/js/regexper.js (Jeff Avallone).
  */
-function createSvgLink() {
+function createDownloadLinks() {
+	// fabrication du fichier SVG
 	let texteBrut = document.getElementById('expression').value;
 	let svg = document.querySelector('#diagramme svg');
 	let svgFile =
@@ -128,10 +131,25 @@ function createSvgLink() {
 		<defs><style type="text/css">${SvgExportCss}</style></defs>
 		${svg.innerHTML}
 		</svg>`;
-	let blob = new Blob([svgFile], {type: 'image/svg+xml;charset=utf-8'});
-	this.download = 'diagram.svg';
-	this.href = URL.createObjectURL(blob);
+	window.svgBlob = new Blob([svgFile], {type: 'image/svg+xml;charset=utf-8'});
+	let linkSvg = document.querySelector('figcaption a.dl1');
+	linkSvg.download = 'diagram.svg';
+	linkSvg.href = URL.createObjectURL(window.svgBlob);
+	// fabrication du fichier PNG
+	let linkPng = document.querySelector('figcaption a.dl2');
+	linkPng.download = 'diagram.png';
+	let canvas = document.createElement('canvas');
+	let canvasContext = canvas.getContext('2d');
+	let img = new Image;
+	img.width  = canvas.width  = Number(svg.getAttribute('width'));
+	img.height = canvas.height = Number(svg.getAttribute('height'));
+	img.onload = function() {
+		canvasContext.drawImage(img, 0, 0, img.width, img.height);
+		canvas.toBlob(blob => { linkPng.href = debug(URL.createObjectURL(blob)); }, 'image/png');
+	};
+	img.src = linkSvg.href;
 }
+
 
 /**
  * Fonction organisant la tokenisation puis les affichages.
@@ -179,8 +197,10 @@ function analyse(){
 	explication.innerHTML = sortie;
 	if ( diagramme ) {
 		diagramme.addTo(document.getElementById('diagramme'));
-		document.getElementById('dl').innerHTML = '(<a href="#"><span class="fa fa-download"></span> SVG</a>)';
-		document.querySelector('#dl > a').addEventListener('click', createSvgLink, true);
+		document.querySelector('figcaption .dl').innerHTML =
+			'<a href="#" class="dl1"><ruby><span class="fa fa-download"></span><rt>SVG</rt></ruby></a>'+
+			' <a href="#" class="dl2"><ruby><span class="fa fa-download"></span><rt>PNG</rt></ruby></a>';
+		createDownloadLinks();
 	}
 	if ( re != undefined ) {
 		testeRE();
