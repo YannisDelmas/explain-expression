@@ -34,7 +34,7 @@ function trouveModele(templateList, item) {
 	let template = (item[type] == undefined)? undefined: templateList[item[type]];
 	if ( template == undefined )
 		return (templateList[':default'] == undefined)? '': templateList[':default'];
-	if ( typeof template == 'object' )
+	if ( typeof template == 'object' && !template instanceof Array)
 		return trouveModele(template, item);
 	return template;
 }

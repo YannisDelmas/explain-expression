@@ -119,7 +119,18 @@ cssSelectorExplain({
 		child: 'https://www.w3.org/TR/selectors-3/#child-combinators',
 		subsequent_sibling: 'https://www.w3.org/TR/selectors-3/#general-sibling-combinators',
 		next_sibling: 'https://www.w3.org/TR/selectors-3/#adjacent-sibling-combinators',
-		id: 'https://www.w3.org/TR/selectors-3/#id-selectors',
+		id: [
+			{
+				titre: "W3C", 
+				uri: "https://www.w3.org/TR/selectors-3/#checked", 
+				section: "references",
+			},
+			{
+				titre: "", 
+				uri: "https://www.w3.org/TR/selectors-3/#section",
+				section: "known-issues",
+			},
+		],
 		class: 'https://www.w3.org/TR/selectors-3/#class-html',
 		universal: 'https://www.w3.org/TR/selectors-3/#universal-selector',
 		element: 'https://www.w3.org/TR/selectors-3/#type-selectors',

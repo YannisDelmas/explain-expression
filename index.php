@@ -24,6 +24,10 @@ header('Content-Type: text/html; charset=utf-8');
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title><?= $interface['title'] ?></title>
+	<link
+		rel="stylesheet"
+		href="https://unpkg.com/tippy.js@6/animations/scale.css"
+	/>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
 	<link rel="stylesheet" href="explain-expression.css">
 </head>
@@ -62,7 +66,11 @@ header('Content-Type: text/html; charset=utf-8');
 			</p>
 		</div>
 		<?= $interface['footer'] ?>
+		
 	</footer>
+	<div id="tippy-template"></div>
+	<script src="https://unpkg.com/@popperjs/core@2"></script>
+	<script src="https://unpkg.com/tippy.js@6"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.min.js" integrity="sha256-MPgtcamIpCPKRRm1ppJHkvtNBAuE71xcOM+MmQytXi8=" crossorigin="anonymous"></script>
 	<script>
 		var config = {
