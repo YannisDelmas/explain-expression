@@ -267,3 +267,12 @@ svg.railroad-diagram .js-regexp-CharacterClass rect.group-box + * .comment {
 	display: inline-block;
 	cursor: pointer;
 }
+
+
+/* Tippy */
+#tippy-template {
+	display: none;
+}
+.tippy-box a {
+	color: lightblue;
+}
