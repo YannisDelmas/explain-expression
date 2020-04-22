@@ -106,26 +106,21 @@ window.addEventListener('load', function(){
 		let html = '';
 		for (let index = 0; index < sections.length; index++) {
 			const section = sections[index];
-			html +=  `
-			<div class="section-références">
-				<span class="section-références__titre">${section}</span>
-				${prepareContenuSection(section, references)}
-			</section>`
+			html += `<div class="section-références"><span class="section-références__titre">${section}</span>${prepareContenuSection(section, references)}</div>`;
 		}
 		return html;
 	}
 	function prepareReference() {
 		return function(text, render) {
-			let bouton = '';			
 			let reference = trouveModele(config.references, this);
-			if(reference) {
-				bouton = `<a class="ref" href="${reference}"><span class="fa fa-info-circle"></span>${render(text)}</a>`;
-			}
-			if(Array.isArray(reference)) {
-				tippyTemplate.innerHTML = prepareContenuTooltip(reference);
-				bouton = `<span class="ref" data-tippy-content><span class="fa fa-info-circle"></span>${render(text)}</span>`;
+			if( ! reference )
+				return '';
+			if ( Array.isArray(reference) ) {
+				let contenuTooltip = encodeHTMLEntities(prepareContenuTooltip(reference));
+				console.debug(contenuTooltip);
+				return `<span class="ref" data-tippy-content="${contenuTooltip}"><span class="fa fa-info-circle"></span>${render(text)}</span>`;
 			}			
-			return bouton;
+ 			return `<a class="ref" href="${reference}"><span class="fa fa-info-circle"></span>${render(text)}</a>`;
 		}
 	}
 	afficheMustache = function(data) {
@@ -181,9 +176,7 @@ function analyse(){
 		});
 		explication.classList.remove('erreur');
 		if(document.querySelectorAll(sélecteurTippy).length){
-			const tippyTemplate = document.getElementById('tippy-template');
 			tippy(sélecteurTippy, {
-				content: tippyTemplate.innerHTML,
 				allowHTML: true,
 				trigger: 'click',
 				interactive: true,
