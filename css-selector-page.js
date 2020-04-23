@@ -89,7 +89,18 @@ var escapeHTML, afficheMustache;
 window.addEventListener('load', function(){
 	debug('window🗲 load');
 	escapeHTML = Mustache.escape;
-	const tippyTemplate = document.getElementById('tippy-template');
+	function trouveTitreSection(langue, slugSection) {
+		// Ce dictionnaire devra être exporté (via un module ?) pour pouvoir le réutiliser plus facilement entre les différents composants
+		const dictionnaireTitresRéférences = {
+			'fr': {
+				'references': 'Références',
+				'known-issues': 'Problèmes connus',
+				'compatibility': 'Compatibilité',
+				// ???
+			}
+		};
+		return dictionnaireTitresRéférences[langue][slugSection];
+	}
 	function prepareContenuSection(section, references) {
 		const référencesFiltrées = references.filter((reference) => reference.section === section);
 		let html = '<ul>';
@@ -102,11 +113,10 @@ window.addEventListener('load', function(){
 	}
 	function prepareContenuTooltip(references) {
 		const sections = references.map((reference) => reference.section);
-		console.log(sections);
 		let html = '';
 		for (let index = 0; index < sections.length; index++) {
 			const section = sections[index];
-			html += `<div class="section-références"><span class="section-références__titre">${section}</span>${prepareContenuSection(section, references)}</div>`;
+			html += `<div class="section-références"><span class="section-références__titre">${trouveTitreSection('fr', section)}</span>${prepareContenuSection(section, references)}</div>`;
 		}
 		return html;
 	}
@@ -180,6 +190,7 @@ function analyse(){
 				allowHTML: true,
 				trigger: 'click',
 				interactive: true,
+				placement: 'right',
 			});
 		}
 	} catch(error) {

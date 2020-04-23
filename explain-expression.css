@@ -121,14 +121,6 @@ button:hover {
 	border-left: 2px solid #999;
 }
 
-a.ref {
-	vertical-align: super;
-	font-size: 70%;
-	padding: 0.25ex 0.5ex;
-	border-radius: 0.8em;
-	background-color: #DDF;
-}
-
 .explication .specificite--item {
 	margin: 0 0 0 1ex;
 	font-weight: bold;
@@ -270,9 +262,35 @@ svg.railroad-diagram .js-regexp-CharacterClass rect.group-box + * .comment {
 
 
 /* Tippy */
+.ref {
+	display: inline-flex;
+	align-items: center;
+	font-size: .875rem;
+	padding: .2rem .4rem;
+	cursor: pointer;
+	background: lightslategray;
+	color: white;
+	line-height: 0;
+	border-radius: 50px;
+	vertical-align: super;
+	text-decoration: none;
+}
+
+.ref .fa {
+	margin-right: .5rem;
+}
 #tippy-template {
 	display: none;
 }
+.tippy-content {
+	padding: 1rem 1.5rem;
+}
+.tippy-content ul {
+	padding-left: .75rem;
+}
 .tippy-box a {
 	color: lightblue;
+}
+.section-références + .section-références {
+	margin-top: .5rem;
 }
