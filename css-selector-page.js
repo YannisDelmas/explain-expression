@@ -89,18 +89,6 @@ var escapeHTML, afficheMustache;
 window.addEventListener('load', function(){
 	debug('window🗲 load');
 	escapeHTML = Mustache.escape;
-	function trouveTitreSection(langue, slugSection) {
-		// Ce dictionnaire devra être exporté (via un module ?) pour pouvoir le réutiliser plus facilement entre les différents composants
-		const dictionnaireTitresRéférences = {
-			'fr': {
-				'references': 'Références',
-				'known-issues': 'Problèmes connus',
-				'compatibility': 'Compatibilité',
-				// ???
-			}
-		};
-		return dictionnaireTitresRéférences[langue][slugSection];
-	}
 	function prepareContenuSection(section, references) {
 		const référencesFiltrées = references.filter((reference) => reference.section === section);
 		let html = '<ul>';
@@ -116,21 +104,22 @@ window.addEventListener('load', function(){
 		let html = '';
 		for (let index = 0; index < sections.length; index++) {
 			const section = sections[index];
-			html += `<div class="section-références"><span class="section-références__titre">${trouveTitreSection('fr', section)}</span>${prepareContenuSection(section, references)}</div>`;
+			html += `<div class="section-références"><span class="section-références__titre">${config.sections[section]?config.sections[section]:section}</span>${prepareContenuSection(section, references)}</div>`;
 		}
 		return html;
 	}
 	function prepareReference() {
 		return function(text, render) {
 			let reference = trouveModele(config.references, this);
-			if( ! reference )
-				return '';
+			if( ! reference ) return '';
+			let refText = render(text);
+			if ( refText ) refText = `<span class="ref-text">${refText}</span></a>`;
 			if ( Array.isArray(reference) ) {
 				let contenuTooltip = encodeHTMLEntities(prepareContenuTooltip(reference));
 				console.debug(contenuTooltip);
-				return `<span class="ref" data-tippy-content="${contenuTooltip}"><span class="fa fa-info-circle"></span>${render(text)}</span>`;
+				return `<span class="ref" data-tippy-content="${contenuTooltip}"><span class="fa fa-info-circle"></span>${refText}</span>`;
 			}			
- 			return `<a class="ref" href="${reference}"><span class="fa fa-info-circle"></span>${render(text)}</a>`;
+ 			return `<a class="ref" href="${reference}"><span class="fa fa-info-circle"></span>${refText}</a>`;
 		}
 	}
 	afficheMustache = function(data) {

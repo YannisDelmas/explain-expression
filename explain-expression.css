@@ -276,8 +276,8 @@ svg.railroad-diagram .js-regexp-CharacterClass rect.group-box + * .comment {
 	text-decoration: none;
 }
 
-.ref .fa {
-	margin-right: .5rem;
+.ref .ref-text {
+	margin-left: .5rem;
 }
 #tippy-template {
 	display: none;

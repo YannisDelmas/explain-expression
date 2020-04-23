@@ -495,6 +495,12 @@ cssSelectorExplain({
 			],
 		},
 	},
+	sections: {
+		'references': 'Références',
+		'known-issues': 'Problèmes connus',
+		'compatibility': 'Compatibilité',
+		/* à compléter, si besoin */
+	},
 	specificity: {
 		':type': 'type',
 		simple_selector_sequence: '(t,a) => iterate(t.selectors[0], a)',
