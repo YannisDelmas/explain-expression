@@ -30,14 +30,14 @@ $interface['examples'] = <<<EOT
 </p>
 <ul>
 <li>
-	CSS 1&nbsp;:
+	Sélecteurs niveau 1&nbsp;:
 	<code class="exemple">E#ident</code>,
 	<code class="exemple">h1#chapter1, *#z98y, button.expliquer</code>,
 	<code class="exemple">E:active</code>,
 	<code class="exemple">E::first-letter</code>.
 </li>
 <li>
-	CSS 2&nbsp;:
+	Sélecteurs niveau 2&nbsp;:
 	<code class="exemple">E[abc]</code>,
 	<code class="exemple">E[abc="def"]</code>,
 	<code class="exemple">E + F</code>,
@@ -46,7 +46,7 @@ $interface['examples'] = <<<EOT
 	<code class="exemple">E:focus</code>.
 </li>
 <li>
-	CSS 3&nbsp;:
+	Sélecteurs niveau 3&nbsp;:
 	<code class="exemple">E[abc^="def"]</code>,
 	<code class="exemple">E[abc*="def"]</code>,
 	<code class="exemple">E:nth-child(odd)</code>,
@@ -66,7 +66,7 @@ $interface['examples'] = <<<EOT
 	<code class="exemple">[xml|lang]</code>.
 </li>
 <li>
-	<a href="https://css4-selectors.com/selectors/">CSS 4</a>&nbsp;:
+	<a href="https://css4-selectors.com/selectors/">Sélecteurs niveau 4</a>&nbsp;:
 	<code class="exemple">section:dir(rtl)</code>,
 	<code class="exemple">h1:not(main *)</code>,
 	<code class="exemple">button:is(:hover, :focus)</code>,

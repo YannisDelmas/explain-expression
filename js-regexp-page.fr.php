@@ -45,12 +45,12 @@ $interface = Array(
 			</li>
 			<li>
 				Expressions courantes&nbsp;:
-				<code class="exemple">/[a-z][a-z0-9_-]{3,16}/i</code> (nom d’utilisateur),
+				<code class="exemple">/[a-z][a-z0-9_-]{2,15}/i</code> (nom d’utilisateur),
 				<code class="exemple">/\d{2}/</code>,
 				<code class="exemple">/\w+/</code> (lettres, chiffres, soulignés),
 				<code class="exemple">/[\w.+-]+/</code> (possibilités de points, plus et tirets),
 				<code class="exemple">/[\w.+-]+@([^\s@.]+\.)+[^\s@.]{2,}/u</code> (adresse mail),
-				<code class="exemple">/(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/[\w.-]+)*\/?/i</code> (adresse web).
+				<code class="exemple">/(https?:)?\/\/[\w.-]+\.[a-z]{2,}(\/[\w.%-]+)*\/?/i</code> (adresse web externe, simplifié).
 			</li>
 			<li>
 				Expressions avancées&nbsp;:
