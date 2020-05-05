@@ -34,7 +34,7 @@ function trouveModele(templateList, item) {
 	let template = (item[type] == undefined)? undefined: templateList[item[type]];
 	if ( template == undefined )
 		return (templateList[':default'] == undefined)? '': templateList[':default'];
-	if ( typeof template == 'object' && !template instanceof Array)
+	if ( typeof template == 'object' && ! (template instanceof Array) )
 		return trouveModele(template, item);
 	return template;
 }
@@ -45,5 +45,5 @@ function trouveModele(templateList, item) {
 function encodeHTMLEntities(text) {
 	let textArea = document.createElement('textarea');
 	textArea.innerText = text;
-	return textArea.innerHTML;
+	return textArea.innerHTML.replace(/"/gu, '&quot;').replace(/'/gu, '&apos;');
 }

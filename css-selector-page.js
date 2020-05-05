@@ -89,7 +89,6 @@ var escapeHTML, afficheMustache;
 window.addEventListener('load', function(){
 	debug('window🗲 load');
 	escapeHTML = Mustache.escape;
-	const tippyTemplate = document.getElementById('tippy-template');
 	function prepareContenuSection(section, references) {
 		const référencesFiltrées = references.filter((reference) => reference.section === section);
 		let html = '<ul>';
@@ -102,30 +101,25 @@ window.addEventListener('load', function(){
 	}
 	function prepareContenuTooltip(references) {
 		const sections = references.map((reference) => reference.section);
-		console.log(sections);
 		let html = '';
 		for (let index = 0; index < sections.length; index++) {
 			const section = sections[index];
-			html +=  `
-			<div class="section-références">
-				<span class="section-références__titre">${section}</span>
-				${prepareContenuSection(section, references)}
-			</section>`
+			html += `<div class="section-références"><span class="section-références__titre">${config.sections[section]?config.sections[section]:section}</span>${prepareContenuSection(section, references)}</div>`;
 		}
 		return html;
 	}
 	function prepareReference() {
 		return function(text, render) {
-			let bouton = '';			
 			let reference = trouveModele(config.references, this);
-			if(reference) {
-				bouton = `<a class="ref" href="${reference}"><span class="fa fa-info-circle"></span>${render(text)}</a>`;
-			}
-			if(Array.isArray(reference)) {
-				tippyTemplate.innerHTML = prepareContenuTooltip(reference);
-				bouton = `<span class="ref" data-tippy-content><span class="fa fa-info-circle"></span>${render(text)}</span>`;
+			if( ! reference ) return '';
+			let refText = render(text);
+			if ( refText ) refText = `<span class="ref-text">${refText}</span></a>`;
+			if ( Array.isArray(reference) ) {
+				let contenuTooltip = encodeHTMLEntities(prepareContenuTooltip(reference));
+				console.debug(contenuTooltip);
+				return `<span class="ref" data-tippy-content="${contenuTooltip}"><span class="fa fa-info-circle"></span>${refText}</span>`;
 			}			
-			return bouton;
+ 			return `<a class="ref" href="${reference}"><span class="fa fa-info-circle"></span>${refText}</a>`;
 		}
 	}
 	afficheMustache = function(data) {
@@ -181,12 +175,11 @@ function analyse(){
 		});
 		explication.classList.remove('erreur');
 		if(document.querySelectorAll(sélecteurTippy).length){
-			const tippyTemplate = document.getElementById('tippy-template');
 			tippy(sélecteurTippy, {
-				content: tippyTemplate.innerHTML,
 				allowHTML: true,
 				trigger: 'click',
 				interactive: true,
+				placement: 'right',
 			});
 		}
 	} catch(error) {

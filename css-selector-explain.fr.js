@@ -115,10 +115,34 @@ cssSelectorExplain({
 	references: {
 		/* https://www.w3.org/TR/selectors-3/ https://www.w3.org/TR/CSS2/ */
 		':type': 'type',
-		descendant: 'https://www.w3.org/TR/selectors-3/#descendant-combinators',
-		child: 'https://www.w3.org/TR/selectors-3/#child-combinators',
-		subsequent_sibling: 'https://www.w3.org/TR/selectors-3/#general-sibling-combinators',
-		next_sibling: 'https://www.w3.org/TR/selectors-3/#adjacent-sibling-combinators',
+		descendant: [
+			{
+				titre: "W3C", 
+				uri: 'https://www.w3.org/TR/selectors-3/#descendant-combinators', 
+				section: "references",
+			},
+		],
+		child: [
+			{
+				titre: "W3C", 
+				uri: 'https://www.w3.org/TR/selectors-3/#child-combinators', 
+				section: "references",
+			},
+		],
+		subsequent_sibling:  [
+			{
+				titre: "W3C", 
+				uri: 'https://www.w3.org/TR/selectors-3/#general-sibling-combinators', 
+				section: "references",
+			},
+		],
+		next_sibling: [
+			{
+				titre: "W3C", 
+				uri: 'https://www.w3.org/TR/selectors-3/#adjacent-sibling-combinators', 
+				section: "references",
+			},
+		],
 		id: [
 			{
 				titre: "W3C", 
@@ -131,69 +155,351 @@ cssSelectorExplain({
 				section: "known-issues",
 			},
 		],
-		class: 'https://www.w3.org/TR/selectors-3/#class-html',
-		universal: 'https://www.w3.org/TR/selectors-3/#universal-selector',
-		element: 'https://www.w3.org/TR/selectors-3/#type-selectors',
+		class: [
+			{
+				titre: "W3C", 
+				uri: 'https://www.w3.org/TR/selectors-3/#class-html', 
+				section: "references",
+			},
+		],
+		universal: [
+			{
+				titre: "W3C", 
+				uri: 'https://www.w3.org/TR/selectors-3/#universal-selector', 
+				section: "references",
+			},
+		],
+		element: [
+			{
+				titre: "W3C", 
+				uri: 'https://www.w3.org/TR/selectors-3/#type-selectors', 
+				section: "references",
+			},
+		],
 		pseudo_class: {
 			':type': 'name',
 			':default': 'https://www.w3.org/TR/selectors-3/#pseudo-classes',
-			link: 'https://www.w3.org/TR/selectors-3/#the-link-pseudo-classes-link-and-visited',
-			visited: 'https://www.w3.org/TR/selectors-3/#the-link-pseudo-classes-link-and-visited',
-			hover: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act',
-			active: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act',
-			focus: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act',
-			target: 'https://www.w3.org/TR/selectors-3/#target-pseudo',
-			enabled: 'https://www.w3.org/TR/selectors-3/#enableddisabled',
-			disabled: 'https://www.w3.org/TR/selectors-3/#enableddisabled',
-			checked: 'https://www.w3.org/TR/selectors-3/#checked',
-			indeterminate: 'https://www.w3.org/TR/selectors-3/#indeterminate',
-			root: 'https://www.w3.org/TR/selectors-3/#root-pseudo',
-			'first-child': 'https://www.w3.org/TR/selectors-3/#first-child-pseudo',
-			'last-child': 'https://www.w3.org/TR/selectors-3/#last-child-pseudo',
-			'first-of-type': 'https://www.w3.org/TR/selectors-3/#first-of-type-pseudo',
-			'last-of-type': 'https://www.w3.org/TR/selectors-3/#last-of-type-pseudo',
-			'only-child': 'https://www.w3.org/TR/selectors-3/#only-child-pseudo',
-			'only-of-type': 'https://www.w3.org/TR/selectors-3/#only-of-type-pseudo',
-			empty: 'https://www.w3.org/TR/selectors-3/#empty-pseudo',
+			link: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#the-link-pseudo-classes-link-and-visited', 
+					section: "references",
+				},
+			],
+			visited: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#the-link-pseudo-classes-link-and-visited', 
+					section: "references",
+				},
+			],
+			hover: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act', 
+					section: "references",
+				},
+			],
+			active: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act', 
+					section: "references",
+				},
+			],
+			focus: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#the-user-action-pseudo-classes-hover-act', 
+					section: "references",
+				},
+			],
+			target: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#target-pseudo', 
+					section: "references",
+				},
+			],
+			enabled: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#enableddisabled', 
+					section: "references",
+				},
+			],
+			disabled: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#enableddisabled', 
+					section: "references",
+				},
+			],
+			checked: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#checked', 
+					section: "references",
+				},
+			],
+			indeterminate: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#indeterminate', 
+					section: "references",
+				},
+			],
+			root: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#root-pseudo', 
+					section: "references",
+				},
+			],
+			'first-child': [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#first-child-pseudo', 
+					section: "references",
+				},
+			],
+			'last-child': [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#last-child-pseudo', 
+					section: "references",
+				},
+			],
+			'first-of-type': [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#first-of-type-pseudo', 
+					section: "references",
+				},
+			],
+			'last-of-type': [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#last-of-type-pseudo', 
+					section: "references",
+				},
+			],
+			'only-child': [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#only-child-pseudo', 
+					section: "references",
+				},
+			],
+			'only-of-type': [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#only-of-type-pseudo', 
+					section: "references",
+				},
+			],
+			empty: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#empty-pseudo', 
+					section: "references",
+				},
+			],
 		},
 		pseudo_func: {
 			':type': 'name',
 			':default': 'https://www.w3.org/TR/selectors-3/#pseudo-classes',
-			lang: 'https://www.w3.org/TR/selectors-3/#lang-pseudo',
-			'nth-child': 'https://www.w3.org/TR/selectors-3/#nth-child-pseudo',
-			'nth-last-child': 'https://www.w3.org/TR/selectors-3/#nth-last-child-pseudo',
-			'nth-of-type': 'https://www.w3.org/TR/selectors-3/#nth-of-type-pseudo',
-			'nth-last-of-type': 'https://www.w3.org/TR/selectors-3/#nth-last-of-type-pseudo',
-			dir: 'https://www.w3.org/TR/selectors-4/#the-dir-pseudo',
+			lang:  [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#lang-pseudo', 
+					section: "references",
+				},
+			],
+			'nth-child': [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#nth-child-pseudo', 
+					section: "references",
+				},
+			],
+			'nth-last-child': [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#nth-last-child-pseudo', 
+					section: "references",
+				},
+			],
+			'nth-of-type': [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#nth-of-type-pseudo', 
+					section: "references",
+				},
+			],
+			'nth-last-of-type': [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#nth-last-of-type-pseudo', 
+					section: "references",
+				},
+			],
+			dir: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-4/#the-dir-pseudo', 
+					section: "references",
+				},
+			],
 		},
 		attribute: {
 			':type': 'subtype',
-			has_attribute: 'https://www.w3.org/TR/selectors-3/#attribute-selectors',
-			attribute_equals: 'https://www.w3.org/TR/selectors-3/#attribute-selectors',
-			attribute_starts_with: 'https://www.w3.org/TR/selectors-3/#attribute-substrings',
-			attribute_ends_with: 'https://www.w3.org/TR/selectors-3/#attribute-substrings',
-			attribute_contains: 'https://www.w3.org/TR/selectors-3/#attribute-substrings',
-			attribute_contains_word: 'https://www.w3.org/TR/selectors-3/#attribute-representation',
-			attribute_contains_prefix: 'https://www.w3.org/TR/selectors-3/#attribute-representation',
+			has_attribute: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#attribute-selectors', 
+					section: "references",
+				},
+			],
+			attribute_equals: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#attribute-selectors', 
+					section: "references",
+				},
+			],
+			attribute_starts_with: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#attribute-substrings', 
+					section: "references",
+				},
+			],
+			attribute_ends_with: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#attribute-substrings', 
+					section: "references",
+				},
+			],
+			attribute_contains: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#attribute-substrings', 
+					section: "references",
+				},
+			],
+			attribute_contains_word: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#attribute-representation', 
+					section: "references",
+				},
+			],
+			attribute_contains_prefix: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#attribute-representation', 
+					section: "references",
+				},
+			],
 		},
 		pseudo_element: {
 			':type': 'name',
-			':default': 'https://www.w3.org/TR/selectors-3/#pseudo-elements',
-			'first-letter': 'https://www.w3.org/TR/selectors-3/#first-letter',
-			'first-line': 'https://www.w3.org/TR/selectors-3/#first-line',
-			before: 'https://www.w3.org/TR/selectors-3/#gen-content',
-			after: 'https://www.w3.org/TR/selectors-3/#gen-content',
+			':default': [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#pseudo-elements', 
+					section: "references",
+				},
+			],
+			'first-letter': [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#first-letter', 
+					section: "references",
+				},
+			],
+			'first-line': [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#first-line', 
+					section: "references",
+				},
+			],
+			before: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#gen-content', 
+					section: "references",
+				},
+			],
+			after: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#gen-content', 
+					section: "references",
+				},
+			],
 		},
-		pseudo_element_old: 'https://www.w3.org/TR/selectors-3/#pseudo-elements',
+		pseudo_element_old: [
+			{
+				titre: "W3C", 
+				uri: 'https://www.w3.org/TR/selectors-3/#pseudo-elements', 
+				section: "references",
+			},
+		],
 		logical: {
 			':type': 'name',
-			':default': 'https://www.w3.org/TR/selectors-4/#logical-combination',
-			selector_list: 'https://www.w3.org/TR/selectors-3/#grouping',
-			not: 'https://www.w3.org/TR/selectors-4/#negation',
-			is: 'https://www.w3.org/TR/selectors-4/#matches',
-			where: 'https://www.w3.org/TR/selectors-4/#zero-matches',
-			has: 'https://www.w3.org/TR/selectors-4/#relational',
+			':default': [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-4/#logical-combination', 
+					section: "references",
+				},
+			],
+			selector_list: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-3/#grouping', 
+					section: "references",
+				},
+			],
+			not: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-4/#negation', 
+					section: "references",
+				},
+			],
+			is: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-4/#matches', 
+					section: "references",
+				},
+			],
+			where: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-4/#zero-matches', 
+					section: "references",
+				},
+			],
+			has: [
+				{
+					titre: "W3C", 
+					uri: 'https://www.w3.org/TR/selectors-4/#relational', 
+					section: "references",
+				},
+			],
 		},
+	},
+	sections: {
+		'references': 'Références',
+		'known-issues': 'Problèmes connus',
+		'compatibility': 'Compatibilité',
+		/* à compléter, si besoin */
 	},
 	specificity: {
 		':type': 'type',
