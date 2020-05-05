@@ -145,13 +145,13 @@ cssSelectorExplain({
 		],
 		id: [
 			{
-				titre: "W3C", 
-				uri: "https://www.w3.org/TR/selectors-3/#checked", 
+				titre: "Recommandation W3C", 
+				uri: "https://www.w3.org/TR/selectors-3/#id-selectors", 
 				section: "references",
 			},
 			{
-				titre: "", 
-				uri: "https://www.w3.org/TR/selectors-3/#section",
+				titre: "Guidelines Alsacréations", 
+				uri: "https://github.com/alsacreations/guidelines/blob/master/Guidelines-CSS.md#s%C3%A9lecteur-id",
 				section: "known-issues",
 			},
 		],

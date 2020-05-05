@@ -94,7 +94,7 @@ window.addEventListener('load', function(){
 		let html = '<ul>';
 		for (let index = 0; index < référencesFiltrées.length; index++) {
 			const référence = référencesFiltrées[index];
-			html += `<li class="section-références__element"><a href="${référence.uri}">${référence.titre && référence.titre !== '' ? référence.titre : référence.uri}</a></li>`
+			html += `<li class="section-${section}__element"><a href="${référence.uri}">${référence.titre && référence.titre !== '' ? référence.titre : decodeURI(référence.uri)}</a></li>`
 		}
 		html += '</ul>';
 		return html;
@@ -104,7 +104,7 @@ window.addEventListener('load', function(){
 		let html = '';
 		for (let index = 0; index < sections.length; index++) {
 			const section = sections[index];
-			html += `<div class="section-références"><span class="section-références__titre">${config.sections[section]?config.sections[section]:section}</span>${prepareContenuSection(section, references)}</div>`;
+			html += `<div class="section-${section}"><span class="section-${section}__titre">${config.sections[section]?config.sections[section]:section}</span>${prepareContenuSection(section, references)}</div>`;
 		}
 		return html;
 	}
