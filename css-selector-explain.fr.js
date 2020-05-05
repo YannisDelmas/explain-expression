@@ -92,8 +92,8 @@ cssSelectorExplain({
 			':default': '<code>{{&name}}</code> {{#ref}}{{/ref}} &hellip; <blockquote>{{args}}</blockquote>',
 			selector_list: 'un ou plusieurs des cas suivants {{#ref}} liste{{/ref}}&nbsp;:<ol>{{#selectors}}<li>{{.}}</li>{{/selectors}}</ol>',
 			not: 'qui n’est pas{{#ref}}{{/ref}} &hellip; <blockquote>{{args}}</blockquote>',
-			is: 'qui est{{#ref}}{{/ref}} &hellip; <blockquote>{{args}}</blockquote>',
-			where: 'qui est{{#ref}}{{/ref}} &hellip; <blockquote>{{args}}</blockquote>',
+			is: 'qui est{{#ref}}:is(){{/ref}} &hellip; <blockquote>{{args}}</blockquote>',
+			where: 'qui est{{#ref}}:where(){{/ref}} &hellip; <blockquote>{{args}}</blockquote>',
 			// has
 		},
 		
@@ -478,6 +478,11 @@ cssSelectorExplain({
 					uri: 'https://www.w3.org/TR/selectors-4/#matches', 
 					section: "references",
 				},
+				{
+					titre: "MDN", 
+					uri: 'https://developer.mozilla.org/fr/docs/Web/CSS/:is#Browser_compatibility', 
+					section: "compatibility",
+				},
 			],
 			where: [
 				{
@@ -491,6 +496,11 @@ cssSelectorExplain({
 					titre: "W3C", 
 					uri: 'https://www.w3.org/TR/selectors-4/#relational', 
 					section: "references",
+				},
+				{
+					titre: "MDN", 
+					uri: 'https://developer.mozilla.org/fr/docs/Web/CSS/:has#Compatibilit%C3%A9_des_navigateurs', 
+					section: "compatibility",
 				},
 			],
 		},
@@ -521,6 +531,7 @@ cssSelectorExplain({
 			not: '(t,a) => arraySum(specMax(t.args.selectors.map(i => iterate(i))), a)',
 			is:  '(t,a) => arraySum(specMax(t.args.selectors.map(i => iterate(i))), a)',
 			where: '(t,a) => a',
+			// has
 		},
 	},
 	messages: {
