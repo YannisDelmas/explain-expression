@@ -18,7 +18,6 @@ window.addEventListener('load', function(){
 });
 chargeAsync(`${config.module}.jison.js`, 'parser');
 
-
 /**
  * Calcule la spécificité d'un sélecteur CSS.
  * 
@@ -90,12 +89,37 @@ var escapeHTML, afficheMustache;
 window.addEventListener('load', function(){
 	debug('window🗲 load');
 	escapeHTML = Mustache.escape;
+	function prepareContenuSection(section, references) {
+		const référencesFiltrées = references.filter((reference) => reference.section === section);
+		let html = '<ul>';
+		for (let index = 0; index < référencesFiltrées.length; index++) {
+			const référence = référencesFiltrées[index];
+			html += `<li class="section-${section}__element"><a href="${référence.uri}">${référence.titre && référence.titre !== '' ? référence.titre : decodeURI(référence.uri)}</a></li>`
+		}
+		html += '</ul>';
+		return html;
+	}
+	function prepareContenuTooltip(references) {
+		const sections = references.map((reference) => reference.section);
+		let html = '';
+		for (let index = 0; index < sections.length; index++) {
+			const section = sections[index];
+			html += `<div class="section-${section}"><span class="section-${section}__titre">${config.sections[section]?config.sections[section]:section}</span>${prepareContenuSection(section, references)}</div>`;
+		}
+		return html;
+	}
 	function prepareReference() {
 		return function(text, render) {
 			let reference = trouveModele(config.references, this);
-			return reference
-				? `<a class="ref" href="${reference}"><span class="fa fa-info-circle"></span>${render(text)}</a>`
-				: '';
+			if( ! reference ) return '';
+			let refText = render(text);
+			if ( refText ) refText = `<span class="ref-text">${refText}</span></a>`;
+			if ( Array.isArray(reference) ) {
+				let contenuTooltip = encodeHTMLEntities(prepareContenuTooltip(reference));
+				console.debug(contenuTooltip);
+				return `<span class="ref" data-tippy-content="${contenuTooltip}"><span class="fa fa-info-circle"></span>${refText}</span>`;
+			}			
+ 			return `<a class="ref" href="${reference}"><span class="fa fa-info-circle"></span>${refText}</a>`;
 		}
 	}
 	afficheMustache = function(data) {
@@ -111,12 +135,14 @@ window.addEventListener('load', function(){
 		}
 		// Cas 4 : token
 		if ( typeof data == 'object' ) {
-			let copie = Object.assign({ref: prepareReference}, data);
-			return Mustache.render(trouveModele(config.explanations, copie), copie);
+			let copie = Object.assign({ref: prepareReference}, data);					
+			return Mustache.render(trouveModele(config.explanations, copie), copie);	
 		}
+		
 		return escapeHTML(data);
 	};
 	Mustache.escape = afficheMustache;
+
 	// le bouton n'est rendu actif que quand la page est opérationnelle
 	document.getElementById('expliquer').disabled = false;
 });
@@ -134,7 +160,9 @@ function analyse(){
 	}
 	try {
 		let texteTokenisé = cssSelector.parse(texteBrut);
+		const sélecteurTippy = '[data-tippy-content]';
 		debug('tokens: ', texteTokenisé);
+		
 		explication.innerHTML =
 			'<div>'+ config.messages['subjects']+ afficheMustache(texteTokenisé)+ '</div>'+
 			'<div>'+ config.messages['specificity']+
@@ -146,6 +174,14 @@ function analyse(){
 			}
 		});
 		explication.classList.remove('erreur');
+		if(document.querySelectorAll(sélecteurTippy).length){
+			tippy(sélecteurTippy, {
+				allowHTML: true,
+				trigger: 'click',
+				interactive: true,
+				placement: 'right',
+			});
+		}
 	} catch(error) {
 		explication.innerHTML = '<pre>'+ error.toString()+ '</pre>';
 		explication.classList.add('erreur');
