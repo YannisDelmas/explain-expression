@@ -8,7 +8,7 @@
 
 RegularExpression = "/" pattern:Pattern "/" flags:([gimsuy]*)
     {
-      return {
+      return new XXToken({
         type: 'RegularExpression',
         pattern: pattern, flags: flags.join(''),
         global: flags.includes('g'),
@@ -17,7 +17,7 @@ RegularExpression = "/" pattern:Pattern "/" flags:([gimsuy]*)
         dotAll: flags.includes('s'),
         unicode: flags.includes('u'),
         sticky: flags.includes('y')
-      };
+      });
     }
 
 Pattern = first:Alternative alternatives:( "|" Alternative )*
@@ -26,16 +26,16 @@ Pattern = first:Alternative alternatives:( "|" Alternative )*
         return first;
       alternatives = alternatives.map(x => x[1]);
       alternatives.unshift(first);
-      return {type: 'Disjunction', alternatives: alternatives, number: alternatives.length};
+      return new XXToken({type: 'Disjunction', alternatives: alternatives, number: alternatives.length});
     }
 
 Alternative
   = first:Term terms:Term+
-    { terms.unshift(first); return {type:'TermList', terms: terms, number: terms.length}; }
+    { terms.unshift(first); return new XXToken({type:'TermList', terms: terms, number: terms.length}); }
   / term:Term
     { return term; }
   / ""
-    { return {type:'Empty'}; }
+    { return new XXToken({type:'Empty'}); }
 
 Term
   = Assertion
@@ -46,14 +46,14 @@ Term
 // assertions
 
 Assertion
-  = "^" { return {type:'Assertion', name:'anchor_begin'}; }
-  / "$" { return {type:'Assertion', name:'anchor_end' }; }
-  / "\\b" { return {type:'Assertion', name:'word_boundary'}; }
-  / "\\B" { return {type:'Assertion', name:'non_word_boundary'}; }
+  = "^" { return new XXToken({type:'Assertion', name:'anchor_begin'}); }
+  / "$" { return new XXToken({type:'Assertion', name:'anchor_end'}); }
+  / "\\b" { return new XXToken({type:'Assertion', name:'word_boundary'}); }
+  / "\\B" { return new XXToken({type:'Assertion', name:'non_word_boundary'}); }
   / "(" modality:( "?=" / "?!" ) content:Pattern ")"
-    { return {type:'Assertion', name:'lookahead', content: content, invert:(modality=='?!')}; }
+    { return new XXToken({type:'Assertion', name:'lookahead', content: content, invert:(modality=='?!')}); }
   / "(" modality:( "?<=" / "?<!" ) content:Pattern ")"
-    { return {type:'Assertion', name:'lookbehind', content: content, invert:(modality=='?<!')}; }
+    { return new XXToken({type:'Assertion', name:'lookbehind', content: content, invert:(modality=='?<!')}); }
 
 // quantifiers
 
@@ -63,24 +63,24 @@ Quantifier
   / QuantifierPrefix
 
 QuantifierPrefix
-  = "*"   { return {type:'Quantifier', repeat:'any', repeatMin:0}; }
-  / "+"   { return {type:'Quantifier', repeat:'required', repeatMin:1}; }
-  / "?"   { return {type:'Quantifier', repeat:'optional', repeatMin:0, repeatMax:1}; }
+  = "*"   { return new XXToken({type:'Quantifier', repeat:'any', repeatMin:0}); }
+  / "+"   { return new XXToken({type:'Quantifier', repeat:'required', repeatMin:1}); }
+  / "?"   { return new XXToken({type:'Quantifier', repeat:'optional', repeatMin:0, repeatMax:1}); }
   / "{" exact:[0-9]+ "}"
     {
       let n = readInt(exact);
-      return {type:'Quantifier', repeat:'exact', repeatMin:n, repeatMax:n};
+      return new XXToken({type:'Quantifier', repeat:'exact', repeatMin:n, repeatMax:n});
     }
   / "{" min:[0-9]+ ",}"
-    { return {type:'Quantifier', repeat:'min', repeatMin:readInt(min)}; }
+    { return new XXToken({type:'Quantifier', repeat:'min', repeatMin:readInt(min)}); }
   / "{" min:[0-9]+ "," max:[0-9]+ "}"
-    { return {type:'Quantifier', repeat:'minmax', repeatMin:readInt(min), repeatMax:readInt(max)}; }
+    { return new XXToken({type:'Quantifier', repeat:'minmax', repeatMin:readInt(min), repeatMax:readInt(max)}); }
 
 // atoms
 
 Atom
   = PatternCharacter
-  / "."  { return {type: 'CharacterSet', code:'any'}; }
+  / "."  { return new XXToken({type: 'CharacterSet', code:'any'}); }
   / "\\" esc:AtomEscape { return esc; }
   / CharacterClass
   / Group
@@ -91,14 +91,14 @@ Group
   = "(" capture:( "?:" )? content:Pattern ")"
     {
       capture = (capture!='?:');
-      return {type:'Group', content: content, capture: capture, number: capture?compteur:null };
+      return new XXToken({type:'Group', content: content, capture: capture, number: capture?compteur:null });
     }
   / "(?" name:GroupName content:Pattern ")"
-    { return {type:'Group', name: name.value, content: content, capture: true, number: compteur}; }
+    { return new XXToken({type:'Group', name: name.value, content: content, capture: true, number: compteur}); }
 
 GroupName
   = "<" name1:[^!-#%-@] name2:[^!-#%-/:-@]+ ">"
-    { return {type:'GroupName', value: name1+name2.join('')}; }
+    { return new XXToken({type:'GroupName', value: name1+name2.join('')}); }
 
   // RegExpIdentifierName = RegExpIdentifierStart RegExpIdentifierPart*
   // RegExpIdentifierStart is unicode ID_Start, $, _ or escape sequence
@@ -111,7 +111,7 @@ GroupName
 
 CharacterClass
   = "[" invert:"^"? parts:ClassRanges "]"
-    { return {type: 'CharacterClass', parts: parts, number: parts.length, invert:(invert=="^")}; }
+    { return new XXToken({type: 'CharacterClass', parts: parts, number: parts.length, invert:(invert=="^")}); }
 
 ClassRanges
   = NonemptyClassRanges
@@ -120,7 +120,7 @@ ClassRanges
 NonemptyClassRanges
   = begin:ClassAtom "-" end:ClassAtom ranges:ClassRanges
     {
-      ranges.unshift({type: 'CharacterRange', begin: begin, end: end});
+      ranges.unshift(new XXToken({type: 'CharacterRange', begin: begin, end: end}));
       return ranges;
     }
   / first:ClassAtom ranges:NonemptyClassRangesNoDash
@@ -131,7 +131,7 @@ NonemptyClassRanges
 NonemptyClassRangesNoDash
   = begin:ClassAtomNoDash "-" end:ClassAtom ranges:ClassRanges
     {
-      ranges.unshift({type: 'CharacterRange', begin: begin, end: end});
+      ranges.unshift(new XXToken({type: 'CharacterRange', begin: begin, end: end}));
       return ranges;
     }
   / first:ClassAtomNoDash ranges:NonemptyClassRangesNoDash
@@ -141,19 +141,19 @@ NonemptyClassRangesNoDash
 
 ClassAtom
   = ClassAtomNoDash
-  / '-'    { return {type:'Litteral', value: '-'}; }
+  / '-'    { return new XXToken({type:'Litteral', value: '-'}); }
 
 ClassAtomNoDash
   = "\\" value:ClassEscape
     { return value; }
   / literal:[^-\\\]]
-    { return {type:'Litteral', value: literal}; }
+    { return new XXToken({type:'Litteral', value: literal}); }
 
 ClassEscape
   = "b"
-    { return {type:'ControlEscape', code: 'b'}; }
+    { return new XXToken({type:'ControlEscape', code: 'b'}); }
   / "-"
-    { return {type:'Litteral', value: '-'}; }
+    { return new XXToken({type:'Litteral', value: '-'}); }
   / CharacterClassEscape
   / CharacterEscape
 
@@ -161,33 +161,33 @@ ClassEscape
 
 PatternCharacter
   = literal:[^/^$\\.*+?()[\]{}|]
-    { return {type:'Litteral', value: literal}; }
+    { return new XXToken({type:'Litteral', value: literal}); }
 
 AtomEscape
   = code:([1-9] [0-9]*)
-    { return {type: 'GroupReference', number: parseInt(code)}; }
+    { return new XXToken({type: 'GroupReference', number: parseInt(code)}); }
   / "k" name:GroupName
-    { return {type: 'GroupReference', name: name.value}; }
+    { return new XXToken({type: 'GroupReference', name: name.value}); }
   / CharacterClassEscape
   / CharacterEscape
 
 CharacterClassEscape
   = code:[dDsSwW]
-    { return {type:'CharacterSet', code: code}; }
+    { return new XXToken({type:'CharacterSet', code: code}); }
   // to add later : p{UnicodePropertyValueExpression}
 
 CharacterEscape
   = code:[fnrtv]
-    { return {type:'ControlEscape', code: code}; }
+    { return new XXToken({type:'ControlEscape', code: code}); }
   / "c" code:[a-zA-Z]
-    { return {type:'ControlCharacter', control: code.toUpperCase(), code: code.charCodeAt()-64}; }
+    { return new XXToken({type:'ControlCharacter', control: code.toUpperCase(), code: code.charCodeAt()-64}); }
   / "0" (! [0-9])
-    { return {type:'Litteral', name: 'NUL'}; }
+    { return new XXToken({type:'Litteral', name: 'NUL'}); }
   / "x" code:([0-9A-Fa-f] [0-9A-Fa-f])
-    { return {type:'HexEscape', code: code.join('').toUpperCase()}; }
+    { return new XXToken({type:'HexEscape', code: code.join('').toUpperCase()}); }
   / "u" code:( [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] )
-    { return {type:'UnicodeEscape', code: code.join('').toUpperCase()}; }
+    { return new XXToken({type:'UnicodeEscape', code: code.join('').toUpperCase()}); }
   / "u{" code:( [0-9a-fA-F]+ ) "}"
-    { return {type:'UnicodeEscape', code: code.join('').toUpperCase()}; }
+    { return new XXToken({type:'UnicodeEscape', code: code.join('').toUpperCase()}); }
   / char:.
-    { return {type:'Litteral', value: char}; }
+    { return new XXToken({type:'Litteral', value: char}); }

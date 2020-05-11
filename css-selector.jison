@@ -145,12 +145,12 @@ constraint
 
 class
     : '.' ident
-        { $$ = { type: 'class', name: $2 } }
+        { $$ = yy.create({ type: 'class', name: $2 }) }
     ;
 
 hash
     : '#' ident
-        { $$ = { type: 'id', name: $2 } }
+        { $$ = yy.create({ type: 'id', name: $2 }) }
     ;
 
 ident
@@ -247,9 +247,9 @@ pseudo
     | ':' ident '(' IDENT ')' 
         {
             /* un identificateur autre que 'n', qui est déjà dans an_plus_b */
-            $$ = { type: 'pseudo_func', name: $2,
+            $$ = yy.create({ type: 'pseudo_func', name: $2,
                 args: ['odd', 'even', 'ltr', 'rtl'].includes($4)? yy.create({type: $4}): $4
-            }
+            })
         }
     | ':' ident
         { $$ = yy.create({ type: ['first-line','first-letter','before','after'].includes($2)?'pseudo_element_old':'pseudo_class', name: $2 }) }

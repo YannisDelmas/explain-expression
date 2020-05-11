@@ -66,9 +66,8 @@ header('Content-Type: text/html; charset=utf-8');
 			</p>
 		</div>
 		<?= $interface['footer'] ?>
-		
+		<div id="tippy-template"></div>
 	</footer>
-	<div id="tippy-template"></div>
 	<script src="https://unpkg.com/@popperjs/core@2"></script>
 	<script src="https://unpkg.com/tippy.js@6"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.min.js" integrity="sha256-MPgtcamIpCPKRRm1ppJHkvtNBAuE71xcOM+MmQytXi8=" crossorigin="anonymous"></script>

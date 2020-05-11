@@ -5,14 +5,17 @@
  */
 
 
-/**
- * Initialisations spécifiques à ce module.
+/*
+ * Initialisations spécifiques à ce module
  */
 function jsRegexpExplain(data) {
 	config = Object.assign(config, data);
 }
 chargeAsync(`${config.module}-explain.${config.lang}.js`, 'explications');
 
+window.addEventListener('load', function(){
+	document.getElementById('expliquer').disabled = false;
+});
 chargeAsync(`${config.module}.pegjs.js`);
 
 {
@@ -26,83 +29,6 @@ chargeAsync(`${config.module}.pegjs.js`);
 	document.querySelector('head').appendChild(script);
 }
 
-/**
- * Fabrique l'explication d'une expression tokenisée.
- * 
- * Fonction récursive déterminant l'explication d'une expression tokenisée
- * en exploitant les indications données dans l'arborescence de modèle. Voir
- * le fichier `README.md` pour le détail du modèle d'explication.
- * 
- * @see README.md
- */
-var escapeHTML, afficheMustache, diagrammeMustache;
-window.addEventListener('load', function(){
-	debug('window🗲 load');
-	escapeHTML = Mustache.escape;
-	function prepareReference() {
-		return function(text, render) {
-			let reference = trouveModele(config.references, this);
-			return reference
-				? `<a class="ref" href="${reference}"><span class="fa fa-info-circle"></span>${render(text)}</a>`
-				: '';
-		}
-	}
-	afficheMustache = function(data) {
-		// Cas 1 : nombre -> renvoyer tel quel
-		if ( typeof data == 'number' )
-			return data;
-		// Cas 2 : nul ou vide -> renvoyer ''
-		if ( ! data )
-			return '';
-		// Cas 3 : chaîne -> traiter comme un token
-		if ( typeof data == 'string' ) {
-			data = { type: data };
-		}
-		// Cas 4 : token
-		if ( typeof data == 'object' ) {
-			let copie = Object.assign({ref: prepareReference}, data);
-			Mustache.escape = afficheMustache;
-			return Mustache.render(trouveModele(config.explanations, copie), copie);
-		}
-		// par défaut : fonctionnement normal de Mustache
-		return escapeHTML(data);
-	};
-	diagrammeMustache = function(data) {
-		// Cas 1 : nombre -> renvoyer tel quel
-		if ( typeof data == 'number' )
-			return data;
-		// Cas 2 : nul ou vide -> renvoyer ''
-		if ( ! data )
-			return '';
-		// Cas 3 : chaîne -> traiter comme un token
-		if ( typeof data == 'string' ) {
-			data = { type: data };
-		}
-		// Cas 4 : token
-		if ( typeof data == 'object' ) {
-			Mustache.escape = diagrammeMustache;
-			return Mustache.render(trouveModele(config.rr_diagram, data), data);
-		}
-		// par défaut : fonctionnement normal de Mustache
-		return escapeHTML(data);
-	};
-	// le bouton n'est rendu actif que quand la page est opérationnelle
-	document.getElementById('expliquer').disabled = false;
-});
-
-/**
- * Test de l'expression régulière saisie sur un exemple.
- */
-function testeRE(){
-	let cible = document.getElementById('cible').value;
-	let n = cible.search(re);
-	document.getElementById('match').innerHTML =
-		(n<0)
-		? config.messages['not_found']
-		: ('<p>'+ config.messages['found']+ '</p><blockquote>'+
-			cible.replace(re, '<span class="underline">$&</span>')+ '</blockquote>')
-		;
-}
 
 /**
  * Compteur pour les groupes.
@@ -152,9 +78,29 @@ function createDownloadLinks() {
 
 
 /**
+ * Expression régulière pour tester dans le navigateur l'expression saisie.
+ */
+var re;
+
+
+/**
+ * Test de l'expression régulière saisie sur un exemple.
+ */
+function testeRE(){
+	let cible = document.getElementById('cible').value;
+	let n = cible.search(re);
+	document.getElementById('match').innerHTML =
+		(n<0)
+		? config.messages['not_found']
+		: ('<p>'+ config.messages['found']+ '</p><blockquote>'+
+			cible.replace(re, '<span class="underline">$&</span>')+ '</blockquote>')
+		;
+}
+
+
+/**
  * Fonction organisant la tokenisation puis les affichages.
  */
-var re; // typed RE
 function analyse(){
 	let explication = document.querySelector('.explication output');
 	let texteBrut = document.getElementById('expression').value;
@@ -174,6 +120,8 @@ function analyse(){
 	}
 	debug('tokens: ', texteTokenisé);
 	compteur(0);
+	XXToken.modeles = config.explanations;
+	Mustache.escape = afficheMustache;
 	let sortie = '<figure id="diagramme"><figcaption>'+ config.messages['diagram']+
 		'</figcaption></figure><div>'+ afficheMustache(texteTokenisé)+ '</div>';
 	let diagramme;
@@ -190,7 +138,9 @@ function analyse(){
 	}
 	try {
 		compteur(0);
-		diagramme = eval(debug(diagrammeMustache(texteTokenisé))).format();
+		XXToken.modeles = config.rr_diagram;
+		Mustache.escape = afficheMustache;
+		diagramme = eval(debug(afficheMustache(texteTokenisé))).format();
 	} catch (e) {
 		debug('diagram building error:', e);
 	}

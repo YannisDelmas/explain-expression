@@ -146,10 +146,10 @@ case 25:
  this.$ = yy.create({ type: 'constraint_list', constraints: [$$[$0]] }) 
 break;
 case 30:
- this.$ = { type: 'class', name: $$[$0] } 
+ this.$ = yy.create({ type: 'class', name: $$[$0] }) 
 break;
 case 31:
- this.$ = { type: 'id', name: $$[$0] } 
+ this.$ = yy.create({ type: 'id', name: $$[$0] }) 
 break;
 case 34:
  this.$ = yy.create({ type: 'attribute', subtype: 'has_attribute', name: $$[$0-1] }) 
@@ -196,9 +196,9 @@ break;
 case 72:
 
             /* un identificateur autre que 'n', qui est déjà dans an_plus_b */
-            this.$ = { type: 'pseudo_func', name: $$[$0-3],
+            this.$ = yy.create({ type: 'pseudo_func', name: $$[$0-3],
                 args: ['odd', 'even', 'ltr', 'rtl'].includes($$[$0-1])? yy.create({type: $$[$0-1]}): $$[$0-1]
-            }
+            })
         
 break;
 case 73:

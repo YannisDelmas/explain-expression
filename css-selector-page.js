@@ -5,16 +5,17 @@
  */
 
 
-/**
- * Initialisations spécifiques à ce module.
+/*
+ * Initialisations spécifiques à ce module
  */
 function cssSelectorExplain(data) {
-	config = Object.assign(config, data);
+	Object.assign(config, data);
 }
 chargeAsync(`${config.module}-explain.${config.lang}.js`, 'explications'); // appelle cssSelectorExplain()
 
 window.addEventListener('load', function(){
-	cssSelector.yy.create = (data => data);
+	cssSelector.yy.create = (...data) => new XXToken(...data);
+	document.getElementById('expliquer').disabled = false;
 });
 chargeAsync(`${config.module}.jison.js`, 'parser');
 
@@ -34,7 +35,7 @@ function calculeSpécificité(token) {
 			if ( ! token.length ) return a;
 			return token.map(t => iterate(t)).reduce(arraySum, a);
 		}
-		let s = trouveModele(config.specificity, token);
+		let s = token.trouveModele(config.specificity);
 		if ( ! s ) return a;
 		return eval(s)(token, a);
 	}
@@ -77,77 +78,6 @@ function arraySuperior(a1, a2) {
 
 
 /**
- * Fabrique l'explication d'une expression tokenisée.
- * 
- * Fonction récursive déterminant l'explication d'une expression tokenisée
- * en exploitant les indications données dans l'arborescence de modèles. Voir
- * le fichier `README.md` pour le détail du modèle d'explication.
- * 
- * @see README.md
- */
-var escapeHTML, afficheMustache;
-window.addEventListener('load', function(){
-	debug('window🗲 load');
-	escapeHTML = Mustache.escape;
-	function prepareContenuSection(section, references) {
-		const référencesFiltrées = references.filter((reference) => reference.section === section);
-		let html = '<ul>';
-		for (let index = 0; index < référencesFiltrées.length; index++) {
-			const référence = référencesFiltrées[index];
-			html += `<li class="section-${section}__element"><a href="${référence.uri}">${référence.titre && référence.titre !== '' ? référence.titre : decodeURI(référence.uri)}</a></li>`
-		}
-		html += '</ul>';
-		return html;
-	}
-	function prepareContenuTooltip(references) {
-		const sections = references.map((reference) => reference.section);
-		let html = '';
-		for (let index = 0; index < sections.length; index++) {
-			const section = sections[index];
-			html += `<div class="section-${section}"><span class="section-${section}__titre">${config.sections[section]?config.sections[section]:section}</span>${prepareContenuSection(section, references)}</div>`;
-		}
-		return html;
-	}
-	function prepareReference() {
-		return function(text, render) {
-			let reference = trouveModele(config.references, this);
-			if( ! reference ) return '';
-			let refText = render(text);
-			if ( refText ) refText = `<span class="ref-text">${refText}</span></a>`;
-			if ( Array.isArray(reference) ) {
-				let contenuTooltip = encodeHTMLEntities(prepareContenuTooltip(reference));
-				console.debug(contenuTooltip);
-				return `<span class="ref" data-tippy-content="${contenuTooltip}"><span class="fa fa-info-circle"></span>${refText}</span>`;
-			}			
- 			return `<a class="ref" href="${reference}"><span class="fa fa-info-circle"></span>${refText}</a>`;
-		}
-	}
-	afficheMustache = function(data) {
-		// Cas 1 : nombre -> renvoyer tel quel
-		if ( typeof data == 'number' )
-			return data;
-		// Cas 2 : nul ou vide -> renvoyer ''
-		if ( ! data )
-			return '';
-		// Cas 3 : chaîne -> traiter comme un token
-		if ( typeof data == 'string' ) {
-			data = { type: data };
-		}
-		// Cas 4 : token
-		if ( typeof data == 'object' ) {
-			let copie = Object.assign({ref: prepareReference}, data);					
-			return Mustache.render(trouveModele(config.explanations, copie), copie);	
-		}
-		
-		return escapeHTML(data);
-	};
-	Mustache.escape = afficheMustache;
-
-	// le bouton n'est rendu actif que quand la page est opérationnelle
-	document.getElementById('expliquer').disabled = false;
-});
-
-/**
  * Fonction organisant la tokenisation puis les affichages.
  */
 function analyse(){
@@ -160,9 +90,8 @@ function analyse(){
 	}
 	try {
 		let texteTokenisé = cssSelector.parse(texteBrut);
-		const sélecteurTippy = '[data-tippy-content]';
-		debug('tokens: ', texteTokenisé);
-		
+		XXToken.modeles = config.explanations;
+		Mustache.escape = afficheMustache;
 		explication.innerHTML =
 			'<div>'+ config.messages['subjects']+ afficheMustache(texteTokenisé)+ '</div>'+
 			'<div>'+ config.messages['specificity']+
@@ -173,7 +102,7 @@ function analyse(){
 				item.innerHTML = '+'+ item.innerHTML;
 			}
 		});
-		explication.classList.remove('erreur');
+		const sélecteurTippy = '[data-tippy-content]';
 		if(document.querySelectorAll(sélecteurTippy).length){
 			tippy(sélecteurTippy, {
 				allowHTML: true,
@@ -182,7 +111,9 @@ function analyse(){
 				placement: 'right',
 			});
 		}
+		explication.classList.remove('erreur');
 	} catch(error) {
+		console.error(error);
 		explication.innerHTML = '<pre>'+ error.toString()+ '</pre>';
 		explication.classList.add('erreur');
 	}
