@@ -4,19 +4,19 @@
  * @author	Yannis Delmas
  */
 
+/**
+ * Fonctionnalités générales.
+ */
+import { debug, chargeAsync, XXToken, afficheMustache } from './explain-expression.js';
 
 /*
  * Initialisations spécifiques à ce module
  */
-function cssSelectorExplain(data) {
+window.cssSelectorExplain = function(data) {
 	Object.assign(config, data);
 }
 chargeAsync(`${config.module}-explain.${config.lang}.js`, 'explications'); // appelle cssSelectorExplain()
 
-window.addEventListener('load', function(){
-	cssSelector.yy.create = (...data) => new XXToken(...data);
-	document.getElementById('expliquer').disabled = false;
-});
 chargeAsync(`${config.module}.jison.js`, 'parser');
 
 /**
@@ -90,8 +90,9 @@ function analyse(){
 	}
 	try {
 		let texteTokenisé = cssSelector.parse(texteBrut);
-		XXToken.modeles = config.explanations;
+		Mustache.defaultEscape = Mustache.escape;
 		Mustache.escape = afficheMustache;
+		XXToken.modeles = config.explanations;
 		explication.innerHTML =
 			'<div>'+ config.messages['subjects']+ afficheMustache(texteTokenisé)+ '</div>'+
 			'<div>'+ config.messages['specificity']+
@@ -118,3 +119,29 @@ function analyse(){
 		explication.classList.add('erreur');
 	}
 }
+
+/**
+ * Finalisation de la préparation de la page.
+ */
+window.addEventListener('load', function(){
+	debug('window loaded');
+	// initialisation du parser
+	cssSelector.yy.create = (...data) => new XXToken(...data);
+	// `expression` est la case de texte contenant l'expression à analyser
+	let expression = document.getElementById('expression');
+	// elle a d'emblée le focus
+	expression.focus();
+	// initialisation du formulaire associé
+	expression.form.addEventListener('submit', function(event){
+		analyse();
+		event.preventDefault();
+	});
+	document.getElementById('expliquer').disabled = false;
+	// les exemples remplissent automatiquement `expression` et lancent l'analyse
+	document.querySelectorAll('.exemple').forEach(function(item) {
+		item.addEventListener('click', function(){
+			expression.value = this.innerText;
+			analyse();
+		});
+	});
+});

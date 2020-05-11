@@ -5,41 +5,47 @@
  */
 
 
+/**
+ * Fonctionnalités générales.
+ */
+import { debug, chargeAsync, XXToken, afficheMustache, encodeHTMLEntities } from './explain-expression.js';
+
 /*
  * Initialisations spécifiques à ce module
  */
-function jsRegexpExplain(data) {
+window.jsRegexpExplain = function(data) {
 	config = Object.assign(config, data);
+	document.getElementById('explications').remove();
 }
 chargeAsync(`${config.module}-explain.${config.lang}.js`, 'explications');
 
-window.addEventListener('load', function(){
-	document.getElementById('expliquer').disabled = false;
-});
-chargeAsync(`${config.module}.pegjs.js`);
+chargeAsync(`${config.module}.pegjs.js`, 'parser');
 
-{
-	debug('load async module : railroad.js');
-	let script = document.createElement('script');
-	script.setAttribute('type', 'module');
-	script.innerText =
-		'import rr, * as rrClass from "./railroad.js";\
-		Object.assign(window, rr);\
-		window.rrOptions = rrClass.Options;';
-	document.querySelector('head').appendChild(script);
-}
-
+import rr, * as rrClass from "./railroad.js";
+Object.assign(window, rr);
+window.rrOptions = rrClass.Options;
 
 /**
  * Compteur pour les groupes.
  */
-var compteur = (function () {
+window.compteur = (function () {
 	let valeurCompteur;
 	return function (valeur) {
 		if ( valeur == undefined ) return ++valeurCompteur;
 		return (( valeurCompteur = valeur ));
 	}
 })();
+
+/**
+ * Style par défaut des diagrammes, pour l'exportation.
+ */
+var reCSSRR = /^svg\.railroad-diagram/;
+var SvgExportCss =
+	Array.from(document.getElementById('explainExpression').sheet.rules)
+	.filter( rule => rule.selectorText.match(reCSSRR) )
+	.map( rule => rule.cssText )
+	.join(' ')
+	;
 
 /**
  * Préparation des téléchargements.
@@ -116,12 +122,14 @@ function analyse(){
 	} catch(error) {
 		explication.innerHTML = '<pre>'+ error.toString()+ '</pre>';
 		explication.classList.add('erreur');
+		debug(error);
 		return;
 	}
 	debug('tokens: ', texteTokenisé);
 	compteur(0);
-	XXToken.modeles = config.explanations;
+	Mustache.defaultEscape = Mustache.escape;
 	Mustache.escape = afficheMustache;
+	XXToken.modeles = config.explanations;
 	let sortie = '<figure id="diagramme"><figcaption>'+ config.messages['diagram']+
 		'</figcaption></figure><div>'+ afficheMustache(texteTokenisé)+ '</div>';
 	let diagramme;
@@ -157,3 +165,29 @@ function analyse(){
 		document.getElementById('cible').addEventListener('keyup', testeRE);
 	}
 }
+
+/**
+ * Finalisation de la préparation de la page.
+ */
+window.addEventListener('load', function(){
+	debug('window loaded');
+	// initialisation du parser
+	window.jsRegexp.create = (...data) => new XXToken(...data);
+	// `expression` est la case de texte contenant l'expression à analyser
+	let expression = document.getElementById('expression');
+	// elle a d'emblée le focus
+	expression.focus();
+	// initialisation du formulaire associé
+	expression.form.addEventListener('submit', function(event){
+		analyse();
+		event.preventDefault();
+	});
+	document.getElementById('expliquer').disabled = false;
+	// les exemples remplissent automatiquement `expression` et lancent l'analyse
+	document.querySelectorAll('.exemple').forEach(function(item) {
+		item.addEventListener('click', function(){
+			expression.value = this.innerText;
+			analyse();
+		});
+	});
+});

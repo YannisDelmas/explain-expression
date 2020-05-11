@@ -12,7 +12,7 @@
  * @param {...*}	éléments à afficher dans la console.
  * @returns			le premier argument.
  */
-var debug = config.devel
+export var debug = config.devel
 	? ((...args) => {console.debug(...args); return args[0];})
 	: ((...args) => args[0]);
 
@@ -20,22 +20,24 @@ var debug = config.devel
 /**
  * Chargement sur demande d'un script JS.
  * 
- * @param {string} uri	adresse du script à charger.
- * @param {string} [id]	identifiant de l'élément <script>.	
+ * @param {string} uri			adresse du script à charger.
+ * @param {string} [id]			identifiant de l'élément <script>.	
+ * @returns {HTMLScriptElement} l'élément script ajouté au document.
  */
-function chargeAsync(uri, id) {
+export function chargeAsync(uri, id) {
 	debug('load async script #', id, ' : ', uri);
 	let script = document.createElement('script');
 	script.src = uri;
-	if ( id != undefined ) script.id = id;
+	script.id = id? id: '_'+ +new Date();
 	document.querySelector('head').appendChild(script);
+	return(script);
 }
 
 
 /**
  * Classe pour représenter les tokens de l'expression.
  */
-class XXToken {
+export class XXToken {
 	/** Type du token.
 	 * @type {?string}
 	 */
@@ -122,11 +124,6 @@ class XXToken {
 }
 
 /**
- * Fonction d'échappement normale de Mustache.
- */
-Mustache.defaultEscape = Mustache.escape;
-
-/**
  * Fabrique l'explication d'une expression tokenisée.
  * 
  * Fonction récursive déterminant l'explication d'une expression tokenisée
@@ -136,9 +133,10 @@ Mustache.defaultEscape = Mustache.escape;
  * @param {*} data			donnée (token ou valeur) à traiter avec Mustache.
  * @returns {string}
  */
-function afficheMustache(data) {
+export function afficheMustache(data) {
 	// Cas 1 : nombre -> renvoyer tel quel
-//	if ( typeof data == 'number' ) return data;
+	if ( typeof data == 'number' )
+		return data;
 	// Cas 2 : nul ou vide -> renvoyer ''
 	if ( ! data )
 		return '';
@@ -161,7 +159,7 @@ function afficheMustache(data) {
  * @param {string} text	la chaîne de caractères à encoder.
  * @returns {string}	la chaîne encodée.
  */
-function encodeHTMLEntities(text) {
+export function encodeHTMLEntities(text) {
 	let textArea = document.createElement('textarea');
 	textArea.innerText = text;
 	return textArea.innerHTML.replace(/"/gu, '&quot;').replace(/'/gu, '&apos;');

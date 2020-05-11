@@ -29,7 +29,7 @@ header('Content-Type: text/html; charset=utf-8');
 		href="https://unpkg.com/tippy.js@6/animations/scale.css"
 	/>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
-	<link rel="stylesheet" href="explain-expression.css">
+	<link id="explainExpression" rel="stylesheet" href="explain-expression.css">
 </head>
 <body class="module-<?= $module ?>" data-module="<?= $module ?>">
 	<header>
@@ -37,7 +37,7 @@ header('Content-Type: text/html; charset=utf-8');
 		<div class="chapeau"><?= $interface['info'] ?></div>
 	</header>
 	<main>
-		<form action="javascript:analyse()">
+		<form action="#">
 			<div class="input-group">
 				<input type="text" name="expression" id="expression" placeholder="<?= $interface['placeholder'] ?>">
 				<button type="submit" id="expliquer" disabled><span class="fa fa-cog"></span> <?= $interface['explain'] ?></button>
@@ -77,25 +77,7 @@ header('Content-Type: text/html; charset=utf-8');
 			module: '<?= $module ?>',
 			devel: <?= $develMode?'true':'false' ?>,
 		};
-		<?php if ( isset($module_script) ) echo $module_script; ?>
 	</script>
-	<script src="explain-expression.js"></script>
-	<script src="<?= $module ?>-page.js"></script>
-	<script>
-		window.addEventListener('load', function(){
-			debug('window🗲 load');
-			// `expression` est la case de texte contenant l'expression à analyser
-			let expression = document.getElementById('expression');
-			// elle a d'emblée le focus
-			expression.focus();
-			// les exemples remplissent automatiquement `expression` et lancent l'analyse
-			document.querySelectorAll('.exemple').forEach(function(item) {
-				item.addEventListener('click', function(){
-					expression.value = this.innerText;
-					analyse();
-				});
-			})
-		});
-	</script>
+	<script type="module" src="<?= $module ?>-page.js"></script>
 </body>
 </html>
