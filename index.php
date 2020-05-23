@@ -79,6 +79,8 @@ header('Content-Type: text/html; charset=utf-8');
 			lang: '<?= $lang ?>',
 			module: '<?= $module ?>',
 			devel: <?= $develMode?'true':'false' ?>,
+			uriApp: '<?= $_SERVER['PHP_SELF'] ?>',
+			uriModule: '<?= $_SERVER['PHP_SELF'], '?module=', urlencode($module) ?>'
 		};
 	</script>
 	<script type="module" src="<?= $module ?>-page.js"></script>

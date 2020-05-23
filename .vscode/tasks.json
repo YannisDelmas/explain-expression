@@ -12,6 +12,15 @@
 			}
 		},
 		{
+			"label": "compile js-term.pegjs.js",
+			"type": "shell",
+			"command": "pegjs -o js-term.pegjs.js --format globals -e jsTerm js-term.pegjs",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+			}
+		},
+		{
 			"label": "compile css-selector.jison.js",
 			"type": "shell",
 			"command": "jison css-selector.jison -o css-selector.jison.js",

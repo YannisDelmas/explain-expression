@@ -253,9 +253,9 @@ svg.railroad-diagram .js-regexp-CharacterClass rect.group-box + * .comment {
 	border-width: 0 10px 10px 0;
 }
 
-/* 5) Exemples */
+/* 5) Exemples et liens externes */
 
-.exemple {
+.exemple, .xx-link {
 	line-height: 119%;
 	padding: 0 0.5ex; margin: 0 0.5ex;
 	display: inline-block;
@@ -263,16 +263,18 @@ svg.railroad-diagram .js-regexp-CharacterClass rect.group-box + * .comment {
 	position: relative;
 }
 
-.exemple::after {
+.exemple::after, .xx-link::after {
 	display: inline-block;
 	font: normal normal normal 0.65rem/1 FontAwesome;
 	vertical-align: super;
 	position: absolute; right: -0.65rem; top: -0.25rem;
 }
-.exemple:hover::after {
+.exemple:hover::after, .xx-link::after {
 	content: "\f1cd";
 }
 
+a.xx-link { text-decoration: none; }
+a.xx-link:hover { text-decoration: underline; }
 
 /* Tippy */
 .ref {
