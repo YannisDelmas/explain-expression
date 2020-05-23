@@ -13,6 +13,9 @@
 $lang = isset($_REQUEST['lang'])? strtr($_REQUEST['lang'], '\\/.:\'"', ''): 'fr';
 $module = isset($_REQUEST['module'])? strtr($_REQUEST['module'], '\\/.:\'"', ''): 'css-selector';
 $develMode = ( $_SERVER['HTTP_HOST'] != 'delmas-rigoutsos.nom.fr' );
+$exprInit = isset($_REQUEST['q'])? $_REQUEST['q']: NULL;
+
+/* Chargement des éléments PHP spécifiques */
 include("{$module}-page.{$lang}.php");
 
 /* Encodage */
@@ -39,8 +42,8 @@ header('Content-Type: text/html; charset=utf-8');
 	<main>
 		<form action="#">
 			<div class="input-group">
-				<input type="text" name="expression" id="expression" placeholder="<?= $interface['placeholder'] ?>">
-				<button type="submit" id="expliquer" disabled><span class="fa fa-cog"></span> <?= $interface['explain'] ?></button>
+				<input type="text" name="expression" id="expression" placeholder="<?= $interface['placeholder'] ?>" <?= is_null($exprInit)?'':(' value="'. htmlspecialchars($exprInit). '"') ?>>
+				<button type="submit" id="expliquer" disabled><span class="fa fa-support"></span> <?= $interface['explain'] ?></button>
 			</div>
 		</form>
 		<div class="explication">

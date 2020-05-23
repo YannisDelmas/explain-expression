@@ -164,3 +164,29 @@ export function encodeHTMLEntities(text) {
 	textArea.innerText = text;
 	return textArea.innerHTML.replace(/"/gu, '&quot;').replace(/'/gu, '&apos;');
 }
+
+/**
+ * Initialisation de l'interface.
+ */
+export function xxInit(analyse) {
+	debug('interface initialisation');
+	// `expression` est la case de texte contenant l'expression à analyser
+	let expression = document.getElementById('expression');
+	// elle a d'emblée le focus
+	expression.focus();
+	// initialisation du formulaire associé
+	expression.form.addEventListener('submit', function(event){
+		analyse();
+		event.preventDefault();
+	});
+	document.getElementById('expliquer').disabled = false;
+	// les exemples remplissent automatiquement `expression` et lancent l'analyse
+	document.querySelectorAll('.exemple').forEach(function(item) {
+		item.addEventListener('click', function(){
+			expression.value = this.innerText;
+			analyse();
+		});
+	});
+	// si une expression est préchargée, on l'analyse
+	if ( expression.value != '' ) analyse();
+}

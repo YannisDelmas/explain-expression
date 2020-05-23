@@ -173,21 +173,6 @@ window.addEventListener('load', function(){
 	debug('window loaded');
 	// initialisation du parser
 	window.jsRegexp.create = (...data) => new XXToken(...data);
-	// `expression` est la case de texte contenant l'expression à analyser
-	let expression = document.getElementById('expression');
-	// elle a d'emblée le focus
-	expression.focus();
-	// initialisation du formulaire associé
-	expression.form.addEventListener('submit', function(event){
-		analyse();
-		event.preventDefault();
-	});
-	document.getElementById('expliquer').disabled = false;
-	// les exemples remplissent automatiquement `expression` et lancent l'analyse
-	document.querySelectorAll('.exemple').forEach(function(item) {
-		item.addEventListener('click', function(){
-			expression.value = this.innerText;
-			analyse();
-		});
-	});
+	// initialisation de l'interface
+	xxInit(analyse);
 });
