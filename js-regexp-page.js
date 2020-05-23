@@ -8,7 +8,7 @@
 /**
  * Fonctionnalités générales.
  */
-import { debug, chargeAsync, XXToken, afficheMustache, encodeHTMLEntities } from './explain-expression.js';
+import { debug, chargeAsync, XXToken, afficheMustache, encodeHTMLEntities, xxInit } from './explain-expression.js';
 
 /*
  * Initialisations spécifiques à ce module
